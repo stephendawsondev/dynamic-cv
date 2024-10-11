@@ -23,7 +23,7 @@ class Command(StartAppCommand):
                                       for part in app_name_parts)
 
         content = content.replace(
-            'MyAppConfig', f"{app_name_camel_case}Config")
+            'DynamicCvConfig', f"{app_name_camel_case}Config")
 
         with open(os.path.join(app_dir, 'apps.py'), 'w') as file:
             file.write(content)

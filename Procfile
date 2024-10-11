@@ -1,1 +1,1 @@
-web: gunicorn myapp.wsgi
+web: gunicorn dynamiccv.wsgi
