@@ -1,0 +1,81 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+{% comment %} Head {% endcomment %}
+
+<head>
+  {% comment %} Meta tags {% endcomment %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% comment %} Meta description {% endcomment %}
+  <meta name="description" content="{% block meta_description %}{% endblock %}">
+  {% comment %} Meta keywords {% endcomment %}
+  <meta name="keywords" content="">
+
+  {% block extra_meta %}
+  {% endblock %}
+
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  {% block extra_css %}
+  {% endblock %}
+
+  {% block core_js %}
+  {% endblock core_js %}
+  <title>{% block extra_title %}{% endblock %}</title>
+</head>
+
+{% comment %} Body {% endcomment %}
+
+<body>
+  {% comment %} Header {% endcomment %}
+  <header>
+    <div>
+      <nav>
+        <ul>
+          <li>
+            <a href="{% url 'home' %}" aria-label="Navigates to home page">
+              Home
+            </a>
+          </li>
+          {% if user.is_authenticated %}
+          <li>
+            <a href="{% url 'account_logout' %}" aria-label="Navigates to logout page">
+              Logout
+            </a>
+          </li>
+          {% else %}
+          <li>
+            <a href="{% url 'account_login' %}" aria-label="Navigates to login page">
+              Login
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'account_signup' %}" aria-label="Navigates to registration page">
+              Register
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+  {% comment %} Main content {% endcomment %}
+  <main>
+    {% block content %}
+
+    {% endblock content %}
+  </main>
+
+  {% comment %} Footer {% endcomment %}
+  <footer>
+    <p>© {% now 'Y' %} Project name</p>
+  </footer>
+
+  <script src="{% static 'js/script.js' %}"></script>
+
+  {% block extra_js %}
+  {% endblock %}
+</body>
+
+</html>
