@@ -40,10 +40,16 @@ class Skills(models.Model):
     
     def add_skill(self, skill):
         """
-        Adds a skill to the model
+        Adds a skill to the model. Returns the skill if
+        successful, and None if not
         """
+        skillset = self.skillset
+        print(skill in skillset)
+        if skill in skillset:
+            return None
         self.skillset += f'{skill},'
         self.save()
+        return skill
     
     def remove_skill(self, skill):
         """

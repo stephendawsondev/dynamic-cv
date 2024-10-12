@@ -5,14 +5,15 @@
   <label for="new-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Skills</label>
   <div id="skill-list" class="w-[50%]">
     <!-- The inline form to add the skills -->
-    <form id="skill-form">
+    <form method="post" id="skill-form">
+      {% csrf_token %}
       <div class="flex">
         <div class="relative w-full">
           <input type="text" id="new-skill-text"
             class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-lime-500"
             placeholder="Skill" maxlength="30" required />
           <button type="submit" id="submit-skill"
-            class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300 dark:bg-lime-600 dark:text-white dark:hover:bg-lime-700 dark:focus:ring-lime-800">
+            class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300 dark:bg-lime-600 dark:text-white dark:hover:bg-lime-700 dark:focus:ring-lime-800">
             Add</button>
         </div>
       </div>
@@ -21,10 +22,47 @@
 </div>
 
 <script>
-
+  // Adds the skill
   document.getElementById('skill-form').addEventListener('submit', function () {
     event.preventDefault();
+    let submitButton = document.getElementById('submit-skill');
+    let skillInput = document.getElementById('new-skill-text');
+    submitButton.disabled = true;
+    skillInput.disabled = true;
 
+    // Finds the csrf token
+    let csrfToken = '';
+    let formElements = this.getElementsByTagName('input');
+    for (let element of formElements) {
+      if (element.name === 'csrfmiddlewaretoken') {
+        csrfToken = element.value;
+      }
+    }
+
+    // Sends the AJAX to add the skill to the server
+    fetch(`/profile/add-skill/${skillInput.value.replace(' ', '-')}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({})
+    })
+      .then(response => {
+        // Enabling the buttons when the server gives a response
+        submitButton.disabled = false;
+        skillInput.disabled = false;
+        response.text();
+      })
+      .then(response => {
+        console.log('Success:', response);
+        skillInput.value = "";
+      })
+      .catch((error) => {
+        // Showing the error message in the form of the input validation feedback
+        skillInput.setCustomValidity('Cannot enter the same skill more than once');
+        setTimeout(() => { submitButton.click(); }, 1);
+      });
   });
 
   // Form validation for the skill input
@@ -42,7 +80,6 @@
     }
     else {
       skillTextChars = skillValue.replace(/([a-zA-z0-9 ]+)/g, '');
-      console.log(skillTextChars);
       if (skillTextChars.length > 0) {
         hasSpecialCharacters = true;
       }

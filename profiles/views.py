@@ -1,3 +1,4 @@
+from django.views import View
 from django.views.generic import TemplateView, CreateView, UpdateView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -5,7 +6,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from .forms import SummaryForm
-from .models import Summary
+from .models import Summary, Skills
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -32,3 +33,12 @@ class UpdateSummary(LoginRequiredMixin, UpdateView):
 
     def form_invalid(self, form):
         return HttpResponse('<p class="error">Please provide a summary. Max 500 chars</p>')
+
+
+class AddSkill(View):
+
+    def post(self, request, skill):
+        skillset = Skills.objects.get(user=request.user)
+        if skillset.add_skill(skill.replace('-', ' ')):
+            return HttpResponse("Success", status=200)
+        raise Exception("Cannot enter the same skill twice")
