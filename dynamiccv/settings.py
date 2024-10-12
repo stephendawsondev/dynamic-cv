@@ -51,16 +51,25 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'django.contrib.staticfiles',
-    'utility_app',
-    'home',
-    'cv_template',
-    'profiles',
+
     # Third-party apps
     'cloudinary_storage',
     'cloudinary',
     'import_export',
     'django_ckeditor_5',
+    'djrichtextfield',
+    'crispy_forms',
+    'crispy_tailwind',
+
+    # Apps
+    'utility_app',
+    'home',
+    'cv_template',
+    'profiles',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'tailwind'
+CRISPY_TEMPLATE_PACK = "tailwind"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -113,6 +122,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+        'builtins': [
+                'crispy_forms.templatetags.crispy_forms_tags',
+                'crispy_forms.templatetags.crispy_forms_field',
+            ]
         },
     },
 ]

@@ -1,11 +1,7 @@
-from unfold.admin import ModelAdmin
-
-# UPDATE THE BELOW IMPORTS WITH YOUR APP'S MODEL
-# AND UNCOMMENT
-
-# from .models import TheAppModel
+from django.contrib import admin
+from .models import Summary
 
 
-# @admin.register(TheAppModel)
-# class CustomAdminClass(ModelAdmin):
-#     pass
+@admin.register(Summary)
+class SummaryAdminClass(admin.ModelAdmin):
+    pass
