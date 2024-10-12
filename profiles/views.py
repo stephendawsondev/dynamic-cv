@@ -1,6 +1,5 @@
 from django.views.generic import TemplateView, CreateView, UpdateView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render  
 from django.http import HttpResponse
@@ -33,4 +32,3 @@ class UpdateSummary(LoginRequiredMixin, UpdateView):
 
     def form_invalid(self, form):
         return HttpResponse('<p class="error">Please provide a summary. Max 500 chars</p>')
-  
