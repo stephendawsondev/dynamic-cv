@@ -53,10 +53,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'utility_app',
     'home',
+    'cv_template',
     # Third-party apps
     'cloudinary_storage',
     'cloudinary',
     'import_export',
+    'django_ckeditor_5',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +72,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
+CKEDITOR_5_CONFIGS = {
+  'default': {
+      'toolbar': ['heading', '|', 'bold', 'italic'],
+      'language': 'en-gb',
+    },
+    'lists': {
+      'toolbar': ['bulletedList', 'numberedList'],
+      'language': 'en-gb',
+     },
+}
 
 ROOT_URLCONF = 'dynamiccv.urls'
 
@@ -157,6 +170,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
