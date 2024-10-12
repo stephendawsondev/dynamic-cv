@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto md:mt-3">
+    <div class="md:flex">
+        <ul class="flex-column space-y space-y-4 text-sm font-medium text-gray-500" id="default-styled-tab" data-tabs-toggle="#default-styled-tab-content" data-tabs-active-classes="text-purple-600 hover:text-purple-600" role="tablist">
+            <li class="me-2" role="presentation">
+                <button class="inline-flex items-center px-4 py-3 text-white bg-blue-700 rounded-lg active w-full" id="detail-styled-tab" data-tabs-target="#styled-detail" type="button" role="tab" aria-controls="detail" aria-selected="false">Your Details</button>
+            </li>
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300" id="summary-styled-tab" data-tabs-target="#styled-summary" type="button" role="tab" aria-controls="summary" aria-selected="false">Summary</button>
+            </li>
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300" id="skills-styled-tab" data-tabs-target="#styled-skills" type="button" role="tab" aria-controls="skills" aria-selected="false">Skills</button>
+            </li>
+            <li role="presentation">
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300" id="work-experience-styled-tab" data-tabs-target="#styled-work-experience" type="button" role="tab" aria-controls="work-experience" aria-selected="false">Work Experience</button>
+            </li>
+            <li role="presentation">
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300" id="education-styled-tab" data-tabs-target="#styled-education" type="button" role="tab" aria-controls="education" aria-selected="false">Education</button>
+            </li>
+        </ul>
+        <div class="p-6 bg-gray-50 text-medium text-gray-500 rounded-lg w-full">
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-detail" role="tabpanel" aria-labelledby="detail-tab">
+                <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">detail tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+            </div>
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-summary" role="tabpanel" aria-labelledby="summary-tab">
+                <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">summary tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+            </div>
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-skills" role="tabpanel" aria-labelledby="skills-tab">
+                <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">skills tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+            </div>
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-work-experience" role="tabpanel" aria-labelledby="work-experience-tab">
+                <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">work-experience tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+            </div>
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-education" role="tabpanel" aria-labelledby="educations-tab">
+                <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">Education tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+<script>
+    const tabsElement = document.getElementById('tabs-example');
+
+// create an array of objects with the id, trigger element (eg. button), and the content element
+const tabElements = [
+    {
+        id: 'detail',
+        triggerEl: document.querySelector('#detail-tab-example'),
+        targetEl: document.querySelector('#detail-example'),
+    },
+    {
+        id: 'summary',
+        triggerEl: document.querySelector('#summary-tab-example'),
+        targetEl: document.querySelector('#summary-example'),
+    },
+    {
+        id: 'skills',
+        triggerEl: document.querySelector('#skills-tab-example'),
+        targetEl: document.querySelector('#skills-example'),
+    },
+    {
+        id: 'work-experience',
+        triggerEl: document.querySelector('#work-experience-tab-example'),
+        targetEl: document.querySelector('#work-experience-example'),
+    },
+    {
+        id: 'education',
+        triggerEl: document.querySelector('#education-tab-example'),
+        targetEl: document.querySelector('#education-example'),
+    },
+];
+
+// options with default values
+const options = {
+    defaultTabId: 'skills',
+    activeClasses:
+        'text-blue-600 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 border-blue-600 dark:border-blue-500',
+    inactiveClasses:
+        'text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300',
+    onShow: () => {
+        console.log('tab is shown');
+    },
+};
+
+// instance options with default values
+const instanceOptions = {
+  id: 'tabs-example',
+  override: true
+};
+</script>

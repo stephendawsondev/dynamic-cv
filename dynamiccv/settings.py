@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'home',
     'user_auth',
     'cv_template',
+    'profiles',
     # Third-party apps
     'cloudinary_storage',
     'cloudinary',
