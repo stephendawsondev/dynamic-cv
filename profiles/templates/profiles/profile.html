@@ -29,14 +29,7 @@
                 <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">detail tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
             </div>
             <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-summary" role="tabpanel" aria-labelledby="summary-tab">
-                <form hx-post="{% url 'create-summary' %}" hx-target="#summary">
-                    {% csrf_token %}
-                    {{ summary_form|crispy }}
-                    <!-- Add forms media to show ckeditor -->
-                    {{ summary_form.media }}
-                    <input type="submit" value="Submit">
-                </form>
-                <div id="summary"></div>
+                {% include 'components/summary-form.html' %}
             </div>
             <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-skills" role="tabpanel" aria-labelledby="skills-tab">
                 <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">skills tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>

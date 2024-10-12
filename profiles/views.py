@@ -28,7 +28,7 @@ class CreateSummary(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.save()
-        return HttpResponse('<p class="success">Form submitted successfully! ✅</p>')  
+        return HttpResponse('<p class="success">Form submitted successfully!</p>')  
 
     def form_invalid(self, form):
         return HttpResponse('<p class="error">Please provide a summary.</p>')
