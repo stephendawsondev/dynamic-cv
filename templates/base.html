@@ -33,28 +33,28 @@
   {% comment %} Header {% endcomment %}
   <header>
     <div class="container mx-auto md:mt-3">
-      <nav
-        class="bg-gray-700 dark:bg-gray-900 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 rounded-md">
+      <nav class="bg-violet-800 w-full z-20 top-0 start-0 pt-5 pb-5 border-b border-violet-200 rounded-md">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse ml-auto">
+          <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse ml-auto items-center">
             {% if user.is_authenticated %}
-            <ul
-              class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              <li>
-                <a href="{% url 'account_logout' %}" aria-label="Navigates to logout page">
-                  Logout
-                </a>
-              </li>
-            </ul>
+            <a class="block py-2 px-3 text-zinc-50 rounded md:hover:bg-transparent md:p-0 md:mr-5 hover:underline "
+              href="{% url 'profile' %}" aria-label="Navigates to logout page">
+              Profile
+            </a>
+            <a class="block py-2 px-3 text-zinc-50 rounded md:hover:bg-transparent md:p-0 hover:underline"
+              href="{% url 'account_logout' %}" aria-label="Navigates to logout page">
+              Logout
+            </a>
+
             {% else %}
             <a href="{% url 'account_signup' %}"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              class="text-violet-800 bg-zinc-50 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center  md:mr-5"
               aria-label="Navigates to registration page">Get started</a>
-            <a class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 md:ml-5"
+            <a class="block py-2 px-3 text-zinc-50 rounded md:hover:bg-transparent md:p-0 hover:underline"
               href="{% url 'account_login' %}">Login</a>
             {% endif %}
             <button data-collapse-toggle="navbar-sticky" type="button"
-              class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+              class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-zinc-50 rounded-lg md:hidden hover:bg-violet-100 focus:outline-none focus:ring-2 focus:ring-violet-200"
               aria-controls="navbar-sticky" aria-expanded="false">
               <span class="sr-only">Open main menu</span>
               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -66,22 +66,22 @@
           </div>
           <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
             <ul
-              class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+              class="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
               <li>
                 <a href="{% url 'home' %}"
-                  class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
+                  class="block py-2 px-3 text-zinc-50 rounded md:bg-transparent md:p-0 hover:underline"
                   aria-current="page" aria-label="Navigates to home page">
                   Home
                 </a>
               </li>
               <li>
                 <a href="#"
-                  class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">CV
+                  class="block py-2 px-3 text-zinc-50 rounded hover:bg-violet-100 md:hover:bg-transparent md:p-0 hover:underline">CV
                   templates</a>
               </li>
               <li>
                 <a href="#"
-                  class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contact</a>
+                  class="block py-2 px-3 text-zinc-50 rounded hover:bg-violet-100 md:hover:bg-transparent md:p-0 hover:underline">Contact</a>
               </li>
             </ul>
           </div>
@@ -97,44 +97,59 @@
   </main>
 
   {% comment %} Footer {% endcomment %}
-  <footer class="bg-white dark:bg-gray-900 mt-auto">
+  <footer class="bg-white mt-auto">
     <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
       <div class="md:flex md:justify-between">
         <div class="mb-6 md:mb-0">
           <div class="text-white">LOGO</div>
         </div>
-        <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
+        <div class="grid md:grid-cols-3 gap-8 sm:gap-6">
+          <div class="text-violet-800">Logo</div>
           <div>
-            <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Quicklinks</h2>
-            <ul class="text-gray-500 dark:text-gray-400 font-medium">
+            <h2 class="mb-6 text-sm font-semibold text-violet-900 uppercase">Quicklinks</h2>
+            <ul class="text-violet-500 font-medium">
               <li class="mb-4">
-                <a href="https://flowbite.com/" class="hover:underline">Flowbite</a>
+                <a href="/contact" class="hover:underline">Contact us</a>
               </li>
               <li>
-                <a href="https://tailwindcss.com/" class="hover:underline">Tailwind CSS</a>
+                <a href="/legal" class="hover:underline">Legal</a>
               </li>
             </ul>
           </div>
           <div>
-            <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Subscribe</h2>
-            <ul class="text-gray-500 dark:text-gray-400 font-medium">
-              <li class="mb-4">
-                <a href="#" class="hover:underline">Privacy Policy</a>
-              </li>
-              <li>
-                <a href="#" class="hover:underline">Terms &amp; Conditions</a>
-              </li>
-            </ul>
+            <h2 class="mb-6 text-sm font-semibold text-violet-900 uppercase">Subscribe</h2>
+            <form action="#">
+              <div class="items-center mx-auto mb-3 space-y-4 max-w-screen-sm sm:flex sm:space-y-0">
+                <div class="relative w-full">
+                  <label for="email" class="hidden mb-2 text-sm font-medium text-violet-900">Email address</label>
+                  <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-violet-800" fill="currentColor" viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                    </svg>
+                  </div>
+                  <input
+                    class="block p-3 pl-10 w-full text-sm text-violet-900 bg-zinc-50 rounded-lg border border-violet-800 sm:rounded-none sm:rounded-l-lg focus:ring-violet-500 focus:border-violet-500"
+                    placeholder="Enter your email" type="email" id="email" required="">
+                </div>
+                <div>
+                  <button type="submit"
+                    class="py-3 px-5 w-full text-sm font-medium text-center text-zinc-50 rounded-lg border cursor-pointer bg-violet-800 border-violet-800 sm:rounded-none sm:rounded-r-lg hover:bg-violet-900 focus:ring-4 focus:ring-violet-300">Subscribe</button>
+                </div>
+              </div>
+
+            </form>
           </div>
         </div>
       </div>
-      <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+      <hr class="my-6 border-violet-200 sm:mx-auto lg:my-8" />
       <div class="sm:flex sm:items-center sm:justify-between">
-        <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© {% now 'Y' %} Dynamic CV</a>. All Rights
+        <span class="text-sm text-violet-500 sm:text-center">© {% now 'Y' %} Dynamic CV</a>. All Rights
           Reserved.
         </span>
         <div class="flex mt-4 sm:justify-center sm:mt-0">
-          <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5">
+          <a href="#" class="text-violet-500 hover:text-violet-900 ms-5">
             <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
               viewBox="0 0 21 16">
               <path
@@ -142,7 +157,7 @@
             </svg>
             <span class="sr-only">Discord community</span>
           </a>
-          <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5">
+          <a href="#" class="text-violet-500 hover:text-violet-900 ms-5">
             <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
               viewBox="0 0 20 20">
               <path fill-rule="evenodd"
