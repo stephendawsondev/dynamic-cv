@@ -5,30 +5,35 @@
 {% trans "Sign In" %}
 {% endblock head_title %}
 {% block content %}
-{% element h1 %}
-{% trans "Sign In" %}
-{% endelement %}
-<p>
-    {% blocktrans %}If you have not created an account yet, then please
-    <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}
-</p>
-{% url 'account_login' as login_url %}
-{% element form form=form method="post" action=login_url tags="entrance,login" %}
-{% slot body %}
-{% csrf_token %}
-{% element fields form=form unlabeled=True %}
-{% endelement %}
-{% if redirect_field_value %}
-<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-{% endif %}
-{% endslot %}
-{% slot actions %}
-{% element button type="submit" tags="prominent,login" %}
-{% trans "Sign In" %}
-{% endelement %}
-{% endslot %}
-{% endelement %}
-{% if SOCIALACCOUNT_ENABLED %}
-{% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-{% endif %}
+
+<div class="container mx-auto mt-8">
+    <h1 class="text-3xl mb-6">Log In to Your Account</h1>
+    <form method="post" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        <div class="mb-6">
+            <label for="id_login" class="block mb-1 font-medium text-gray-900 dark:text-white">Email Address</label>
+            <input type="email" id="id_login" name="login" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-[50%] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500" placeholder="Email" required />
+            {% for error in email_errors %}
+                <div class="text-sm text-red-800">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-4">
+            <label for="id_password" class="block mb-1 font-medium text-gray-900 dark:text-white">Password</label>
+            <input type="password" id="id_password" name="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-[50%] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500" placeholder="Password" required />
+            {% for error in password_errors %}
+                <div class="text-sm text-red-800">{{ error }}</div>
+            {% endfor %}
+            <span class="helptext"><a href="{% url 'account_reset_password' %}" class="text-blue-500">Forgot your password?</a></span>
+        </div>
+        <div class="flex items-start mb-6">
+            <div class="flex items-center h-5">
+            <input id="id_remember" type="checkbox" name="remember" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-lime-600 dark:ring-offset-gray-800 accent-lime-500"/>
+            </div>
+            <label for="id_remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Remember Me</label>
+        </div>
+        <p>Don't have an account? <a href="{% url 'account_signup' %}" aria-label="Go to the sign up page" class="text-blue-500">Sign up here</a>!</p>
+        <button type="submit" class="rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Log In</button>
+    </form>
+</div>
+
 {% endblock content %}
