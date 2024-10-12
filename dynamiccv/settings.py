@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'utility_app',
     'home',
+    'user_auth',
     'cv_template',
     # Third-party apps
     'cloudinary_storage',
