@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'home',
     'cv_template',
     'profiles',
+    'contact_information',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'tailwind'
@@ -84,14 +85,14 @@ MIDDLEWARE = [
 ]
 
 CKEDITOR_5_CONFIGS = {
-  'default': {
-      'toolbar': ['heading', '|', 'bold', 'italic'],
-      'language': 'en-gb',
+    'default': {
+        'toolbar': ['heading', '|', 'bold', 'italic'],
+        'language': 'en-gb',
     },
     'lists': {
-      'toolbar': ['bulletedList', 'numberedList'],
-      'language': 'en-gb',
-     },
+        'toolbar': ['bulletedList', 'numberedList'],
+        'language': 'en-gb',
+    },
 }
 
 ROOT_URLCONF = 'dynamiccv.urls'
@@ -122,7 +123,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-        'builtins': [
+            'builtins': [
                 'crispy_forms.templatetags.crispy_forms_tags',
                 'crispy_forms.templatetags.crispy_forms_field',
             ]
