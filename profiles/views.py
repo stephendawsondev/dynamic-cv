@@ -1,5 +1,7 @@
-from django.views.generic import TemplateView, CreateView, View
-from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import render  
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
@@ -17,17 +19,18 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['summary_form'] = SummaryForm()
 
         contact_information, created = ContactInformation.objects.get_or_create(
             user=self.request.user)
         context['contact_information_form'] = ContactInformationForm(
             instance=contact_information)
 
+        context['summary_form'] = SummaryForm(instance=Summary.objects.get(user=self.request.user))
+        context['summary'] = Summary.objects.get(user=self.request.user).summary
         return context
 
 
-class CreateSummary(LoginRequiredMixin, CreateView):
+class UpdateSummary(LoginRequiredMixin, UpdateView):  
     model = Summary
     form_class = SummaryForm
 
@@ -37,8 +40,8 @@ class CreateSummary(LoginRequiredMixin, CreateView):
         return HttpResponse('<p class="success">Form submitted successfully!</p>')
 
     def form_invalid(self, form):
-        return HttpResponse('<p class="error">Please provide a summary.</p>')
-
+        return HttpResponse('<p class="error">Please provide a summary. Max 500 chars</p>')
+  
 
 class CreateUpdateContactInformation(LoginRequiredMixin, View):
     """

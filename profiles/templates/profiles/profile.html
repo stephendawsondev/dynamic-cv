@@ -72,6 +72,9 @@
 
 {% endblock %}
 
+{% block extra_js  %}
+{{ block.super }}
+
 <script>
     const tabsElement = document.getElementById('tabs-example');
 
@@ -118,7 +121,8 @@
 
     // instance options with default values
     const instanceOptions = {
-        id: 'tabs-example',
-        override: true
+    id: 'tabs-example',
+    override: true
     };
 </script>
+{% endblock %}
