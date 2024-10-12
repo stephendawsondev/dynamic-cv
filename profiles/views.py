@@ -28,7 +28,6 @@ class UpdateSummary(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        print(form.instance.summary)
         form.save()
         return HttpResponse('<p class="success">Form submitted successfully!</p>')  
 
