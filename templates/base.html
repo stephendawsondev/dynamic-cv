@@ -22,6 +22,7 @@
 
   {% block core_js %}
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.5.0" integrity="sha384-oGA+prIp5Vchu6we2YkI51UtVzN9Jpx2Z7PnR1I78PnZlN8LkrCT4lqqqmDkyrvI" crossorigin="anonymous"></script>
   {% endblock core_js %}
   <title>{% block extra_title %}{% endblock %}</title>
 </head>
@@ -158,6 +159,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
   <script src="{% static 'js/script.js' %}"></script>
+  <script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    })
+  </script>
 
   {% block extra_js %}
   {% endblock %}
