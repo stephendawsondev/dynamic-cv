@@ -7,6 +7,7 @@ class SummaryForm(forms.ModelForm):
     """
     Form to create a profile
     """
+
     class Meta:
         model = Summary
         fields = ['summary']
