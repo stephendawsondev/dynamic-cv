@@ -18,10 +18,47 @@ class Summary(models.Model):
         return f"{self.summary}"
 
 
-@receiver(post_save, sender=User)
-def create_user_summary(instance, created, **kwargs):
+class Skills(models.Model):
     """
-    Automatically create a user summary when a new user is created
+    Model for the user's skills
+    """
+    user = models.OneToOneField(User, related_name="user_skills", on_delete=models.CASCADE)
+    skillset = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        """
+        Returns the list of skills with a space after every comma
+        """
+        skill_text = self.skillset
+        return skill_text.replace(',', ', ')
+
+    def get_as_list(self):
+        """
+        Converts the string field into a list
+        """
+        return self.skillset.split(',')
+    
+    def add_skill(self, skill):
+        """
+        Adds a skill to the model
+        """
+        self.skillset += f'{skill},'
+        self.save()
+    
+    def remove_skill(self, skill):
+        """
+        Removes a skill from the model
+        """
+        self.skillset = self.skillset.replace(f'{skill},', '')
+        self.save()     
+
+
+@receiver(post_save, sender=User)
+def create_profile_models(instance, created, **kwargs):
+    """
+    Automatically create user profile models when a new user is created
     """
     if created:
         Summary.objects.create(user=instance, summary="Add default summary here")
+        Skills.objects.create(user=instance, skillset="")
+        

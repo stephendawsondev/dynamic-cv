@@ -5,13 +5,13 @@
   <label for="new-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Skills</label>
   <div id="skill-list" class="w-[50%]">
     <!-- The inline form to add the skills -->
-    <form>
+    <form id="skill-form">
       <div class="flex">
         <div class="relative w-full">
           <input type="text" id="new-skill-text"
             class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-lime-500"
-            placeholder="Skill" required />
-          <button type="submit"
+            placeholder="Skill" maxlength="30" required />
+          <button type="submit" id="submit-skill"
             class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300 dark:bg-lime-600 dark:text-white dark:hover:bg-lime-700 dark:focus:ring-lime-800">
             Add</button>
         </div>
@@ -19,3 +19,38 @@
     </form>
   </div>
 </div>
+
+<script>
+
+  document.getElementById('skill-form').addEventListener('submit', function () {
+    event.preventDefault();
+
+  });
+
+  // Form validation for the skill input
+  document.getElementById('new-skill-text').addEventListener('input', function () {
+    let skillTextValidity = '';
+    let skillValue = this.value;
+
+    // No special characters
+    let hasSpecialCharacters = false;
+
+    // The character ^ seems to mess with the regex here, so remove it before the evaluation
+    let skillTextChars = skillValue.replace('^', '');
+    if (skillTextChars !== skillValue) {
+      hasSpecialCharacters = true;
+    }
+    else {
+      skillTextChars = skillValue.replace(/([a-zA-z0-9 ]+)/g, '');
+      console.log(skillTextChars);
+      if (skillTextChars.length > 0) {
+        hasSpecialCharacters = true;
+      }
+    }
+    if (hasSpecialCharacters) {
+      skillTextValidity = "Skill cannot contain special characters";
+    }
+
+    this.setCustomValidity(skillTextValidity);
+  });
+</script>
