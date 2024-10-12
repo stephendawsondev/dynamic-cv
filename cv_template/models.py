@@ -11,7 +11,7 @@ class CVTemplate(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, related_name="cv_user", on_delete=models.CASCADE)
-    cv_name = models.CharField(max_length=100)
+    cv_name = models.CharField(max_length=100, default="default", null=False, blank=False)
     summary = CKEditor5Field(max_length=10000, null=True, blank=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
