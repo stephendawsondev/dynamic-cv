@@ -6,6 +6,7 @@ charset-normalizer==3.3.2
 click==8.1.7
 cloudinary==1.39.1
 colorama==0.4.6
+crispy-tailwind==1.0.3
 cryptography==42.0.5
 defusedxml==0.7.1
 diff-match-patch==20230430
@@ -14,6 +15,7 @@ Django==4.2
 django-allauth==0.61.1
 django-ckeditor-5==0.2.13
 django-cloudinary-storage==0.3.0
+django-crispy-forms==2.3
 django-import-export==4.1.1
 django-resized==1.0.2
 django-richtextfield==1.6.2

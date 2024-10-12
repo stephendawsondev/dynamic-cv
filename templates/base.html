@@ -22,6 +22,7 @@
 
   {% block core_js %}
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.5.0" integrity="sha384-oGA+prIp5Vchu6we2YkI51UtVzN9Jpx2Z7PnR1I78PnZlN8LkrCT4lqqqmDkyrvI" crossorigin="anonymous"></script>
   {% endblock core_js %}
   <title>{% block extra_title %}{% endblock %}</title>
 </head>
@@ -37,13 +38,13 @@
           <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse ml-auto items-center">
             {% if user.is_authenticated %}
             <a class="block py-2 px-3 text-zinc-50 rounded md:hover:bg-transparent md:p-0 md:mr-5 hover:underline "
-              href="{% url 'profile' %}" aria-label="Navigates to logout page">
+              href="{% url 'profile' %}" aria-label="Navigates to user profile">
               Profile
             </a>
-            <a class="block py-2 px-3 text-zinc-50 rounded md:hover:bg-transparent md:p-0 hover:underline"
-              href="{% url 'account_logout' %}" aria-label="Navigates to logout page">
+            <button type="button" data-modal-target="modal-logout" data-modal-toggle="modal-logout"
+              class="block py-2 px-3 text-zinc-50 rounded md:hover:bg-transparent md:p-0 hover:underline" aria-label="Navigates to logout page">
               Logout
-            </a>
+          </button>
 
             {% else %}
             <a href="{% url 'account_signup' %}"
@@ -93,6 +94,9 @@
     {% block content %}
 
     {% endblock content %}
+    {% if user.is_authenticated %}
+      {% include 'includes/logout_modal.html' %}
+    {% endif %}
   </main>
 
   {% comment %} Footer {% endcomment %}
@@ -173,6 +177,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
   <script src="{% static 'js/script.js' %}"></script>
+  <script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    })
+  </script>
 
   {% block extra_js %}
   {% endblock %}

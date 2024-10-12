@@ -1,0 +1,8 @@
+<form hx-post="{% url 'create-summary' %}" hx-target="#summary">
+    {% csrf_token %}
+    {{ summary_form|crispy }}
+    <!-- Add forms media to show ckeditor -->
+    {{ summary_form.media }}
+    <input type="submit" value="Submit">
+</form>
+<div id="summary"></div>
