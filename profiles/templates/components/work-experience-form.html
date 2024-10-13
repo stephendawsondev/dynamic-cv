@@ -23,18 +23,17 @@
       <label for="id_current_work" class="ms-2 text-sm font-medium text-gray-900">I am currently
         working in this role</label>
     </div>
-    <input type="hidden" id="work-responsibilities" name="responsibilities">
+    <div class="hidden" id="work-responsibilities" name="responsibilities" data-item-id="0"></div>
     <input type="hidden" id="work-skills" name="skills">
   </form>
   <div class="md:w-[50%]">
     <!-- Work responsibilities -->
-    <form hx-post="{% url 'add_responsibility' %}" hx-target="#responsibility-list" hx-on::after-request="this.reset()"
-      data-main-input="work-responsibilities" id="responsibility-form" class="add-item-form mb-6">
+    <form data-main-input="work-responsibilities" id="responsibility-form" class="add-item-form mb-6">
       {% csrf_token %}
       <label for="new-responsibility-text"
         class="block text-gray-700 text-sm font-bold mb-2">Roles/Responsibilities:</label>
 
-      <ul id="responsibility-list" class="pl-6 mb-3"></ul>
+      <ul id="responsibility-list" class="item-list pl-6 mb-3"></ul>
 
       <div class="flex">
         <div class="relative w-full">
@@ -42,7 +41,7 @@
             class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
             placeholder="Role/Responsibility" maxlength="150" required />
           <button type="submit" id="submit-responsibility"
-            class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
             Add</button>
         </div>
       </div>
