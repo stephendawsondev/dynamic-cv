@@ -1,0 +1,24 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<div id="work-experience">
+  <h1 class="block text-violet-700 text-2xl font-bold mb-2">Work Experience</h1>
+  <p class="block text-gray-700 text-sm mb-4">Please enter your work experience</p>
+  <form method="post">
+    {{ work_experience_form.organization|as_crispy_field }}
+    {{ work_experience_form.position|as_crispy_field }}
+    <p class="block text-gray-700 text-sm font-bold mb-2">Dates Worked<span class="asteriskField">*</span></p>
+    <div class="grid gap-8 grid-cols-2 w-[50%]">
+      {{ work_experience_form.start_date|as_crispy_field }}
+      {{ work_experience_form.end_date|as_crispy_field }}
+    </div>
+    <div class="flex">
+      <div class="flex items-center h-5">
+        <input id="id_current_work" type="checkbox"
+          class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300" />
+      </div>
+      <label for="id_current_work" class="ms-2 text-sm font-medium text-gray-900">I am currently
+        working in this role</label>
+    </div>
+  </form>
+</div>
