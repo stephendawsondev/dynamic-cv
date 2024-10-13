@@ -158,12 +158,12 @@ class AddWorkExperience(View):
                     user_id=user.id,
                     name=value
                 )
-                if list_item not in user.user_skills:
-                    user.bullet_points.add(list_item)
+                if len(user.user_skills.filter(name=value)) == 0:
+                    user.user_skills.add(list_item)
+                    user.save()
+                work_experience.applied_skills.add(list_item)
             else:
-                continue
-            
+                continue            
             list_item.save()
-
         work_experience.save()
         return HttpResponse("Success")
