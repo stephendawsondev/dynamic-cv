@@ -1,0 +1,38 @@
+{% load static %}
+
+<div id="skills">
+  <h1 class="block text-violet-700 text-2xl font-bold mb-2">Skills</h1>
+  <p class="block text-gray-700 text-sm">Please enter your professional skills</p>
+  <p class="block text-gray-700 text-sm mb-4">A minimum of 8 skills is recommended</p>
+  <label for="new-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Skills</label>
+  <form method="post" id="skill-list-form">
+    {% csrf_token %}
+    {% with user.user_skills.get_as_list as skill_list %}
+    <ul id="skill-list" class="w-[50%] pl-6 mb-3">
+      {% for skill in skill_list %}
+      <li id="skill-{{ skill.slug }}" class="skill-item list-disc">
+        <span class="flex flex justify-between">
+          <span>{{ skill.display }}</span>
+          <button type="button" class="delete-skill" data-skill="{{ skill.slug }}"><span
+              class="text-2xl">&times;</span></button>
+        </span>
+      </li>
+      {% endfor %}
+      {% endwith %}
+    </ul>
+  </form>
+  <!-- The inline form to add the skills -->
+  <form method="post" id="skill-form" class="w-[50%]">
+    {% csrf_token %}
+    <div class="flex">
+      <div class="relative w-full">
+        <input type="text" id="new-skill-text"
+          class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-lime-500"
+          placeholder="Skill" maxlength="30" required />
+        <button type="submit" id="submit-skill"
+          class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300 dark:bg-lime-600 dark:text-white dark:hover:bg-lime-700 dark:focus:ring-lime-800">
+          Add</button>
+      </div>
+    </div>
+  </form>
+</div>

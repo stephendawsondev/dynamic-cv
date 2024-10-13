@@ -17,6 +17,51 @@ class Summary(models.Model):
         return f"{self.summary}"
 
 
+class Skills(models.Model):
+    """
+    Model for the user's skills
+    """
+    user = models.OneToOneField(User, related_name="user_skills", on_delete=models.CASCADE)
+    skillset = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        """
+        Returns the list of skills with a space after every comma
+        """
+        skill_text = self.skillset
+        return skill_text.replace(',', ', ')
+
+    def get_as_list(self):
+        """
+        Converts the string field into a list
+        """
+        skill_list = self.skillset.split(',')[:-1]
+        return [{
+            "slug": item,
+            "display": item.replace('-', ' ')
+        } for item in skill_list]
+    
+    def add_skill(self, skill):
+        """
+        Adds a skill to the model. Returns the skill if
+        successful, and None if not
+        """
+        skillset = self.skillset
+        print(skill in skillset)
+        if skill in skillset:
+            return None
+        self.skillset += f'{skill},'
+        self.save()
+        return skill
+    
+    def remove_skill(self, skill):
+        """
+        Removes a skill from the model
+        """
+        self.skillset = self.skillset.replace(f'{skill},', '')
+        self.save()     
+
+
 class ContactInformation(models.Model):
     """
     Contact Information model
