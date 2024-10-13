@@ -1,0 +1,7 @@
+<form hx-post="{% url 'contact-information' %}" hx-target="#detail">
+  {% csrf_token %}
+  {{ contact_information_form|crispy }}
+
+  <input type="submit" value="Save">
+</form>
+<div id="detail"></div>

@@ -7,38 +7,64 @@
 
 <div class="container mx-auto md:mt-3">
     <div class="md:flex">
-        <ul class="flex-column space-y space-y-4 text-sm font-medium text-gray-500" id="default-styled-tab" data-tabs-toggle="#default-styled-tab-content" data-tabs-active-classes="text-purple-600 hover:text-purple-600" role="tablist">
+        <ul class="flex-column space-y space-y-4 text-sm font-medium text-gray-500" id="default-styled-tab"
+            data-tabs-toggle="#default-styled-tab-content"
+            data-tabs-active-classes="text-purple-600 hover:text-purple-600" role="tablist">
             <li class="me-2" role="presentation">
-                <button class="inline-flex items-center px-4 py-3 text-white bg-blue-700 rounded-lg active w-full" id="detail-styled-tab" data-tabs-target="#styled-detail" type="button" role="tab" aria-controls="detail" aria-selected="false">Your Details</button>
+                <button class="inline-flex items-center px-4 py-3 text-white bg-blue-700 rounded-lg active w-full"
+                    id="detail-styled-tab" data-tabs-target="#styled-detail" type="button" role="tab"
+                    aria-controls="detail" aria-selected="false">Your Details</button>
             </li>
             <li class="me-2" role="presentation">
-                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300" id="summary-styled-tab" data-tabs-target="#styled-summary" type="button" role="tab" aria-controls="summary" aria-selected="false">Summary</button>
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300"
+                    id="summary-styled-tab" data-tabs-target="#styled-summary" type="button" role="tab"
+                    aria-controls="summary" aria-selected="false">Summary</button>
             </li>
             <li class="me-2" role="presentation">
-                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300" id="skills-styled-tab" data-tabs-target="#styled-skills" type="button" role="tab" aria-controls="skills" aria-selected="false">Skills</button>
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300"
+                    id="skills-styled-tab" data-tabs-target="#styled-skills" type="button" role="tab"
+                    aria-controls="skills" aria-selected="false">Skills</button>
             </li>
             <li role="presentation">
-                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300" id="work-experience-styled-tab" data-tabs-target="#styled-work-experience" type="button" role="tab" aria-controls="work-experience" aria-selected="false">Work Experience</button>
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300"
+                    id="work-experience-styled-tab" data-tabs-target="#styled-work-experience" type="button" role="tab"
+                    aria-controls="work-experience" aria-selected="false">Work Experience</button>
             </li>
             <li role="presentation">
-                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300" id="education-styled-tab" data-tabs-target="#styled-education" type="button" role="tab" aria-controls="education" aria-selected="false">Education</button>
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300"
+                    id="education-styled-tab" data-tabs-target="#styled-education" type="button" role="tab"
+                    aria-controls="education" aria-selected="false">Education</button>
             </li>
         </ul>
         <div class="p-6 bg-gray-50 text-medium text-gray-500 rounded-lg w-full">
-            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-detail" role="tabpanel" aria-labelledby="detail-tab">
-                <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">detail tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-detail" role="tabpanel"
+                aria-labelledby="detail-tab">
+                {% include 'components/contact-information-form.html' %}
             </div>
-            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-summary" role="tabpanel" aria-labelledby="summary-tab">
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-summary" role="tabpanel"
+                aria-labelledby="summary-tab">
                 {% include 'components/summary-form.html' %}
             </div>
-            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-skills" role="tabpanel" aria-labelledby="skills-tab">
-                <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">skills tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-skills" role="tabpanel"
+                aria-labelledby="skills-tab">
+                <p class="text-sm text-gray-500">This is some placeholder content the <strong
+                        class="font-medium text-gray-800">skills tab's associated content</strong>. Clicking another tab
+                    will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the
+                    content visibility and styling.</p>
             </div>
-            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-work-experience" role="tabpanel" aria-labelledby="work-experience-tab">
-                <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">work-experience tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-work-experience" role="tabpanel"
+                aria-labelledby="work-experience-tab">
+                <p class="text-sm text-gray-500">This is some placeholder content the <strong
+                        class="font-medium text-gray-800">work-experience tab's associated content</strong>. Clicking
+                    another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
+                    control the content visibility and styling.</p>
             </div>
-            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-education" role="tabpanel" aria-labelledby="educations-tab">
-                <p class="text-sm text-gray-500">This is some placeholder content the <strong class="font-medium text-gray-800">Education tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-education" role="tabpanel"
+                aria-labelledby="educations-tab">
+                <p class="text-sm text-gray-500">This is some placeholder content the <strong
+                        class="font-medium text-gray-800">Education tab's associated content</strong>. Clicking another
+                    tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control
+                    the content visibility and styling.</p>
             </div>
         </div>
     </div>
@@ -46,7 +72,7 @@
 
 {% endblock %}
 
-{% block extra_js  %}
+{% block extra_js %}
 {{ block.super }}
 
 <script>
@@ -95,8 +121,8 @@
 
     // instance options with default values
     const instanceOptions = {
-    id: 'tabs-example',
-    override: true
+        id: 'tabs-example',
+        override: true
     };
 </script>
 {% endblock %}
