@@ -2,5 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # paths goes here
+    path("cv-list/", views.CvList.as_view(), name="cv_list"),
+    path("cv-template/", views.CreateCV.as_view(), name="cv_template"),
 ]
