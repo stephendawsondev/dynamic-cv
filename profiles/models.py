@@ -4,13 +4,13 @@ from django_ckeditor_5.fields import CKEditor5Field
 from django.contrib.auth.models import User
 
 
-
 class Summary(models.Model):
     """
     Default Summary model
     """
 
-    user = models.ForeignKey(User, related_name="summary_user", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, related_name="summary_user", on_delete=models.CASCADE)
     summary = models.CharField(max_length=500, null=True, blank=True)
 
     def __str__(self):
@@ -21,7 +21,8 @@ class Skill(models.Model):
     """
     Model for the user's skills
     """
-    user = models.ForeignKey(User, related_name="user_skills", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, related_name="user_skills", on_delete=models.CASCADE)
     name = models.CharField(max_length=30, blank=True, null=True)
 
     def __str__(self):
@@ -31,7 +32,7 @@ class Skill(models.Model):
         return self.name
 
     def display_name(self):
-        return self.name.replace("-", " ") 
+        return self.name.replace("-", " ")
 
 
 class ContactInformation(models.Model):
@@ -55,7 +56,6 @@ class ContactInformation(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
     class Meta:
         verbose_name_plural = "Contact Information"
 
@@ -71,7 +71,6 @@ class WorkExperienceBullets(models.Model):
     def __str__(self):
         return str(self.bullet_point)
 
-
     class Meta:
         verbose_name_plural = "Work Experience Bullets"
 
@@ -86,11 +85,11 @@ class WorkExperience(models.Model):
     end_date = models.DateField(null=True, blank=True)
     position = models.CharField(max_length=150, null=False, blank=False)
     organization = models.CharField(max_length=150, null=False, blank=False)
+    location = models.CharField(max_length=150, null=True, blank=True)
     bullet_points = models.ManyToManyField(WorkExperienceBullets)
 
     def __str__(self):
         return f"{self.position} - {self.organization}"
-
 
     class Meta:
         verbose_name_plural = "Work Experience"
@@ -107,7 +106,6 @@ class EducationBullets(models.Model):
     def __str__(self):
         return str(self.bullet_point)
 
-
     class Meta:
         verbose_name_plural = "Education Bullets"
 
@@ -122,12 +120,12 @@ class Education(models.Model):
     end_year = models.CharField(max_length=4, null=True, blank=True)
     degree = models.CharField(max_length=150, null=False, blank=False)
     school_name = models.CharField(max_length=150, null=False, blank=False)
+    location = models.CharField(max_length=150, null=True, blank=True)
     grade = models.CharField(max_length=50, null=False, blank=False)
     bullet_points = models.ManyToManyField(EducationBullets)
 
     def __str__(self):
         return f"{self.school_name} - {self.degree}"
-
 
     class Meta:
         verbose_name_plural = "Education"
