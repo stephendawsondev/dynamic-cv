@@ -81,7 +81,7 @@ window.onload = () => {
     event.preventDefault();
     let submitButton = document.getElementById('submit-skill');
     let skillInput = document.getElementById('new-skill-text');
-    let skillText = skillInput.value;
+    let skillText = skillInput.value.trim();
     let skillTextSlug = skillText.replace(' ', '-');
     submitButton.disabled = true;
     skillInput.disabled = true;
