@@ -7,31 +7,31 @@
 
 <div class="container mx-auto md:mt-3">
     <div class="md:flex">
-        <ul class="flex-column space-y space-y-4 text-sm font-medium text-gray-500" id="default-styled-tab"
+        <ul class="flex flex-col text-lg font-medium text-violet-800 w-60" id="default-styled-tab"
             data-tabs-toggle="#default-styled-tab-content"
-            data-tabs-active-classes="text-purple-600 hover:text-purple-600" role="tablist">
-            <li class="me-2" role="presentation">
-                <button class="inline-flex items-center px-4 py-3 text-white bg-blue-700 rounded-lg active w-full"
+            data-tabs-active-classes="text-black hover:text-purple-600 bg-lime-500" role="tablist">
+            <li class="w-full" role="presentation">
+                <button class="w-full py-2 text-violet-800 border-2 border-violet-800 active"
                     id="detail-styled-tab" data-tabs-target="#styled-detail" type="button" role="tab"
                     aria-controls="detail" aria-selected="false">Your Details</button>
             </li>
-            <li class="me-2" role="presentation">
-                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300"
+            <li class="w-full" role="presentation">
+                <button class="w-full py-2 text-violet-800 border-2 border-violet-800"
                     id="summary-styled-tab" data-tabs-target="#styled-summary" type="button" role="tab"
                     aria-controls="summary" aria-selected="false">Summary</button>
             </li>
-            <li class="me-2" role="presentation">
-                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300"
+            <li class="w-full" role="presentation">
+                <button class="w-full py-2 text-violet-800 border-2 border-violet-800"
                     id="skills-styled-tab" data-tabs-target="#styled-skills" type="button" role="tab"
                     aria-controls="skills" aria-selected="false">Skills</button>
             </li>
-            <li role="presentation">
-                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300"
+            <li class="w-full" role="presentation">
+                <button class="w-full py-2 text-violet-800 border-2 border-violet-800"
                     id="work-experience-styled-tab" data-tabs-target="#styled-work-experience" type="button" role="tab"
                     aria-controls="work-experience" aria-selected="false">Work Experience</button>
             </li>
-            <li role="presentation">
-                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-violet-800 hover:border-gray-300"
+            <li class="w-full" role="presentation">
+                <button class="w-full py-2 text-violet-800 border-2 border-violet-800"
                     id="education-styled-tab" data-tabs-target="#styled-education" type="button" role="tab"
                     aria-controls="education" aria-selected="false">Education</button>
             </li>
@@ -107,7 +107,7 @@
         activeClasses:
             'text-blue-600 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 border-blue-600 dark:border-blue-500',
         inactiveClasses:
-            'text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300',
+            'text-gray-500 hover:text-gray-600 dark:text-gray-400 border-violet-800 hover:border-violet-800 dark:border-gray-700 dark:hover:text-gray-300',
         onShow: () => {
             console.log('tab is shown');
         },
