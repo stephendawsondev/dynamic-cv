@@ -24,5 +24,6 @@ urlpatterns = [
     path("ckeditor5/", include('django_ckeditor_5.urls')),
     path('djrichtextfield/', include('djrichtextfield.urls')),
     path('', include('home.urls')),
+    path('cv/', include('cv_template.urls')),
     path('profile/', include('profiles.urls')),
 ]

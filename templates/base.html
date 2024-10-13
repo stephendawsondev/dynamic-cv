@@ -93,6 +93,16 @@
     </div>
   </header>
   {% comment %} Main content {% endcomment %}
+
+  {% if messages %}
+  <!-- messages -->
+  <div class="toasts">
+      {% for message in messages %}
+      {% include 'includes/toast.html' %}
+      {% endfor %}
+  </div>
+  {% endif %}
+
   <main>
     {% block content %}
 

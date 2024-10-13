@@ -3,6 +3,10 @@
 {% block title %}{% endblock %}
 
 {% block content %}
-<h1>Main heading</h1>
-<p>Welcome!</p>
+<form method="post" id="skill-form" class="md:w-[50%]">
+    {% csrf_token %}
+    {{ form|crispy }}
+    {{ form.media}}
+    <button type="submit" >Create CV</button>
+  </form>
 {% endblock %}
