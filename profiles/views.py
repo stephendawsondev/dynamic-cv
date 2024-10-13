@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .forms import SummaryForm, ContactInformationForm
-from .models import Summary,ContactInformation
+from .models import Summary, ContactInformation, Skill
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -70,3 +70,31 @@ class CreateUpdateContactInformation(LoginRequiredMixin, View):
             return HttpResponse('<p class="success">Contact information updated successfully!</p>')
         else:
             return HttpResponse('<p class="error">Please provide valid contact information.</p>')
+
+
+class AddSkill(View):
+
+    def post(self, request, skill):
+        user = request.user
+        try:
+            skill = user.user_skills.get(name=skill)
+            print(skill)
+            return HttpResponse("Fail")
+        except Skill.DoesNotExist:
+            user.user_skills.create(name=skill)
+            user.save()
+            return HttpResponse("Success")
+
+
+class RemoveSkill(View):
+
+    def post(self, request, skill):
+        user = request.user
+        try:
+            skill = user.user_skills.get(name=skill)
+            skill.delete()
+            user.save()
+            return HttpResponse("Success")
+        except Exception as e:
+            print(e)
+            return HttpResponse("Fail")

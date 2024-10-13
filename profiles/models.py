@@ -28,17 +28,10 @@ class Skill(models.Model):
         """
         Returns the list of skills with a space after every comma
         """
-        return self.skill_name
+        return self.name
 
     def display_name(self):
-        return self.skill_name.replace("-", " ")
-    
-    def remove_skill(self, skill):
-        """
-        Removes a skill from the model
-        """
-        self.skillset = self.skillset.replace(f'{skill},', '')
-        self.save()    
+        return self.name.replace("-", " ") 
 
 
 class ContactInformation(models.Model):
