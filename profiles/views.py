@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-from .forms import SummaryForm, ContactInformationForm
+from .forms import SummaryForm, ContactInformationForm, WorkExperienceForm
 from .models import Summary, ContactInformation, Skill
 
 
@@ -27,6 +27,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             user=self.request.user)
         context['summary_form'] = SummaryForm(instance=summary_info)
         context['summary'] = Summary.objects.get(user=self.request.user).summary
+        context['work_experience_form'] = WorkExperienceForm()
         return context
 
 

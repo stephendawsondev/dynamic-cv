@@ -1,6 +1,6 @@
 from django import forms
 from django_ckeditor_5.widgets import CKEditor5Widget
-from .models import Summary, ContactInformation
+from .models import Summary, ContactInformation, WorkExperience
 
 
 class SummaryForm(forms.ModelForm):
@@ -36,4 +36,21 @@ class ContactInformationForm(forms.ModelForm):
             "address2": "Address Line 2",
             "github": "GitHub URL",
             "linkedin": "LinkedIn URL"
+        }
+
+
+class WorkExperienceForm(forms.ModelForm):
+    """
+    Form to add work experience
+    """
+    class Meta:
+        model = WorkExperience
+        fields = [
+            'organization', 'position', 'start_date', 'end_date',
+        ]
+        labels = {
+            'organization': 'Company Name',
+            'position': 'Job Title',
+            'start_date': 'Start',
+            'end_date': 'End',
         }

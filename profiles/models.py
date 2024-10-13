@@ -84,7 +84,6 @@ class WorkExperience(models.Model):
         User, related_name="work_experience", on_delete=models.CASCADE)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
-    present = models.BooleanField(default=False)
     position = models.CharField(max_length=150, null=False, blank=False)
     organization = models.CharField(max_length=150, null=False, blank=False)
     bullet_points = models.ManyToManyField(WorkExperienceBullets)
