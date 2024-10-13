@@ -78,7 +78,6 @@ class AddSkill(View):
         user = request.user
         try:
             skill = user.user_skills.get(name=skill)
-            print(skill)
             return HttpResponse("Fail")
         except Skill.DoesNotExist:
             user.user_skills.create(name=skill)
@@ -96,5 +95,4 @@ class RemoveSkill(View):
             user.save()
             return HttpResponse("Success")
         except Exception as e:
-            print(e)
             return HttpResponse("Fail")
