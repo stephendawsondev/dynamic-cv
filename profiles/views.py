@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .forms import SummaryForm, ContactInformationForm, WorkExperienceForm
-from .models import Summary, ContactInformation, Skill
+from .models import Summary, ContactInformation, Skill, WorkExperienceBullets
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -97,3 +97,29 @@ class RemoveSkill(View):
             return HttpResponse("Success")
         except Exception as e:
             return HttpResponse("Fail")
+
+
+def create_list_item_html(list_type, id, display):
+    return f"""
+    <li id="{list_type}-{id}" class="{list_type}-item list-disc">
+    <span class="flex justify-between">
+        <span>{display}</span>
+        <button type="button" class="delete-skill" data-skill="{id}">
+            <span class="text-2xl">&times;</span>
+        </button>
+        </span>
+    </li>
+    """
+
+
+class AddResponsibility(View):
+
+    def post(self, request):
+        rsp = request.POST['responsibility']
+        user = request.user
+        rsp_object = user.work_bullets.get_or_create(bullet_point=rsp)
+        return HttpResponse(create_list_item_html(
+            'responsibility',
+            rsp_object[0].id,
+            rsp
+        ))

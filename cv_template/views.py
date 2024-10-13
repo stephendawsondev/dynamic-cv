@@ -7,7 +7,7 @@ from django.urls import reverse
 from .models import CVTemplate
 from .forms import CVTemplateForm
 
-from profiles.models import Summary
+from profiles.models import Summary, ContactInformation
 
 
 class CvList(ListView):
@@ -34,8 +34,11 @@ class CreateCV(LoginRequiredMixin, CreateView):
         if use_default_summary:
             try:
                 summary = Summary.objects.get(user=self.request.user).summary
+                contact_information = ContactInformation.objects.get(user=self.request.user)
             except Summary.DoesNotExist:
                 summary = ""
+                contact_information = None
+            form.instance.contact_information = contact_information
             form.instance.summary = summary
 
         self.object = form.save()

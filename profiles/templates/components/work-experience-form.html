@@ -5,14 +5,17 @@
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Work Experience</h1>
   <p class="block text-gray-700 text-sm mb-4">Please enter your work experience</p>
   <form method="post">
-    {{ work_experience_form.organization|as_crispy_field }}
-    {{ work_experience_form.position|as_crispy_field }}
+    {% csrf_token %}
+    <div class="md:w-[50%]">
+      {{ work_experience_form.organization|as_crispy_field }}
+      {{ work_experience_form.position|as_crispy_field }}
+    </div>
     <p class="block text-gray-700 text-sm font-bold mb-2">Dates Worked<span class="asteriskField">*</span></p>
-    <div class="grid gap-8 grid-cols-2 w-[50%]">
+    <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3 md:w-[50%]">
       {{ work_experience_form.start_date|as_crispy_field }}
       {{ work_experience_form.end_date|as_crispy_field }}
     </div>
-    <div class="flex">
+    <div class="flex mb-6">
       <div class="flex items-center h-5">
         <input id="id_current_work" type="checkbox"
           class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300" />
@@ -20,5 +23,47 @@
       <label for="id_current_work" class="ms-2 text-sm font-medium text-gray-900">I am currently
         working in this role</label>
     </div>
+    <div class="hidden" id="work-responsibilities" name="responsibilities" data-item-id="0"></div>
+    <input type="hidden" id="work-skills" name="skills" data-item-id="0">
   </form>
+  <div class="md:w-[50%]">
+    <!-- Work responsibilities -->
+    <form data-main-input="work-responsibilities" id="responsibility-form" class="add-item-form mb-6">
+      {% csrf_token %}
+      <label for="new-responsibility-text"
+        class="block text-gray-700 text-sm font-bold mb-2">Roles/Responsibilities:</label>
+
+      <ul id="responsibility-list" class="item-list pl-6 mb-3"></ul>
+
+      <div class="flex">
+        <div class="relative w-full">
+          <input type="text" id="new-responsibility-text" name="responsibility"
+            class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Role/Responsibility" maxlength="150" required />
+          <button type="submit" id="submit-responsibility"
+            class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            Add</button>
+        </div>
+      </div>
+    </form>
+    <!-- Work skills -->
+    <form data-main-input="work-skills" id="work-skill-form" class="add-item-form mb-6">
+      {% csrf_token %}
+      <label for="work-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Applied Skills:</label>
+      <ul id="work-skill-list" class="item-list pl-6 mb-3"></ul>
+
+      <div class="flex">
+        <div class="relative w-full">
+          <input type="text" id="work-skill-text" name="work-skill"
+            class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Skill" maxlength="30" required />
+          <button type="submit" id="submit-work-skill"
+            class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <button type="button" class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add Work
+    Experience</button>
 </div>
