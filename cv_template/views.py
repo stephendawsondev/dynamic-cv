@@ -1,6 +1,8 @@
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DetailView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 from .models import CVTemplate
 from .forms import CVTemplateForm
@@ -17,7 +19,6 @@ class CreateCV(LoginRequiredMixin, CreateView):
     model = CVTemplate
     form_class = CVTemplateForm
     template_name = "cv_template/cv_template.html"
-    success_url = "/"
 
     def get_form_kwargs(self):
         """Passes the request object to the form class.
@@ -39,5 +40,20 @@ class CreateCV(LoginRequiredMixin, CreateView):
                 contact_information = None
             form.instance.contact_information = contact_information
             form.instance.summary = summary
+
+        self.object = form.save()
         messages.success(self.request, "CV created successfully")
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('generated_cv', kwargs={'pk': self.object.pk})
+
+
+class GeneratedCV(LoginRequiredMixin, DetailView):
+    model = CVTemplate
+    template_name = 'cv_template/generated_cv.html'
+    context_object_name = 'cv'
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')
+        return CVTemplate.objects.get(pk=pk)
