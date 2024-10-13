@@ -17,6 +17,51 @@ class Summary(models.Model):
         return f"{self.summary}"
 
 
+class Skills(models.Model):
+    """
+    Model for the user's skills
+    """
+    user = models.OneToOneField(User, related_name="user_skills", on_delete=models.CASCADE)
+    skillset = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        """
+        Returns the list of skills with a space after every comma
+        """
+        skill_text = self.skillset
+        return skill_text.replace(',', ', ')
+
+    def get_as_list(self):
+        """
+        Converts the string field into a list
+        """
+        skill_list = self.skillset.split(',')[:-1]
+        return [{
+            "slug": item,
+            "display": item.replace('-', ' ')
+        } for item in skill_list]
+    
+    def add_skill(self, skill):
+        """
+        Adds a skill to the model. Returns the skill if
+        successful, and None if not
+        """
+        skillset = self.skillset
+        print(skill in skillset)
+        if skill in skillset:
+            return None
+        self.skillset += f'{skill},'
+        self.save()
+        return skill
+    
+    def remove_skill(self, skill):
+        """
+        Removes a skill from the model
+        """
+        self.skillset = self.skillset.replace(f'{skill},', '')
+        self.save()     
+
+
 class ContactInformation(models.Model):
     """
     Contact Information model
@@ -41,3 +86,77 @@ class ContactInformation(models.Model):
 
     class Meta:
         verbose_name_plural = "Contact Information"
+
+
+class WorkExperienceBullets(models.Model):
+    """
+    Bullet points for work experience model
+    """
+    user = models.ForeignKey(
+        User, related_name="work_bullets", on_delete=models.CASCADE)
+    bullet_point = models.CharField(max_length=150, null=False, blank=False)
+
+    def __str__(self):
+        return str(self.bullet_point)
+
+
+    class Meta:
+        verbose_name_plural = "Work Experience Bullets"
+
+
+class WorkExperience(models.Model):
+    """
+    Work Experience model
+    """
+    user = models.ForeignKey(
+        User, related_name="work_experience", on_delete=models.CASCADE)
+    start_date = models.DateField(null=False, blank=False)
+    end_date = models.DateField(null=True, blank=True)
+    present = models.BooleanField(default=False)
+    position = models.CharField(max_length=150, null=False, blank=False)
+    organization = models.CharField(max_length=150, null=False, blank=False)
+    bullet_points = models.ManyToManyField(WorkExperienceBullets)
+
+    def __str__(self):
+        return f"{self.position} - {self.organization}"
+
+
+    class Meta:
+        verbose_name_plural = "Work Experience"
+
+
+class EducationBullets(models.Model):
+    """
+    Bullet points for education model
+    """
+    user = models.ForeignKey(
+        User, related_name="education_bullets", on_delete=models.CASCADE)
+    bullet_point = models.CharField(max_length=150, null=False, blank=False)
+
+    def __str__(self):
+        return str(self.bullet_point)
+
+
+    class Meta:
+        verbose_name_plural = "Education Bullets"
+
+
+class Education(models.Model):
+    """
+    Education model
+    """
+    user = models.ForeignKey(
+        User, related_name="education", on_delete=models.CASCADE)
+    start_year = models.CharField(max_length=4, null=False, blank=False)
+    end_year = models.CharField(max_length=4, null=True, blank=True)
+    degree = models.CharField(max_length=150, null=False, blank=False)
+    school_name = models.CharField(max_length=150, null=False, blank=False)
+    grade = models.CharField(max_length=50, null=False, blank=False)
+    bullet_points = models.ManyToManyField(EducationBullets)
+
+    def __str__(self):
+        return f"{self.school_name} - {self.degree}"
+
+
+    class Meta:
+        verbose_name_plural = "Education"
