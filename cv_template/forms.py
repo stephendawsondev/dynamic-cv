@@ -2,7 +2,7 @@ from django import forms
 from django_ckeditor_5.widgets import CKEditor5Widget
 from .models import CVTemplate
 
-from profiles.models import Skill, WorkExperience, Education, ContactInformation
+from profiles.models import Skill, WorkExperience, Education
 
 
 class CustomMMCF(forms.ModelMultipleChoiceField):
@@ -19,9 +19,6 @@ class CVTemplateForm(forms.ModelForm):
 
         self.request = kwargs.pop("request")
         super(CVTemplateForm, self).__init__(*args, **kwargs)
-        self.fields["contact_information"].queryset = ContactInformation.objects.filter(
-            user=self.request.user
-        )
         self.fields["skills"].queryset = Skill.objects.filter(user=self.request.user)
         self.fields["work_experience"].queryset = WorkExperience.objects.filter(
             user=self.request.user
@@ -36,7 +33,6 @@ class CVTemplateForm(forms.ModelForm):
             "cv_name",
             "use_default_summary",
             "summary",
-            "contact_information",
             "skills",
             "work_experience",
             "education",
