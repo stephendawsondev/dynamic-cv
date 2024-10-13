@@ -28,15 +28,19 @@
   </form>
   <div class="md:w-[50%]">
     <!-- Work responsibilities -->
-    <form method="post" class="mb-6">
+    <form hx-post="{% url 'add_responsibility' %}" hx-target="#responsibility-list" id="responsibility-form"
+      class="add-item-form mb-6">
       {% csrf_token %}
       <label for="new-responsibility-text"
         class="block text-gray-700 text-sm font-bold mb-2">Roles/Responsibilities:</label>
+
+      <ul id="responsibility-list" class="pl-6 mb-3"></ul>
+
       <div class="flex">
         <div class="relative w-full">
-          <input type="text" id="new-responsibility-text"
+          <input type="text" id="new-responsibility-text" name="responsibility"
             class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-            placeholder="Role/Responsibility" maxlength="30" required />
+            placeholder="Role/Responsibility" maxlength="150" required />
           <button type="submit" id="submit-responsibility"
             class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
             Add</button>
@@ -44,12 +48,13 @@
       </div>
     </form>
     <!-- Work skills -->
-    <form method="post" class="mb-6">
+    <form method="post" id="work-skill-form" class="mb-6">
       {% csrf_token %}
       <label for="work-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Applied Skills:</label>
+      <div id="work-skill-list"></div>
       <div class="flex">
         <div class="relative w-full">
-          <input type="text" id="work-skill-text"
+          <input type="text" id="work-skill-text" name="skill"
             class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
             placeholder="Skill" maxlength="30" required />
           <button type="submit" id="submit-work-skill"
@@ -61,4 +66,7 @@
   </div>
   <button type="button" class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add Work
     Experience</button>
+  {% for bullet in user.work_bullets.all %}
+  <div>{{ bullet }}</div>
+  {% endfor %}
 </div>
