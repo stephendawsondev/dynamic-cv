@@ -1,14 +1,16 @@
 
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.views.generic import TemplateView, CreateView, UpdateView
+from django.views import View
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render  
+from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .forms import SummaryForm
 from .models import Summary
-from contact_information.forms import ContactInformationForm
-from contact_information.models import ContactInformation
+from .forms import ContactInformationForm
+from .models import ContactInformation
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -25,12 +27,14 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context['contact_information_form'] = ContactInformationForm(
             instance=contact_information)
 
-        context['summary_form'] = SummaryForm(instance=Summary.objects.get(user=self.request.user))
-        context['summary'] = Summary.objects.get(user=self.request.user).summary
+        context['summary_form'] = SummaryForm(
+            instance=Summary.objects.get(user=self.request.user))
+        context['summary'] = Summary.objects.get(
+            user=self.request.user).summary
         return context
 
 
-class UpdateSummary(LoginRequiredMixin, UpdateView):  
+class UpdateSummary(LoginRequiredMixin, UpdateView):
     model = Summary
     form_class = SummaryForm
 
@@ -41,7 +45,7 @@ class UpdateSummary(LoginRequiredMixin, UpdateView):
 
     def form_invalid(self, form):
         return HttpResponse('<p class="error">Please provide a summary. Max 500 chars</p>')
-  
+
 
 class CreateUpdateContactInformation(LoginRequiredMixin, View):
     """

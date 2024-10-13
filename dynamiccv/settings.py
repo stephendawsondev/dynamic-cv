@@ -66,7 +66,6 @@ INSTALLED_APPS = [
     'user_auth',
     'cv_template',
     'profiles',
-    'contact_information',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'tailwind'
