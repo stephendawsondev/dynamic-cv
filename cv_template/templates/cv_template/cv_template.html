@@ -3,10 +3,58 @@
 {% block title %}{% endblock %}
 
 {% block content %}
-<form method="post" id="skill-form" class="md:w-[50%]">
-    {% csrf_token %}
-    {{ form|crispy }}
-    {{ form.media}}
-    <button type="submit" >Create CV</button>
-  </form>
+<div class="container mx-auto p-3">
+  <form method="post" id="skill-form" class="md:w-[50%]">
+      {% csrf_token %}
+      {{ form|crispy }}
+      {{ form.media}}
+      <button type="submit" class="text-white bg-violet-800 hover:bg-lime-500 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Create CV</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Create and insert the disabled text area
+    const form = document.querySelector('#skill-form');
+    const contactSelect = document.querySelector('#id_contact_information');
+    const contactLabel = document.querySelector('label[for="id_contact_information"]');
+
+    const contactDisplay = document.createElement('textarea');
+    contactDisplay.id = 'contact_information_display';
+    contactDisplay.className = 'bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 block w-full leading-normal text-gray-700 mb-3';
+    contactDisplay.disabled = true;
+
+    const contactDisplayLabel = document.createElement('label');
+    contactDisplayLabel.htmlFor = 'contact_information_display';
+    contactDisplayLabel.className = 'block text-gray-700 text-sm font-bold mb-2';
+    contactDisplayLabel.innerText = 'Selected Contact Information';
+
+    contactLabel.parentNode.insertBefore(contactDisplayLabel, contactLabel.nextSibling);
+    contactDisplayLabel.parentNode.insertBefore(contactDisplay, contactDisplayLabel.nextSibling);
+
+    // Update the text area with the selected option
+    contactSelect.addEventListener('change', function(event) {
+      const selectedOption = event.target.options[event.target.selectedIndex];
+      contactDisplay.value = selectedOption.text;
+    });
+
+    // Initial update of the text area
+    const initialSelectedOption = contactSelect.options[contactSelect.selectedIndex];
+    contactDisplay.value = initialSelectedOption.text;
+  });
+</script>
+
+<script>
+  const defaultSummary = document.querySelector('#id_use_default_summary');
+  defaultSummary.addEventListener('change', function(event) {
+    const summary = document.querySelector('#div_id_summary');
+    if (event.target.checked) {
+      summary.style.display = 'none';
+    } else {
+      summary.style.display = 'block';
+    }
+  });
+</script>
 {% endblock %}
