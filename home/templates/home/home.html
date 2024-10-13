@@ -1,10 +1,216 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'home/css/home.css' %}">
+{% endblock %}
 {% block content %}
-<section class="container mx-auto pt-5 pb-5">
-  <h1>Home</h1>
-  <p>Welcome to the homepage of the website.</p>
+<section class="container mx-auto overflow-y-hidden p-3 pt-5 pb-5 relative max-h-[350px] md:max-h-[750px]">
+  <h1 class="text-4xl md:text-7xl w-4/5 md:w-2/5 py-3 md:py-8 mx-auto text-center">Dynamic CVs made <span
+      class="original-text">fast</span>
+    <em class="text-violet-800 italic replacement-text" data-text="easy"></em>
+  </h1>
+  <div class="cv-sample-container mt-5 md:mt-10 bg-white p-8 rounded-lg shadow-lg mx-auto md:w-4/5 ">
+    <h1 class="text-3xl text-center font-bold mb-2">Jane Smith CV</h1>
+    <h2 class="text-lg mb-4 text-center"><span class="original-text">Frontend</span> <em
+        class="text-violet-800 replacement-text" data-text="Full-stack"></em> Developer</h2>
+    <div class="text-sm text-center mb-4 social-links">
+      <a href="https://github.com/janecodes" class="hover:underline">github.com/janecodes</a> •
+      <a href="https://stackportfol.io/user/jane-smith" class="hover:underline">stackportfol.io/user/jane-smith</a> •
+      <a href="https://linkedin.com/in/jane-smith" class="hover:underline">linkedin.com/in/jane-smith</a>
+    </div>
+    <p class="mb-4">
+      <span class="original-text">Frontend</span> <em class="text-violet-800 replacement-text"
+        data-text="Full-stack"></em>
+      Developer with proven expertise in HTML, CSS, and JavaScript<em class="text-violet-800 replacement-text"
+        data-text=", Python, and Django"></em>. Created a website HTML Analyser that increased website accessibility
+      reviews by 75%.
+      Implemented a comprehensive system of automated testing that helped prevent breaking code from being pushed by
+      48%. Mentors colleagues, tackles complex <span class="original-text">frontend</span> <em
+        class="text-violet-800 replacement-text" data-text="full-stack"></em> issues, and optimises workflows.
+      Balances
+      full-time
+      work with continuous learning, evidenced by recent <span class="original-text">Frontend</span> <em
+        class="text-violet-800 replacement-text" data-text="Full-stack"></em> Development diploma. Leverages 5+ years
+      of
+      customer
+      support and sales experience in the cybersecurity sector. <span class="original-text">3 years experience
+        building 15+ responsive and accessible websites.</span> <em class="text-violet-800 replacement-text" data-text="2 years
+        experience building 9 full-stack apps."></em>
+    </p>
+    <h2 class="text-lg font-semibold mb-2">Skills</h2>
+    <p class="mb-2">
+      <span class="original-text">HTML, CSS, JavaScript, React, TypeScript, Git, Webpack, Jest, Accessibility (WCAG),
+        Responsive Design.</span>
+    </p>
+    <p>
+      <em class="text-violet-800 replacement-text"
+        data-text="HTML, CSS, JavaScript, React, Git, Django, Python, Node."></em>
+    </p>
+  </div>
+</section>
+<section id="the-problem" class="relative w-100 text-zinc-50 bg-violet-800 py-16 homepage-section">
+  <!-- {% include 'includes/wave.svg' %} -->
+  <div class="container mx-auto p-3 content">
+    <h2 class="text-2xl mb-3">Nobody's got time for that!</h2>
+    <div class="flex flex-col md:flex-row md:justify-items-around content">
+      <div class="image-container md:w-1/3 md:flex md:content-center md:order-2">
+        <img src="{% static 'images/man-with-cvs.jpg' %}" alt="" class="md:mx-auto">
+      </div>
+      <div class="text-content mt-3 md:w-1/2 md:pr-5 md:order-1">
+        <p>The job market is tough! A generic CV doesn't cut it anymore. For each job post, you should be tailoring
+          your
+          CV
+          - you should have the correct title, you should include the relevant skills, work experience and education.
+          If
+          you're going for a role as a Backend Developer, they won't be interested in your fancy CSS skills.</p>
+        <br>
+        <p>But who has the time to do that? You're probably applying to multiple jobs a day. You need a tool that can
+          help
+          you
+          create a tailored CV in minutes, not hours.</p>
+        <br>
+        <p>That's where Dynamic CV comes in. Dynamic CV allows you to create a CV that is tailored to the job you're
+          applying
+          for. You can create multiple CVs and save them for later. You can also download them as a PDF or even a word
+          document.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="how-does-it-work" class="w-100 py-16 homepage-section">
+  <div class="container mx-auto p-3 text-violet-800 content">
+    <h2 class="text-2xl mb-3">How does it work?</h2>
+    <div class="flex flex-col md:flex-row content">
+      <div class="image-container md:order-2 flex justify-center md:w-2/5">
+        {% include 'includes/question-mark.svg' %}
+      </div>
+      <div class="text-content mt-3 md:w-1/2 md:pr-5 md:order-1">
+        <p>The job market is tough! A generic CV doesn't cut it anymore. For each job post, you should be tailoring
+          your
+          CV - you should have the correct title, you should include the relevant skills, work experience and
+          education.
+          If
+          you're going for a role as a Backend Developer, they won't be interested in your fancy CSS skills.</p>
+        <p>But who has the time to do that? You're probably applying to multiple jobs a day. You need a tool that can
+          help
+          you
+          create a tailored CV in minutes, not hours.</p>
+        <p>That's where Dynamic CV comes in. Dynamic CV allows you to create a CV that is tailored to the job you're
+          applying
+          for. You can create multiple CVs and save them for later. You can also download them as a PDF or even a word
+          document.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="bg-violet-800">
+  <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6 ">
+    <div class="mx-auto max-w-screen-sm text-center mb-8 lg:mb-16">
+      <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Our Team</h2>
+      <p class="font-light text-zinc-50 lg:mb-16 sm:text-xl">Here's the team behind Dynamic CV.</p>
+    </div>
+    <div class="grid gap-8 mb-6 lg:mb-16 md:grid-cols-2">
+
+      <div class="items-center bg-violet-300 rounded-lg shadow sm:flex">
+        <img class="w-full md:w-1/2 rounded-lg sm:rounded-none sm:rounded-l-lg" src="{% static 'images/daisy.webp' %}"
+          alt="Daisy Avatar">
+        <div class="p-5 text-violet-800">
+          <h3 class="text-xl font-bold tracking-tight text-violet-900">
+            <a href="#">Daisy Mc Girr</a>
+          </h3>
+          <span>Dee-McG</span>
+          <p class="mt-3 mb-4 font-light"></p>
+          <ul class="flex align-center space-x-4 sm:mt-0">
+            <li>
+              <a href="https://www.linkedin.com/in/daisy-mcgirr/" class="text-violet-800 hover:text-lime-700">
+                {% include 'includes/linkedin.svg' %}
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/Dee-McG" class="text-violet-800 hover:text-lime-700">
+                {% include 'includes/github.svg' %}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="items-center md:flex bg-violet-300 rounded-lg shadow sm:flex">
+        <img class="w-full md:w-1/2 rounded-lg sm:rounded-none sm:rounded-l-lg" src="{% static 'images/shane.webp' %}"
+          alt="Shane Avatar">
+        <div class="p-5 text-violet-800">
+          <h3 class="text-xl font-bold tracking-tight text-violet-900">
+            <a href="#">Shane Byrne</a>
+          </h3>
+          <span>ShaneByrne0963</span>
+          <p class="mt-3 mb-4 font-light"></p>
+          <ul class="flex align-center space-x-4 sm:mt-0">
+            <li>
+              <a href="https://www.linkedin.com/in/shane-byrne-00b8b3272" class="text-violet-800 hover:text-lime-700">
+                {% include 'includes/linkedin.svg' %}
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/ShaneByrne0963" class="text-violet-800 hover:text-lime-700">
+                {% include 'includes/github.svg' %}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="items-center bg-violet-300 rounded-lg shadow sm:flex">
+        <img class="w-full md:w-1/2 rounded-lg sm:rounded-none sm:rounded-l-lg" src="{% static 'images/stephen.webp' %}"
+          alt="Stephen Avatar">
+        <div class="p-5 text-violet-800">
+          <h3 class="text-xl font-bold tracking-tight text-violet-900">
+            <a href="#">Stephen Dawson</a>
+          </h3>
+          <span>stephendawsondev</span>
+          <p class="mt-3 mb-4 font-light"></p>
+          <ul class="flex align-center space-x-4 sm:mt-0">
+            <li>
+              <a href="https://www.linkedin.com/in/sdstephendawson/" class="text-violet-800 hover:text-lime-700">
+                {% include 'includes/linkedin.svg' %}
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/stephendawsondev" class="text-violet-800 hover:text-lime-700">
+                {% include 'includes/github.svg' %}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="items-center bg-violet-300 rounded-lg shadow sm:flex">
+        <img class="w-full md:w-1/2 rounded-lg sm:rounded-none sm:rounded-l-lg" src="{% static 'images/joao.webp' %}"
+          alt="Joao Avatar">
+        <div class="p-5 text-violet-800">
+          <h3 class="text-xl font-bold tracking-tight text-violet-900">
+            <a href="#">Joao_P</a>
+          </h3>
+          <span>jpgenari</span>
+          <p class="mt-3 mb-4 font-light"></p>
+          <ul class="flex align-center space-x-4 sm:mt-0">
+            <li>
+              <a href="https://www.linkedin.com/in/jpgenari/" class="text-violet-800 hover:text-lime-700">
+                {% include 'includes/linkedin.svg' %}
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/jpgenari" class="text-violet-800 hover:text-lime-700">
+                {% include 'includes/github.svg' %}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
+{% endblock %}
 
+{% block extra_js %}
+{{ block.super }}
+<script src="{% static 'home/js/home.js' %}"></script>
 {% endblock %}
