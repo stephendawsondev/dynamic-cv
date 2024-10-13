@@ -17,7 +17,7 @@ class CVTemplate(models.Model):
     use_default_summary = models.BooleanField(default=False)
     summary = CKEditor5Field(max_length=10000, null=True, blank=True)
     contact_information = models.ForeignKey(ContactInformation, related_name="cv_contact_information",
-                                            on_delete=models.CASCADE)
+                                            on_delete=models.CASCADE, null=True, blank=True)
     skills = models.ManyToManyField(Skill, related_name="cv_skills")
     work_experience = models.ManyToManyField(WorkExperience, related_name="cv_work_experience")
     education = models.ManyToManyField(Education, related_name="cv_education")

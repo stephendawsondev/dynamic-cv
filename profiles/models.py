@@ -28,17 +28,10 @@ class Skill(models.Model):
         """
         Returns the list of skills with a space after every comma
         """
-        return self.skill_name
+        return self.name
 
     def display_name(self):
-        return self.skill_name.replace("-", " ")
-    
-    def remove_skill(self, skill):
-        """
-        Removes a skill from the model
-        """
-        self.skillset = self.skillset.replace(f'{skill},', '')
-        self.save()    
+        return self.name.replace("-", " ") 
 
 
 class ContactInformation(models.Model):
@@ -91,7 +84,6 @@ class WorkExperience(models.Model):
         User, related_name="work_experience", on_delete=models.CASCADE)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
-    present = models.BooleanField(default=False)
     position = models.CharField(max_length=150, null=False, blank=False)
     organization = models.CharField(max_length=150, null=False, blank=False)
     bullet_points = models.ManyToManyField(WorkExperienceBullets)
