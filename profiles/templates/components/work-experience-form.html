@@ -4,7 +4,8 @@
 <div id="work-experience">
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Work Experience</h1>
   <p class="block text-gray-700 text-sm mb-4">Please enter your work experience</p>
-  <form method="post">
+  <div id="job-list"></div>
+  <form hx-post="{% url 'add_work_experience' %}" hx-target="#job-list" id="work-experience-form">
     {% csrf_token %}
     <div class="md:w-[50%]">
       {{ work_experience_form.organization|as_crispy_field }}
@@ -64,6 +65,7 @@
       </div>
     </form>
   </div>
-  <button type="button" class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add Work
+  <button type="submit" form="work-experience-form"
+    class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add Work
     Experience</button>
 </div>
