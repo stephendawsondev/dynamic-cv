@@ -1,11 +1,8 @@
+from django.contrib import admin
 from unfold.admin import ModelAdmin
-
-# UPDATE THE BELOW IMPORTS WITH YOUR APP'S MODEL
-# AND UNCOMMENT
-
-# from .models import TheAppModel
+from .models import CVTemplate
 
 
-# @admin.register(TheAppModel)
-# class CustomAdminClass(ModelAdmin):
-#     pass
+@admin.register(CVTemplate)
+class CustomCVTemplateClass(ModelAdmin):
+    list_display = ('pk', 'user', 'cv_name', 'created_at', 'updated_at')
