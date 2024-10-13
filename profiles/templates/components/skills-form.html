@@ -5,13 +5,22 @@
   <p class="block text-gray-700 text-sm">Please enter your professional skills</p>
   <p class="block text-gray-700 text-sm mb-4">A minimum of 8 skills is recommended</p>
   <label for="new-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Skills</label>
-  {% with user.user_skills.get_as_list as skill_list %}
-  <ul id="skill-list" class="w-[50%] pl-6{% if skill_list %} mb-5{% endif %}">
-    {% for skill in skill_list %}
-    {% include 'components/skill-item.html' %}
-    {% endfor %}
-    {% endwith %}
-  </ul>
+  <form method="post" id="skill-list-form">
+    {% csrf_token %}
+    {% with user.user_skills.get_as_list as skill_list %}
+    <ul id="skill-list" class="w-[50%] pl-6 mb-3">
+      {% for skill in skill_list %}
+      <li id="skill-{{ skill.slug }}" class="skill-item list-disc">
+        <span class="flex flex justify-between">
+          <span>{{ skill.display }}</span>
+          <button type="button" class="delete-skill" data-skill="{{ skill.slug }}"><span
+              class="text-2xl">&times;</span></button>
+        </span>
+      </li>
+      {% endfor %}
+      {% endwith %}
+    </ul>
+  </form>
   <!-- The inline form to add the skills -->
   <form method="post" id="skill-form" class="w-[50%]">
     {% csrf_token %}
@@ -27,5 +36,3 @@
     </div>
   </form>
 </div>
-
-<script src="{% static 'profiles/js/skills.js' %}"></script>

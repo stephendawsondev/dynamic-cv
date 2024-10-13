@@ -36,7 +36,11 @@ class Skills(models.Model):
         """
         Converts the string field into a list
         """
-        return self.skillset.split(',')[:-1]
+        skill_list = self.skillset.split(',')[:-1]
+        return [{
+            "slug": item,
+            "display": item.replace('-', ' ')
+        } for item in skill_list]
     
     def add_skill(self, skill):
         """

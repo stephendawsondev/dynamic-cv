@@ -39,6 +39,17 @@ class AddSkill(View):
 
     def post(self, request, skill):
         skillset = Skills.objects.get(user=request.user)
-        if skillset.add_skill(skill.replace('-', ' ')):
+        if skillset.add_skill(skill):
             return HttpResponse("Success")
         return HttpResponse("Fail")
+
+
+class RemoveSkill(View):
+
+    def post(self, request, skill):
+        skillset = Skills.objects.get(user=request.user)
+        try:
+            skillset.remove_skill(skill)
+            return HttpResponse("Success")
+        except Exception as e:
+            return HttpResponse("Fail")
