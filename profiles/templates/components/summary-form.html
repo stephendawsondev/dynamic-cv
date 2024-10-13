@@ -1,8 +1,17 @@
 <div id="summary"></div>
-<form hx-post="{% url 'update-summary' %}" hx-target="#summary" id="summary-form">
+<form hx-post="{% url 'update-summary' request.user.id %}" hx-target="#summary" id="summary-form">
     {% csrf_token %}
     {{ summary_form|crispy }}
     <!-- Add forms media to show ckeditor -->
     {{ summary_form.media }}
     <input type="submit" value="Save" class="text-white bg-violet-800 hover:bg-lime-500 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
 </form>
+
+<!-- Script needed due to bug when submitting the form, requires 2 submits for server to see changes -->
+<script>
+    let form = document.getElementById('summary-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        form.submit();
+    });
+</script>

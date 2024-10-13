@@ -39,7 +39,10 @@
         <div class="p-6 bg-gray-50 text-medium text-gray-500 rounded-lg w-full">
             <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-detail" role="tabpanel"
                 aria-labelledby="detail-tab">
-                {% include 'components/contact-information-form.html' %}
+                <p class="text-sm text-gray-500">This is some placeholder content the <strong
+                        class="font-medium text-gray-800">detail tab's associated content</strong>. Clicking another tab
+                    will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the
+                    content visibility and styling.</p>
             </div>
             <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-summary" role="tabpanel"
                 aria-labelledby="summary-tab">
@@ -47,10 +50,7 @@
             </div>
             <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-skills" role="tabpanel"
                 aria-labelledby="skills-tab">
-                <p class="text-sm text-gray-500">This is some placeholder content the <strong
-                        class="font-medium text-gray-800">skills tab's associated content</strong>. Clicking another tab
-                    will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the
-                    content visibility and styling.</p>
+                {% include 'components/skills-form.html' %}
             </div>
             <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-work-experience" role="tabpanel"
                 aria-labelledby="work-experience-tab">
@@ -125,4 +125,5 @@
         override: true
     };
 </script>
+<script src="{% static 'profiles/js/skills.js' %}"></script>
 {% endblock %}
