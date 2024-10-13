@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 
 def handler403(request, exception):
-    """ Error Handler 403 - Access denies """
+    """ Error Handler 403 - Access denied """
     return render(request, 'errors/403.html', status=403)
 
 
