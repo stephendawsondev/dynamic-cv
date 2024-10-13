@@ -36,7 +36,7 @@ class Skills(models.Model):
         """
         Converts the string field into a list
         """
-        return self.skillset.split(',')
+        return self.skillset.split(',')[:-1]
     
     def add_skill(self, skill):
         """

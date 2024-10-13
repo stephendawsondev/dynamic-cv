@@ -40,5 +40,5 @@ class AddSkill(View):
     def post(self, request, skill):
         skillset = Skills.objects.get(user=request.user)
         if skillset.add_skill(skill.replace('-', ' ')):
-            return HttpResponse("Success", status=200)
-        raise Exception("Cannot enter the same skill twice")
+            return HttpResponse("Success")
+        return HttpResponse("Fail")
