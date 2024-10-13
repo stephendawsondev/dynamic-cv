@@ -26,8 +26,6 @@ class ContactInformation(models.Model):
     """
     user = models.ForeignKey(
         User, related_name="contact_information", on_delete=models.CASCADE)
-    cv = models.ForeignKey(
-        CVTemplate, related_name="contact_cv", on_delete=models.CASCADE, null=True, blank=True)
     first_name = models.CharField(max_length=50, null=False, blank=False)
     last_name = models.CharField(max_length=50, null=False, blank=False)
     email = models.EmailField(max_length=100, null=True, blank=True)
