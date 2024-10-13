@@ -1,16 +1,12 @@
-
+from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.views.generic import TemplateView, CreateView, UpdateView
-from django.views import View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-from .forms import SummaryForm
-from .models import Summary
-from .forms import ContactInformationForm
-from .models import ContactInformation
+from .forms import SummaryForm, ContactInformationForm
+from .models import Summary,ContactInformation
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -27,25 +23,31 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context['contact_information_form'] = ContactInformationForm(
             instance=contact_information)
 
-        context['summary_form'] = SummaryForm(
-            instance=Summary.objects.get(user=self.request.user))
-        context['summary'] = Summary.objects.get(
-            user=self.request.user).summary
+        summary_info, created = Summary.objects.get_or_create(
+            user=self.request.user)
+        context['summary_form'] = SummaryForm(instance=summary_info)
+        context['summary'] = Summary.objects.get(user=self.request.user).summary
         return context
 
 
-class UpdateSummary(LoginRequiredMixin, UpdateView):
-    model = Summary
+class UpdateSummary(LoginRequiredMixin, View):
     form_class = SummaryForm
+    template_name = 'profiles/profile.html'
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        form.save()
-        return HttpResponse('<p class="success">Form submitted successfully!</p>')
+    def get_object(self):
+        obj, created = Summary.objects.get_or_create(
+            user=self.request.user)
+        return obj
 
-    def form_invalid(self, form):
-        return HttpResponse('<p class="error">Please provide a summary. Max 500 chars</p>')
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
 
+        if form.is_valid():
+            form.save()
+            return HttpResponse('<p class="success">Summary updated successfully!</p>')
+        else:
+            return HttpResponse('<p class="error">Please provide a valid summary.</p>')
 
 class CreateUpdateContactInformation(LoginRequiredMixin, View):
     """
