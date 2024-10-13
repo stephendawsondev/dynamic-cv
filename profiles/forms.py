@@ -15,9 +15,6 @@ class SummaryForm(forms.ModelForm):
         labels = {
             'summary': 'Default Summary'
         }
-
         widgets = {
-              "summary": CKEditor5Widget(
-                  attrs={"class": "django_ckeditor_5"}, config_name="default"
-              )
-          }
+          'summary': forms.Textarea(attrs={'rows':10, 'cols':15}),
+        }
