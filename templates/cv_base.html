@@ -1,0 +1,37 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+{% comment %} Head {% endcomment %}
+
+<head>
+  {% comment %} Meta tags {% endcomment %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% comment %} Meta description {% endcomment %}
+  <meta name="description" content="{% block meta_description %}{% endblock %}">
+  {% comment %} Meta keywords {% endcomment %}
+  <meta name="keywords" content="">
+
+  {% block extra_meta %}
+  {% endblock %}
+  <link rel="stylesheet" href="{% static 'css/cv_base.css' %}">
+  {% block extra_css %}
+  {% endblock %}
+
+  {% block core_js %}
+  <script src="https://cdn.tailwindcss.com"></script>
+  {% endblock core_js %}
+  <title>{% block title %}{% endblock %}</title>
+</head>
+
+{% comment %} Body {% endcomment %}
+
+<body class="desktop">
+  {% block content %}
+  {% endblock %}
+  {% block extra_js %}
+  {% endblock %}
+</body>
+
+</html>
