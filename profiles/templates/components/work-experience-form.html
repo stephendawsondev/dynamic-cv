@@ -4,7 +4,7 @@
 <div id="work-experience">
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Work Experience</h1>
   <p class="block text-gray-700 text-sm mb-4">Please enter your work experience</p>
-  <div id="work-list">
+  <div id="work-list" data-accordion="collapse">
     {% for work_exp in work_experience_list %}
     {% include 'components/work-experience-details.html' %}
     {% endfor %}
