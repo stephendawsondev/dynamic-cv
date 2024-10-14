@@ -158,7 +158,7 @@ function addListItem(event) {
     inputMainForm.setAttribute('data-item-id', `${itemId + 1}`);
 
     // Rendering the item on the frontend
-    let elementId = `item-${inputMainForm}-${itemId}`;
+    let elementId = `item-${inputMainId}-${itemId}`;
     let listItemHtml = `
     <li id="${elementId}" class="list-item list-disc" data-main-list="${mainListId}">
       <span class="flex flex justify-between">
