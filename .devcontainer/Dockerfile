@@ -24,10 +24,6 @@ RUN if [ -f package.json ]; then npm install; fi
 # Make port 3003 available to the world outside this container
 EXPOSE 3003
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-    CMD curl -f http://localhost:3003/health/ || exit 1
-
 # Run the application using Gunicorn for production
 CMD ["gunicorn", "--bind", "0.0.0.0:3003", "--access-logfile", "-", "--error-logfile", "-", "dynamiccv.wsgi:application"]
 
