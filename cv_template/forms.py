@@ -31,12 +31,21 @@ class CVTemplateForm(forms.ModelForm):
         model = CVTemplate
         fields = [
             "cv_name",
-            "use_default_summary",
             "summary",
+            "use_default_summary",
             "skills",
             "work_experience",
             "education",
         ]
+
+        labels = {
+            "cv_name": "CV Name",
+            "summary": "Summary",
+            "use_default_summary": "Use Default Summary",
+            "skills": "Relevant Skills",
+            "work_experience": "Relevant Work Experience",
+            "education": "Relevant Education",
+        }
 
         widgets = {
             "summary": CKEditor5Widget(
