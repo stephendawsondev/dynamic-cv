@@ -5,9 +5,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-from .forms import SummaryForm, ContactInformationForm, WorkExperienceForm
+from .forms import SummaryForm, ContactInformationForm, \
+     WorkExperienceForm, EducationForm, ProjectForm
 from .models import Summary, ContactInformation, Skill, \
-     WorkExperience, WorkExperienceBullets
+     WorkExperience, WorkExperienceBullets, \
+     Education, EducationBullets, Project
 
 import json
 
@@ -34,6 +36,12 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
         context['work_experience_form'] = WorkExperienceForm()
         context['work_experience_list'] = user.work_experience.all()
+
+        context['education_form'] = EducationForm()
+        context['education_list'] = user.education.all()
+
+        context['project_form'] = ProjectForm()
+        context['project_list'] = user.projects.all()
         return context
 
 
@@ -105,32 +113,6 @@ class RemoveSkill(View):
             return HttpResponse("Fail")
 
 
-def create_list_item_html(list_type, id, display):
-    return f"""
-    <li id="{list_type}-{id}" class="{list_type}-item list-disc">
-    <span class="flex justify-between">
-        <span>{display}</span>
-        <button type="button" class="delete-skill" data-skill="{id}">
-            <span class="text-2xl">&times;</span>
-        </button>
-        </span>
-    </li>
-    """
-
-
-class AddResponsibility(View):
-
-    def post(self, request):
-        rsp = request.POST['responsibility']
-        user = request.user
-        rsp_object = user.work_bullets.get_or_create(bullet_point=rsp)
-        return HttpResponse(create_list_item_html(
-            'responsibility',
-            rsp_object[0].id,
-            rsp
-        ))
-
-
 class AddWorkExperience(View):
 
     def post(self, request):
@@ -139,15 +121,18 @@ class AddWorkExperience(View):
         user = request.user
         if not work_form.is_valid():
             return HttpResponse("Form is invalid")
-
-        work_experience = WorkExperience(
-            user=request.user,
-            organization=request.POST['organization'],
-            location=request.POST['location'],
-            position=request.POST['position'],
-            start_date=request.POST['start_date'],
-            end_date=request.POST['end_date']
-        )
+        
+        # Only add the necessary fields to prevent errors
+        required_fields = {
+            'user': request.user,
+            'organization': post_data['organization'],
+            'location': post_data['location'],
+            'position': post_data['position'],
+            'start_date': post_data['start_date'],
+        }
+        if 'end_date' in post_data:
+            required_fields['end_date'] = post_data['end_date']
+        work_experience = WorkExperience(**required_fields)
         work_experience.save()
 
         # Extracting the responsibilities and skills
@@ -162,7 +147,7 @@ class AddWorkExperience(View):
             elif 'work-skills' in key:
                 list_item, created = Skill.objects.get_or_create(
                     user_id=user.id,
-                    name=value
+                    name=value.replace(' ', '-')
                 )
                 if len(user.user_skills.filter(name=value)) == 0:
                     user.user_skills.add(list_item)
@@ -172,4 +157,70 @@ class AddWorkExperience(View):
                 continue            
             list_item.save()
         work_experience.save()
+        return HttpResponse(json.dumps(post_data))
+
+
+class AddEducation(View):
+
+    def post(self, request):
+        post_data = request.POST.copy()
+        education_form = EducationForm(request.POST)
+        user = request.user
+        if not education_form.is_valid():
+            return HttpResponse("Form is invalid")
+        
+        # Only add the necessary fields to prevent errors
+        required_fields = {
+            'user': request.user,
+            'school_name': post_data['school_name'],
+            'location': post_data['location'],
+            'degree': post_data['degree'],
+            'start_year': post_data['start_year'],
+        }
+        if 'end_year' in post_data:
+            required_fields['end_year'] = post_data['end_year']
+            required_fields['grade'] = post_data['grade']
+        education = Education(**required_fields)
+        education.save()
+
+        # Extracting the responsibilities and skills
+        for key, value in post_data.items():
+            list_item = None
+            if 'education-modules' in key:
+                list_item, created = EducationBullets.objects.get_or_create(
+                    user_id=user.id,
+                    bullet_point=value
+                )
+                education.bullet_points.add(list_item)
+            elif 'education-skills' in key:
+                list_item, created = Skill.objects.get_or_create(
+                    user_id=user.id,
+                    name=value.replace(' ', '-')
+                )
+                if len(user.user_skills.filter(name=value)) == 0:
+                    user.user_skills.add(list_item)
+                    user.save()
+                education.applied_skills.add(list_item)
+            else:
+                continue            
+            list_item.save()
+        education.save()
+        return HttpResponse(json.dumps(post_data))
+
+
+class AddProject(View):
+
+    def post(self, request):
+        post_data = request.POST.copy()
+        project_form = ProjectForm(request.POST)
+        if not project_form.is_valid():
+            return HttpResponse("Form is not valid")
+        
+        project = Project(
+            user=request.user,
+            name=post_data['name'],
+            repository_url=post_data['repository_url'],
+            deployed_url=post_data['deployed_url']
+        )
+        project.save()
         return HttpResponse(json.dumps(post_data))

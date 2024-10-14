@@ -1,0 +1,79 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<div id="education">
+  <h1 class="block text-violet-700 text-2xl font-bold mb-2">Education</h1>
+  <p class="block text-gray-700 text-sm mb-4">Please enter your education details</p>
+  <div id="education-list">
+    {% for education_exp in education_list %}
+    {% include 'components/education-details.html' %}
+    {% endfor %}
+  </div>
+  <div id="education-input-data" class="hidden"></div>
+  <form hx-post="{% url 'add_education' %}" hx-target="#education-input-data" id="education-form"
+    hx-on::after-request="this.reset()" onreset="addExperienceHtml('education')">
+    {% csrf_token %}
+    <div class="md:w-[50%]">
+      {{ education_form.school_name|as_crispy_field }}
+      {{ education_form.location|as_crispy_field }}
+      {{ education_form.degree|as_crispy_field }}
+    </div>
+    <p class="block text-gray-700 text-sm font-bold mb-2">Years Attended<span class="asteriskField">*</span></p>
+    <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3 md:w-[50%]">
+      {{ education_form.start_year|as_crispy_field }}
+      {{ education_form.end_year|as_crispy_field }}
+    </div>
+    <div class="flex mb-6">
+      <div class="flex items-center h-5">
+        <input id="id_current_education" type="checkbox" data-disables="id_end_year,id_grade"
+          class="is-active-check w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300" />
+      </div>
+      <label for="id_current_education" class="ms-2 text-sm font-medium text-gray-900">I am currently
+        studying here</label>
+    </div>
+    <div class="md:w-[50%]">
+      {{ education_form.grade|as_crispy_field }}
+    </div>
+    <div class="hidden bullet-point-inputs" id="education-modules" name="modules" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" id="education-skills" name="skills" data-item-id="0"></div>
+  </form>
+  <div class="md:w-[50%]">
+    <!-- Education Modules -->
+    <form data-main-input="education-modules" id="module-form" class="add-item-form mb-6">
+      {% csrf_token %}
+      <label for="new-module-text" class="block text-gray-700 text-sm font-bold mb-2">Modules Covered:</label>
+
+      <ul id="module-list" class="item-list pl-6 mb-3"></ul>
+
+      <div class="flex">
+        <div class="relative w-full">
+          <input type="text" id="new-module-text" name="module"
+            class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Module" maxlength="150" required />
+          <button type="submit" id="submit-module"
+            class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            Add</button>
+        </div>
+      </div>
+    </form>
+    <!-- Education skills -->
+    <form data-main-input="education-skills" id="education-skill-form" class="add-item-form mb-6">
+      {% csrf_token %}
+      <label for="education-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Applied Skills:</label>
+      <ul id="education-skill-list" class="item-list pl-6 mb-3"></ul>
+
+      <div class="flex">
+        <div class="relative w-full">
+          <input type="text" id="education-skill-text" name="education-skill"
+            class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Skill" maxlength="30" required />
+          <button type="submit" id="submit-education-skill"
+            class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <button type="submit" form="education-form"
+    class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add Education</button>
+</div>

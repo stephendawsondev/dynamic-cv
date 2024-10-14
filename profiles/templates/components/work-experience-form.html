@@ -4,14 +4,14 @@
 <div id="work-experience">
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Work Experience</h1>
   <p class="block text-gray-700 text-sm mb-4">Please enter your work experience</p>
-  <div id="work-list">
+  <div id="work-list" data-accordion="collapse">
     {% for work_exp in work_experience_list %}
     {% include 'components/work-experience-details.html' %}
     {% endfor %}
   </div>
   <div id="work-input-data" class="hidden"></div>
   <form hx-post="{% url 'add_work_experience' %}" hx-target="#work-input-data" id="work-experience-form"
-    hx-on::after-request="addWorkExperienceHtml()">
+    hx-on::after-request="this.reset()" onreset="addExperienceHtml('work')">
     {% csrf_token %}
     <div class="md:w-[50%]">
       {{ work_experience_form.organization|as_crispy_field }}
@@ -25,14 +25,14 @@
     </div>
     <div class="flex mb-6">
       <div class="flex items-center h-5">
-        <input id="id_current_work" type="checkbox"
-          class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300" />
+        <input id="id_current_work" type="checkbox" data-disables="id_end_date"
+          class="is-active-check w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300" />
       </div>
-      <label for="id_current_work" class="ms-2 text-sm font-medium text-gray-900">I am currently
-        working in this role</label>
+      <label for="id_current_work" class="ms-2 text-sm font-medium text-gray-900">I am currently working in this
+        role</label>
     </div>
-    <div class="hidden" id="work-responsibilities" name="responsibilities" data-item-id="0"></div>
-    <div class="hidden" id="work-skills" name="skills" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" id="work-responsibilities" name="responsibilities" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" id="work-skills" name="skills" data-item-id="0"></div>
   </form>
   <div class="md:w-[50%]">
     <!-- Work responsibilities -->
@@ -73,15 +73,5 @@
     </form>
   </div>
   <button type="submit" form="work-experience-form"
-    class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add Work
-    Experience</button>
-
-  <!-- Save the HTML components in JavaScript -->
-  {% with "item_class" as item_class %}
-  <script id="work-experience-constants">
-    const workExperienceHtml = `{% include 'components/work-experience-details.html' %}`;
-    const responsibilityItem = `{% include 'components/list-item.html' %}`.replace('item_class', 'work-exp-rsp');
-    const skillItem = `{% include 'components/list-item.html' %}`.replace('item_class', 'work-exp-skill');
-  </script>
-  {% endwith %}
+    class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add Work Experience</button>
 </div>

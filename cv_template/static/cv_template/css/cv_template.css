@@ -24,7 +24,8 @@ input[type="checkbox"] {
 }
 
 #div_id_work_experience > div > div > label,
-#div_id_education > div > div > label {
+#div_id_education > div > div > label,
+#div_id_projects > div > div > label {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;

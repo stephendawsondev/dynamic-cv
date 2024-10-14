@@ -8,6 +8,7 @@ from .models import (
     Education,
     WorkExperienceBullets,
     EducationBullets,
+    Project
 )
 
 
@@ -43,4 +44,9 @@ class WorkExperienceBulletsAdminClass(ModelAdmin):
 
 @admin.register(EducationBullets)
 class EducationBulletsAdminClass(ModelAdmin):
+    pass
+
+
+@admin.register(Project)
+class ProjectAdminClass(ModelAdmin):
     pass

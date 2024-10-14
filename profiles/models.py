@@ -30,7 +30,7 @@ class Skill(models.Model):
         """
         Returns the list of skills with a space after every comma
         """
-        return self.name
+        return self.display_name()
 
     def display_name(self):
         return self.name.replace("-", " ")
@@ -124,18 +124,31 @@ class Education(models.Model):
     """
     Education model
     """
-
     user = models.ForeignKey(User, related_name="education", on_delete=models.CASCADE)
     start_year = models.DateField(null=False, blank=False)
     end_year = models.DateField(null=True, blank=True)
     degree = models.CharField(max_length=150, null=False, blank=False)
     school_name = models.CharField(max_length=150, null=False, blank=False)
     location = models.CharField(max_length=150, null=True, blank=True)
-    grade = models.CharField(max_length=50, null=False, blank=False)
+    grade = models.CharField(max_length=50, null=True, blank=True)
     bullet_points = models.ManyToManyField(EducationBullets)
+    applied_skills = models.ManyToManyField(Skill)
 
     def __str__(self):
         return f"{self.degree} - {self.grade} - {self.school_name}, {self.start_year.strftime('%m/%y')} - {self.end_year.strftime('%m/%y') if self.end_year else 'Present'}"
 
     class Meta:
         verbose_name_plural = "Education"
+
+
+class Project(models.Model):
+    """
+    Projects model
+    """
+    user = models.ForeignKey(User, related_name="projects", on_delete=models.CASCADE)
+    name = models.CharField(max_length=150)
+    repository_url = models.URLField(blank=True, null=True)
+    deployed_url = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
