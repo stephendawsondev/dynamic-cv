@@ -1,0 +1,24 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<div id="projects">
+  <h1 class="block text-violet-700 text-2xl font-bold mb-2">Projects</h1>
+  <p class="block text-gray-700 text-sm mb-4">Enter any projects you have worked on</p>
+  <div id="projects-list">
+    {% for project_exp in project_list %}
+    {% include 'components/project-details.html' %}
+    {% endfor %}
+  </div>
+  <div id="project-input-data" class="hidden"></div>
+  <form hx-post="{% url 'add_project' %}" hx-target="#project-input-data" id="project-form"
+    hx-on::after-request="this.reset()" onreset="addExperienceHtml('project')">
+    {% csrf_token %}
+    <div class="md:w-[50%]">
+      {{ project_form.name|as_crispy_field }}
+      {{ project_form.repository_url|as_crispy_field }}
+      {{ project_form.deployed_url|as_crispy_field }}
+    </div>
+    <button type="submit" class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add
+      Project</button>
+  </form>
+</div>

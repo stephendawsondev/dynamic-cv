@@ -14,36 +14,112 @@ function convertHtmlToDOM(htmlString) {
 }
 
 
+// Data to be fed into the addExperienceHtml function
+const experienceProperties = {
+  work: {
+    form: 'work-experience-form',
+    target: 'work-list',
+    dataSource: 'work-input-data',
+    html: workExperienceHtml,
+    fields: {
+      organization: 'work-exp-organization',
+      location: 'work-exp-location',
+      position: 'work-exp-position',
+      date: 'work-exp-date'
+    },
+    bulletPoints: {
+      'work-responsibilities': 'work-rsp-list',
+      'work-skills': 'work-skill-list'
+    }
+  },
+  education: {
+    form: 'education-form',
+    target: 'education-list',
+    dataSource: 'education-input-data',
+    html: educationHtml,
+    fields: {
+      school_name: 'education-exp-school-name',
+      location: 'education-exp-location',
+      degree: 'education-exp-degree',
+      date: 'education-exp-date',
+      grade: 'education-exp-grade',
+    },
+    bulletPoints: {
+      'education-modules': 'education-modules-list',
+      'education-skills': 'education-skill-list'
+    }
+  },
+  project: {
+    form: 'project-form',
+    target: 'projects-list',
+    dataSource: 'project-input-data',
+    html: projectHtml,
+    fields: {
+      name: 'project-exp-name',
+      repository_url: 'project-exp-repo',
+      deployed_url: 'project-exp-deploy',
+    }
+  }
+}
+
 /**
- * Converts a work experience form input into a list item to be displayed in the list.
- * Ignore the warnings for undeclared variables. They are declared in a script
- * tag in work-experience-form.html
+ * 
+ * @param {String} experienceType The key to reference the above object experienceProperties
  */
-function addWorkExperienceHtml() {
-  let workExperienceData = JSON.parse(document.getElementById('work-input-data').innerText);
-  let elements = convertHtmlToDOM(workExperienceHtml);
-  let workListElement = elements[0];
+function addExperienceHtml(experienceType) {
+  let propertyObject = experienceProperties[experienceType];
+
+  // Remove the hidden bullet point inputs left behind by the form after it has reset
+  let bulletPointInputs = document.getElementById(propertyObject.form).getElementsByClassName('bullet-point-inputs');
+  for (let bullet of bulletPointInputs) {
+    bullet.setAttribute('data-item-id', '0');
+    while (bullet.children.length > 0) {
+      bullet.children[0].remove();
+    }
+  }
+
+  // Retrieving the data posted from the server
+  let workExperienceData = JSON.parse(document.getElementById(propertyObject['dataSource']).innerText);
+  let elements = convertHtmlToDOM(propertyObject.html);
+  let itemListElement = elements[0];
   
   // Filling out the new information into the new set of elements
-  workListElement.getElementsByClassName('work-exp-organization')[0].innerText = workExperienceData.organization;
-  workListElement.getElementsByClassName('work-exp-location')[0].innerText = workExperienceData.location;
-  workListElement.getElementsByClassName('work-exp-position')[0].innerText = workExperienceData.position;
-  workListElement.getElementsByClassName('work-exp-date')[0].innerText = `${workExperienceData.start_date} - ${workExperienceData.end_date}`;
+  for (let [field, className] of Object.entries(propertyObject.fields)) {
+    let value = workExperienceData[field];
 
-  for (let [key, value] of Object.entries(workExperienceData)) {
-    if (key.includes("work-responsibilities")) {
-      let newListItem = convertHtmlToDOM(responsibilityItem)[0];
-      newListItem.innerText = value;
-      workListElement.getElementsByClassName('work-rsp-list')[0].appendChild(newListItem);
+    // Connecting the start and end date
+    if (field == 'date') {
+      let startDate = null;
+      let endDate = 'Present';
+      for (let [propField, propValue] of Object.entries(workExperienceData)) {
+        if (propField.includes('start_')) {
+          startDate = propValue;
+        }
+        else if (propField.includes('end_') && propValue) {
+          endDate = propValue;
+        }
+      }
+      itemListElement.getElementsByClassName(className)[0].innerText = `${startDate} - ${endDate}`;
     }
-    else if (key.includes("work-skills")) {
-      let newListItem = convertHtmlToDOM(skillItem)[0];
-      newListItem.innerText = value;
-      workListElement.getElementsByClassName('work-skill-list')[0].appendChild(newListItem);
+    else {
+      // For all other fields
+      itemListElement.getElementsByClassName(className)[0].innerText = value;
+    }
+  }
+
+  if ('bulletPoints' in propertyObject) {
+    for (let [key, value] of Object.entries(workExperienceData)) {
+      for (let [bulletField, className] of Object.entries(propertyObject.bulletPoints)) {
+        if (key.includes(bulletField)) {
+          let newListItem = convertHtmlToDOM(listItem)[0];
+          newListItem.innerText = value;
+          itemListElement.getElementsByClassName(className)[0].appendChild(newListItem);
+        }
+      }
     }
   }
   for (let element of elements) {
-    document.getElementById('work-list').appendChild(element);
+    document.getElementById(propertyObject.target).appendChild(element);
   }
 }
 
@@ -82,7 +158,7 @@ function addListItem(event) {
     inputMainForm.setAttribute('data-item-id', `${itemId + 1}`);
 
     // Rendering the item on the frontend
-    let elementId = `item-${inputMainForm}-${itemId}`;
+    let elementId = `item-${inputMainId}-${itemId}`;
     let listItemHtml = `
     <li id="${elementId}" class="list-item list-disc" data-main-list="${mainListId}">
       <span class="flex flex justify-between">
@@ -115,13 +191,38 @@ function enableRemoveButton(element) {
 }
 
 
-let addItemForms = document.getElementsByClassName('add-item-form');
+/**
+ * Is called when the checkbox for when the user is currently in a work/education
+ * experience. Enables/Disables the fields specified in the checkbox depending on its state
+ */
+function checkActiveExperience() {
+  let disableIds = this.getAttribute('data-disables').split(',');
+  for (let disableId of disableIds) {
+    let disableElement = document.getElementById(disableId);
+    disableElement.disabled = this.checked;
+    disableElement.required = !this.checked;
+  }
+}
+const experienceActiveChecks = document.getElementsByClassName('is-active-check');
+for (let checkbox of experienceActiveChecks) {
+  checkbox.addEventListener('click', checkActiveExperience);
+}
+// Forcing dependent elements that are not required by default to be required
+const dependentIds = ['id_end_date', 'id_end_year', 'id_grade'];
+for (let depId of dependentIds) {
+  let element = document.getElementById(depId);
+  element.required = true;
+}
+
+
+// Adding the bullet points to the list
+const addItemForms = document.getElementsByClassName('add-item-form');
 for (let itemForm of addItemForms) {
   itemForm.addEventListener('submit', addListItem);
 }
 
 // Removes any custom validity every time the input changes
-let addItemInputs = document.getElementsByClassName('add-item-input');
+const addItemInputs = document.getElementsByClassName('add-item-input');
 for (let itemInput of addItemInputs) {
   itemInput.addEventListener('input', function() {
     this.setCustomValidity("");

@@ -1,6 +1,7 @@
 from django import forms
 from django_ckeditor_5.widgets import CKEditor5Widget
-from .models import Summary, ContactInformation, WorkExperience
+from .models import Summary, ContactInformation, WorkExperience, \
+     Education, Project
 
 
 class SummaryForm(forms.ModelForm):
@@ -50,7 +51,6 @@ class WorkExperienceForm(forms.ModelForm):
     """
     Form to add work experience
     """
-
     class Meta:
         model = WorkExperience
         fields = [
@@ -66,4 +66,53 @@ class WorkExperienceForm(forms.ModelForm):
             "position": "Job Title",
             "start_date": "Start",
             "end_date": "End",
+        }
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class EducationForm(forms.ModelForm):
+    """
+    Form to add education
+    """
+    class Meta:
+        model = Education
+        fields = [
+            "school_name",
+            "location",
+            "degree",
+            "start_year",
+            "end_year",
+            "grade"
+        ]
+        labels = {
+            "organization": "Institution Name",
+            "location": "Location",
+            "degree": "Degree",
+            "start_date": "Start",
+            "end_date": "End",
+            "grade": "Grade"
+        }
+        widgets = {
+            'start_year': forms.DateInput(attrs={'type': 'date'}),
+            'end_year': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+
+class ProjectForm(forms.ModelForm):
+    """
+    Form to add project
+    """
+    class Meta:
+        model = Project
+        fields = [
+            "name",
+            "repository_url",
+            "deployed_url"
+        ]
+        labels = {
+            "name": "Project Name",
+            "repository_url": "Repository URL",
+            "deployed_url": "Deployed URL"
         }
