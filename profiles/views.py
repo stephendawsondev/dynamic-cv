@@ -9,6 +9,8 @@ from .forms import SummaryForm, ContactInformationForm, WorkExperienceForm
 from .models import Summary, ContactInformation, Skill, \
      WorkExperience, WorkExperienceBullets
 
+import json
+
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     """
@@ -18,17 +20,20 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
 
         contact_information, created = ContactInformation.objects.get_or_create(
-            user=self.request.user)
+            user=user)
         context['contact_information_form'] = ContactInformationForm(
             instance=contact_information)
 
         summary_info, created = Summary.objects.get_or_create(
-            user=self.request.user)
+            user=user)
         context['summary_form'] = SummaryForm(instance=summary_info)
-        context['summary'] = Summary.objects.get(user=self.request.user).summary
+        context['summary'] = Summary.objects.get(user=user).summary
+
         context['work_experience_form'] = WorkExperienceForm()
+        context['work_experience_list'] = user.work_experience.all()
         return context
 
 
@@ -138,6 +143,7 @@ class AddWorkExperience(View):
         work_experience = WorkExperience(
             user=request.user,
             organization=request.POST['organization'],
+            location=request.POST['location'],
             position=request.POST['position'],
             start_date=request.POST['start_date'],
             end_date=request.POST['end_date']
@@ -166,4 +172,4 @@ class AddWorkExperience(View):
                 continue            
             list_item.save()
         work_experience.save()
-        return HttpResponse("Success")
+        return HttpResponse(json.dumps(post_data))
