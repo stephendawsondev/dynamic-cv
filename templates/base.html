@@ -35,61 +35,6 @@
   {% comment %} Header {% endcomment %}
   <header>
     <div class="container mx-auto md:mt-3">
-      <!-- <nav class="bg-violet-800 w-full z-20 top-0 start-0 pt-5 pb-5 border-b border-violet-200 md:rounded-md">
-        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse ml-auto items-center">
-            {% if user.is_authenticated %}
-            <a class="block py-2 px-3 text-zinc-50 rounded md:hover:bg-transparent md:p-0 md:mr-5 hover:underline "
-              href="{% url 'profile' %}" aria-label="Navigates to user profile">
-              Profile
-            </a>
-            <button type="button" data-modal-target="modal-logout" data-modal-toggle="modal-logout"
-              class="block py-2 px-3 text-zinc-50 rounded md:hover:bg-transparent md:p-0 hover:underline"
-              aria-label="Navigates to logout page">
-              Logout
-            </button>
-
-            {% else %}
-            <a href="{% url 'account_signup' %}"
-              class="text-violet-800 bg-zinc-50 hover:bg-lime-500 hover:text-black focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center md:mr-5"
-              aria-label="Navigates to registration page">Get started</a>
-            <a class="block py-2 px-3 text-zinc-50 rounded md:hover:bg-transparent md:p-0 hover:underline"
-              href="{% url 'account_login' %}">Login</a>
-            {% endif %}
-            <button data-collapse-toggle="navbar-sticky" type="button"
-              class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-zinc-50 rounded-lg md:hidden hover:bg-violet-100 focus:outline-none focus:ring-2 focus:ring-violet-200"
-              aria-controls="navbar-sticky" aria-expanded="false">
-              <span class="sr-only">Open main menu</span>
-              <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 17 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M1 1h15M1 7h15M1 13h15" />
-              </svg>
-            </button>
-          </div>
-          <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-            <ul
-              class="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
-              <li>
-                <a href="{% url 'home' %}"
-                  class="block py-2 px-3 text-zinc-50 rounded md:bg-transparent md:p-0 hover:underline"
-                  aria-current="page" aria-label="Navigates to home page">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="#"
-                  class="block py-2 px-3 text-zinc-50 rounded hover:bg-violet-100 md:hover:bg-transparent md:p-0 hover:underline">CV
-                  templates</a>
-              </li>
-              <li>
-                <a href="#"
-                  class="block py-2 px-3 text-zinc-50 rounded hover:bg-violet-100 md:hover:bg-transparent md:p-0 hover:underline">Contact</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav> -->
       {% include 'includes/nav.html' %}
     </div>
   </header>
