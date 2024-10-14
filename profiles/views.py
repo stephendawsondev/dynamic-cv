@@ -142,7 +142,7 @@ class AddWorkExperience(View):
             elif 'work-skills' in key:
                 list_item, created = Skill.objects.get_or_create(
                     user_id=user.id,
-                    name=value
+                    name=value.replace(' ', '-')
                 )
                 if len(user.user_skills.filter(name=value)) == 0:
                     user.user_skills.add(list_item)
@@ -188,7 +188,7 @@ class AddEducation(View):
             elif 'education-skills' in key:
                 list_item, created = Skill.objects.get_or_create(
                     user_id=user.id,
-                    name=value
+                    name=value.replace(' ', '-')
                 )
                 if len(user.user_skills.filter(name=value)) == 0:
                     user.user_skills.add(list_item)

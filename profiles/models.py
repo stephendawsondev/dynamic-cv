@@ -30,7 +30,7 @@ class Skill(models.Model):
         """
         Returns the list of skills with a space after every comma
         """
-        return self.name
+        return self.display_name
 
     def display_name(self):
         return self.name.replace("-", " ")
@@ -140,3 +140,12 @@ class Education(models.Model):
 
     class Meta:
         verbose_name_plural = "Education"
+
+
+class Project(models.Model):
+    """
+    Projects model
+    """
+    user = models.ForeignKey(User, related_name="projects", on_delete=models.CASCADE)
+    name = models.CharField(max_length=150)
+    
