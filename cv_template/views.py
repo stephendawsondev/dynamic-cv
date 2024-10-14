@@ -34,12 +34,15 @@ class CreateCV(LoginRequiredMixin, CreateView):
         if use_default_summary:
             try:
                 summary = Summary.objects.get(user=self.request.user).summary
-                contact_information = ContactInformation.objects.get(user=self.request.user)
             except Summary.DoesNotExist:
                 summary = ""
-                contact_information = None
-            form.instance.contact_information = contact_information
             form.instance.summary = summary
+        
+        try:
+            contact_information = ContactInformation.objects.get(user=self.request.user)
+        except ContactInformation.DoesNotExist:
+            contact_information = None
+        form.instance.contact_information = contact_information
 
         self.object = form.save()
         messages.success(self.request, "CV created successfully")
