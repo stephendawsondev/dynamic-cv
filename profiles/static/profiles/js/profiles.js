@@ -1,4 +1,54 @@
 /**
+ * Converts an HTML string into a set of DOM objects. Taken from ChatGPT
+ * @param {String} htmlString The HTML to be converted
+ * @returns {DOM} A set of DOM objects created 
+ */
+function convertHtmlToDOM(htmlString) {
+  const doc = new DOMParser().parseFromString(htmlString, 'text/html');
+  let children = doc.body.childNodes;
+  let elementList = [];
+  children.forEach((element) => {
+    elementList.push(element); 
+  });
+  return elementList;
+}
+
+
+/**
+ * Converts a work experience form input into a list item to be displayed in the list.
+ * Ignore the warnings for undeclared variables. They are declared in a script
+ * tag in work-experience-form.html
+ */
+function addWorkExperienceHtml() {
+  let workExperienceData = JSON.parse(document.getElementById('work-input-data').innerText);
+  let elements = convertHtmlToDOM(workExperienceHtml);
+  let workListElement = elements[0];
+  
+  // Filling out the new information into the new set of elements
+  workListElement.getElementsByClassName('work-exp-organization')[0].innerText = workExperienceData.organization;
+  workListElement.getElementsByClassName('work-exp-location')[0].innerText = workExperienceData.location;
+  workListElement.getElementsByClassName('work-exp-position')[0].innerText = workExperienceData.position;
+  workListElement.getElementsByClassName('work-exp-date')[0].innerText = `${workExperienceData.start_date} - ${workExperienceData.end_date}`;
+
+  for (let [key, value] of Object.entries(workExperienceData)) {
+    if (key.includes("work-responsibilities")) {
+      let newListItem = convertHtmlToDOM(responsibilityItem)[0];
+      newListItem.innerText = value;
+      workListElement.getElementsByClassName('work-rsp-list')[0].appendChild(newListItem);
+    }
+    else if (key.includes("work-skills")) {
+      let newListItem = convertHtmlToDOM(skillItem)[0];
+      newListItem.innerText = value;
+      workListElement.getElementsByClassName('work-skill-list')[0].appendChild(newListItem);
+    }
+  }
+  for (let element of elements) {
+    document.getElementById('work-list').appendChild(element);
+  }
+}
+
+
+/**
  * When an item add form is submitted, this adds the item to the list of already existing items
  * @param {Event} event the event that is called
  */
