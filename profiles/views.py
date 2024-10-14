@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .forms import SummaryForm, ContactInformationForm, \
-     WorkExperienceForm, EducationForm
+     WorkExperienceForm, EducationForm, ProjectForm
 from .models import Summary, ContactInformation, Skill, \
      WorkExperience, WorkExperienceBullets, \
      Education, EducationBullets
@@ -35,10 +35,13 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context['summary'] = Summary.objects.get(user=user).summary
 
         context['work_experience_form'] = WorkExperienceForm()
-        context['education_list'] = user.work_experience.all()
+        context['work_experience_list'] = user.work_experience.all()
 
         context['education_form'] = EducationForm()
         context['education_list'] = user.education.all()
+
+        context['project_form'] = ProjectForm()
+        context['project_list'] = user.projects.all()
         return context
 
 
@@ -120,14 +123,16 @@ class AddWorkExperience(View):
             return HttpResponse("Form is invalid")
         
         # Only add the necessary fields to prevent errors
-        work_experience = WorkExperience(
-            user=request.user,
-            organization=post_data['organization'],
-            location=post_data['location'],
-            position=post_data['position'],
-            start_date=post_data['start_date'],
-            end_date=post_data['end_date']
-        )
+        required_fields = {
+            'user': request.user,
+            'organization': post_data['organization'],
+            'location': post_data['location'],
+            'position': post_data['position'],
+            'start_date': post_data['start_date'],
+        }
+        if len(post_data['end_date']) > 0:
+            required_fields['end_date'] = post_data['end_date']
+        work_experience = WorkExperience(**required_fields)
         work_experience.save()
 
         # Extracting the responsibilities and skills
@@ -165,15 +170,17 @@ class AddEducation(View):
             return HttpResponse("Form is invalid")
         
         # Only add the necessary fields to prevent errors
-        education = Education(
-            user=request.user,
-            school_name=post_data['school_name'],
-            location=post_data['location'],
-            degree=post_data['degree'],
-            start_year=post_data['start_year'],
-            end_year=post_data['end_year'],
-            grade=post_data['grade'],
-        )
+        required_fields = {
+            'user': request.user,
+            'school_name': post_data['school_name'],
+            'location': post_data['location'],
+            'degree': post_data['degree'],
+            'start_year': post_data['start_year'],
+            'grade': post_data['grade'],
+        }
+        if len(post_data['end_year']) > 0:
+            required_fields['end_year'] = post_data['end_year']
+        education = Education(**required_fields)
         education.save()
 
         # Extracting the responsibilities and skills

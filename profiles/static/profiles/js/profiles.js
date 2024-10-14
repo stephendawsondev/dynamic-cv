@@ -71,7 +71,7 @@ function addExperienceHtml(experienceType) {
         if (propField.includes('start_')) {
           startDate = propValue;
         }
-        else if (propField.includes('end_')) {
+        else if (propField.includes('end_') && propValue) {
           endDate = propValue;
         }
       }

@@ -7,7 +7,7 @@
   <p class="work-exp-position block text-gray-700 text-sm mb-2">{{ work_exp.position }}</p>
   <p class="block text-gray-700 text-sm font-bold mb-2">Dates Worked</p>
   <p class="work-exp-date block text-gray-700 text-sm mb-2">
-    {{ work_exp.start_date }} - {{ work_exp.end_date }}
+    {{ work_exp.start_date }} - {% if work_exp.end_date %}{{ work_exp.end_date }}{% else %}Present{% endif %}
   </p>
   <p class="block text-gray-700 text-sm font-bold mb-2">Duties/Responsibilities</p>
   <ul class="work-rsp-list pl-6 mb-3">
