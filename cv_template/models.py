@@ -3,7 +3,8 @@ import uuid
 from django_ckeditor_5.fields import CKEditor5Field
 from django.contrib.auth.models import User
 
-from profiles.models import ContactInformation, Skill, WorkExperience, Education
+from profiles.models import ContactInformation, Skill, \
+     WorkExperience, Education, Project
 
 
 class CVTemplate(models.Model):
@@ -30,6 +31,7 @@ class CVTemplate(models.Model):
         WorkExperience, related_name="cv_work_experience"
     )
     education = models.ManyToManyField(Education, related_name="cv_education")
+    projects = models.ManyToManyField(Project, related_name="cv_projects")
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 

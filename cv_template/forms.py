@@ -26,6 +26,9 @@ class CVTemplateForm(forms.ModelForm):
         self.fields["education"].queryset = Education.objects.filter(
             user=self.request.user
         )
+        self.fields["projects"].queryset = Education.objects.filter(
+            user=self.request.user
+        )
 
     class Meta:
         model = CVTemplate
@@ -36,6 +39,7 @@ class CVTemplateForm(forms.ModelForm):
             "skills",
             "work_experience",
             "education",
+            "projects",
         ]
 
         labels = {
@@ -45,6 +49,7 @@ class CVTemplateForm(forms.ModelForm):
             "skills": "Relevant Skills",
             "work_experience": "Relevant Work Experience",
             "education": "Relevant Education",
+            "projects": "Associated Projects",
         }
 
         widgets = {
@@ -56,3 +61,4 @@ class CVTemplateForm(forms.ModelForm):
     skills = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
     work_experience = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
     education = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
+    projects = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)

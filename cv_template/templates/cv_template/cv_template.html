@@ -10,17 +10,19 @@
 {% block content %}
 <div class="container mx-auto p-3">
   <form method="post" id="skill-form" class="md:w-[50%]">
-      {% csrf_token %}
-      {{ form|crispy }}
-      {{ form.media}}
-      <button type="submit" class="text-white bg-violet-800 hover:bg-lime-500 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Create CV</button>
-    </form>
+    {% csrf_token %}
+    {{ form|crispy }}
+    {{ form.media }}
+    <button type="submit"
+      class="text-white bg-violet-800 hover:bg-lime-500 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Create
+      CV</button>
+  </form>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     // Create and insert the disabled text area
     const form = document.querySelector('#skill-form');
     const contactSelect = document.querySelector('#id_contact_information');
@@ -40,7 +42,7 @@
     contactDisplayLabel.parentNode.insertBefore(contactDisplay, contactDisplayLabel.nextSibling);
 
     // Update the text area with the selected option
-    contactSelect.addEventListener('change', function(event) {
+    contactSelect.addEventListener('change', function (event) {
       const selectedOption = event.target.options[event.target.selectedIndex];
       contactDisplay.value = selectedOption.text;
     });
@@ -53,7 +55,7 @@
 
 <script>
   const defaultSummary = document.querySelector('#id_use_default_summary');
-  defaultSummary.addEventListener('change', function(event) {
+  defaultSummary.addEventListener('change', function (event) {
     const summary = document.querySelector('#div_id_summary');
     if (event.target.checked) {
       summary.style.display = 'none';
