@@ -2,7 +2,7 @@ from django import forms
 from django_ckeditor_5.widgets import CKEditor5Widget
 from .models import CVTemplate
 
-from profiles.models import Skill, WorkExperience, Education
+from profiles.models import Skill, WorkExperience, Education, Project
 
 
 class CustomMMCF(forms.ModelMultipleChoiceField):
@@ -26,7 +26,7 @@ class CVTemplateForm(forms.ModelForm):
         self.fields["education"].queryset = Education.objects.filter(
             user=self.request.user
         )
-        self.fields["projects"].queryset = Education.objects.filter(
+        self.fields["projects"].queryset = Project.objects.filter(
             user=self.request.user
         )
 
