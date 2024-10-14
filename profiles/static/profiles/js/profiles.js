@@ -48,6 +48,30 @@ function addWorkExperienceHtml() {
 }
 
 
+const experienceProperties = {
+  work: {
+    target: 'work-list',
+    fields: {
+      organization: 'work-exp-organization',
+      location: 'work-exp-location',
+      position: 'work-exp-position',
+      date: 'work-exp-date'
+    },
+    bulletPoints: {
+      'work-responsibilities': 'work-rsp-list',
+      'work-skills': 'work-skill-list'
+    }
+  },
+  education: {
+
+  },
+}
+
+function addExperienceHtml(experienceType) {
+
+}
+
+
 /**
  * When an item add form is submitted, this adds the item to the list of already existing items
  * @param {Event} event the event that is called

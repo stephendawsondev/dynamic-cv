@@ -133,6 +133,7 @@ class Education(models.Model):
     location = models.CharField(max_length=150, null=True, blank=True)
     grade = models.CharField(max_length=50, null=False, blank=False)
     bullet_points = models.ManyToManyField(EducationBullets)
+    applied_skills = models.ManyToManyField(Skill)
 
     def __str__(self):
         return f"{self.degree} - {self.grade} - {self.school_name}, {self.start_year.strftime('%m/%y')} - {self.end_year.strftime('%m/%y') if self.end_year else 'Present'}"

@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404
 from .forms import SummaryForm, ContactInformationForm, \
      WorkExperienceForm, EducationForm
 from .models import Summary, ContactInformation, Skill, \
-     WorkExperience, WorkExperienceBullets
+     WorkExperience, WorkExperienceBullets, \
+     Education, EducationBullets
 
 import json
 
@@ -117,27 +118,74 @@ class AddWorkExperience(View):
         user = request.user
         if not work_form.is_valid():
             return HttpResponse("Form is invalid")
+        
+        # # Only add the necessary fields to prevent errors
+        # work_experience = WorkExperience(
+        #     user=request.user,
+        #     organization=post_data['organization'],
+        #     location=post_data['location'],
+        #     position=post_data['position'],
+        #     start_date=post_data['start_date'],
+        #     end_date=post_data['end_date']
+        # )
+        # work_experience.save()
 
-        work_experience = WorkExperience(
+        # # Extracting the responsibilities and skills
+        # for key, value in post_data.items():
+        #     list_item = None
+        #     if 'work-responsibilities' in key:
+        #         list_item, created = WorkExperienceBullets.objects.get_or_create(
+        #             user_id=user.id,
+        #             bullet_point=value
+        #         )
+        #         work_experience.bullet_points.add(list_item)
+        #     elif 'work-skills' in key:
+        #         list_item, created = Skill.objects.get_or_create(
+        #             user_id=user.id,
+        #             name=value
+        #         )
+        #         if len(user.user_skills.filter(name=value)) == 0:
+        #             user.user_skills.add(list_item)
+        #             user.save()
+        #         work_experience.applied_skills.add(list_item)
+        #     else:
+        #         continue            
+        #     list_item.save()
+        # work_experience.save()
+        return HttpResponse(json.dumps(post_data))
+
+
+class AddEducation(View):
+
+    def post(self, request):
+        post_data = request.POST.copy()
+        education_form = EducationForm(request.POST)
+        user = request.user
+        if not education_form.is_valid():
+            return HttpResponse("Form is invalid")
+        
+        # Only add the necessary fields to prevent errors
+        education = Education(
             user=request.user,
-            organization=request.POST['organization'],
-            location=request.POST['location'],
-            position=request.POST['position'],
-            start_date=request.POST['start_date'],
-            end_date=request.POST['end_date']
+            school_name=post_data['school_name'],
+            location=post_data['location'],
+            degree=post_data['degree'],
+            start_year=post_data['start_year'],
+            end_year=post_data['end_year'],
+            grade=post_data['grade'],
         )
-        work_experience.save()
+        education.save()
 
         # Extracting the responsibilities and skills
         for key, value in post_data.items():
             list_item = None
-            if 'work-responsibilities' in key:
-                list_item, created = WorkExperienceBullets.objects.get_or_create(
+            if 'education-modules' in key:
+                list_item, created = EducationBullets.objects.get_or_create(
                     user_id=user.id,
                     bullet_point=value
                 )
-                work_experience.bullet_points.add(list_item)
-            elif 'work-skills' in key:
+                education.bullet_points.add(list_item)
+            elif 'education-skills' in key:
                 list_item, created = Skill.objects.get_or_create(
                     user_id=user.id,
                     name=value
@@ -145,15 +193,9 @@ class AddWorkExperience(View):
                 if len(user.user_skills.filter(name=value)) == 0:
                     user.user_skills.add(list_item)
                     user.save()
-                work_experience.applied_skills.add(list_item)
+                education.applied_skills.add(list_item)
             else:
                 continue            
             list_item.save()
-        work_experience.save()
+        education.save()
         return HttpResponse(json.dumps(post_data))
-
-
-class AddEducation(View):
-
-    def post(self, request):
-        return HttpResponse('Successful')

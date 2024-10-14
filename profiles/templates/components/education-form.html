@@ -10,15 +10,15 @@
     {% endfor %}
   </div>
   <div id="education-input-data" class="hidden"></div>
-  <form hx-post="{% url 'add_education' %}" hx-target="#education-input-data" id="education-experience-form"
-    hx-on::after-request="addWorkExperienceHtml()">
+  <form hx-post="{% url 'add_education' %}" hx-target="#education-input-data" id="education-form"
+    hx-on::after-request="console.log('Success!!!')">
     {% csrf_token %}
     <div class="md:w-[50%]">
       {{ education_form.school_name|as_crispy_field }}
       {{ education_form.location|as_crispy_field }}
       {{ education_form.degree|as_crispy_field }}
     </div>
-    <p class="block text-gray-700 text-sm font-bold mb-2">Dates Attended<span class="asteriskField">*</span></p>
+    <p class="block text-gray-700 text-sm font-bold mb-2">Years Attended<span class="asteriskField">*</span></p>
     <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3 md:w-[50%]">
       {{ education_form.start_year|as_crispy_field }}
       {{ education_form.end_year|as_crispy_field }}
@@ -31,23 +31,26 @@
       <label for="id_current_education" class="ms-2 text-sm font-medium text-gray-900">I am currently
         studying here</label>
     </div>
-    <div class="hidden" id="education-responsibilities" name="responsibilities" data-item-id="0"></div>
+    <div class="md:w-[50%]">
+      {{ education_form.grade|as_crispy_field }}
+    </div>
+    <div class="hidden" id="education-modules" name="modules" data-item-id="0"></div>
     <div class="hidden" id="education-skills" name="skills" data-item-id="0"></div>
   </form>
   <div class="md:w-[50%]">
     <!-- Education Modules -->
-    <form data-main-input="education-modules" id="responsibility-form" class="add-item-form mb-6">
+    <form data-main-input="education-modules" id="module-form" class="add-item-form mb-6">
       {% csrf_token %}
-      <label for="new-responsibility-text" class="block text-gray-700 text-sm font-bold mb-2">Modules Covered:</label>
+      <label for="new-module-text" class="block text-gray-700 text-sm font-bold mb-2">Modules Covered:</label>
 
-      <ul id="responsibility-list" class="item-list pl-6 mb-3"></ul>
+      <ul id="module-list" class="item-list pl-6 mb-3"></ul>
 
       <div class="flex">
         <div class="relative w-full">
-          <input type="text" id="new-responsibility-text" name="responsibility"
+          <input type="text" id="new-module-text" name="module"
             class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-            placeholder="Role/Responsibility" maxlength="150" required />
-          <button type="submit" id="submit-responsibility"
+            placeholder="Module" maxlength="150" required />
+          <button type="submit" id="submit-module"
             class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
             Add</button>
         </div>
@@ -71,16 +74,16 @@
       </div>
     </form>
   </div>
-  <button type="submit" form="work-experience-form"
+  <button type="submit" form="education-form"
     class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add Work
     Experience</button>
 
   <!-- Save the HTML components in JavaScript -->
   {% with "item_class" as item_class %}
   <script id="work-experience-constants">
-    const workExperienceHtml = `{% include 'components/work-experience-details.html' %}`;
-    const responsibilityItem = `{% include 'components/list-item.html' %}`.replace('item_class', 'work-exp-rsp');
-    const skillItem = `{% include 'components/list-item.html' %}`.replace('item_class', 'work-exp-skill');
+    const educationHtml = `{% include 'components/work-experience-details.html' %}`;
+    const moduleItem = `{% include 'components/list-item.html' %}`.replace('item_class', 'work-exp-rsp');
+    const educationSkillItem = `{% include 'components/list-item.html' %}`.replace('item_class', 'work-exp-skill');
   </script>
   {% endwith %}
 </div>
