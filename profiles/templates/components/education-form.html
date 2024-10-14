@@ -4,7 +4,7 @@
 <div id="education">
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Education</h1>
   <p class="block text-gray-700 text-sm mb-4">Please enter your education details</p>
-  <div id="education-list">
+  <div id="education-list" data-accordion="collapse" class="my-4">
     {% for education_exp in education_list %}
     {% include 'components/education-details.html' %}
     {% endfor %}

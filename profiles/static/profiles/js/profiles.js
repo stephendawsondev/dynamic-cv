@@ -103,6 +103,7 @@ function addExperienceHtml(experienceType) {
     }
     else {
       // For all other fields
+      console.log(itemListElement);
       itemListElement.getElementsByClassName(className)[0].innerText = value;
     }
   }
