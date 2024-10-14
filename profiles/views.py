@@ -130,8 +130,6 @@ class AddWorkExperience(View):
             'position': post_data['position'],
             'start_date': post_data['start_date'],
         }
-        if len(post_data['end_date']) > 0:
-            required_fields['end_date'] = post_data['end_date']
         work_experience = WorkExperience(**required_fields)
         work_experience.save()
 
@@ -178,8 +176,6 @@ class AddEducation(View):
             'start_year': post_data['start_year'],
             'grade': post_data['grade'],
         }
-        if len(post_data['end_year']) > 0:
-            required_fields['end_year'] = post_data['end_year']
         education = Education(**required_fields)
         education.save()
 

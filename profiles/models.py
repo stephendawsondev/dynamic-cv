@@ -130,7 +130,7 @@ class Education(models.Model):
     degree = models.CharField(max_length=150, null=False, blank=False)
     school_name = models.CharField(max_length=150, null=False, blank=False)
     location = models.CharField(max_length=150, null=True, blank=True)
-    grade = models.CharField(max_length=50, null=False, blank=False)
+    grade = models.CharField(max_length=50, null=True, blank=True)
     bullet_points = models.ManyToManyField(EducationBullets)
     applied_skills = models.ManyToManyField(Skill)
 

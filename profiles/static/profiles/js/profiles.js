@@ -191,13 +191,39 @@ function enableRemoveButton(element) {
 }
 
 
-let addItemForms = document.getElementsByClassName('add-item-form');
+/**
+ * Is called when the checkbox for when the user is currently in a work/education
+ * experience. Enables/Disables the fields specified in the checkbox depending on its state
+ */
+function checkActiveExperience() {
+  let disableIds = this.getAttribute('data-disables').split(',');
+  console.log(this.checked);
+  for (let disableId of disableIds) {
+    let disableElement = document.getElementById(disableId);
+    disableElement.disabled = this.checked;
+    disableElement.required = !this.checked;
+  }
+}
+const experienceActiveChecks = document.getElementsByClassName('is-active-check');
+for (let checkbox of experienceActiveChecks) {
+  checkbox.addEventListener('click', checkActiveExperience);
+}
+// Forcing dependent elements that are not required by default to be required
+const dependentIds = ['id_end_date', 'id_end_year', 'id_grade'];
+for (let depId of dependentIds) {
+  let element = document.getElementById(depId);
+  element.required = true;
+}
+
+
+// Adding the bullet points to the list
+const addItemForms = document.getElementsByClassName('add-item-form');
 for (let itemForm of addItemForms) {
   itemForm.addEventListener('submit', addListItem);
 }
 
 // Removes any custom validity every time the input changes
-let addItemInputs = document.getElementsByClassName('add-item-input');
+const addItemInputs = document.getElementsByClassName('add-item-input');
 for (let itemInput of addItemInputs) {
   itemInput.addEventListener('input', function() {
     this.setCustomValidity("");
