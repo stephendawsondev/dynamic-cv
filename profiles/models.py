@@ -30,7 +30,7 @@ class Skill(models.Model):
         """
         Returns the list of skills with a space after every comma
         """
-        return self.display_name
+        return self.display_name()
 
     def display_name(self):
         return self.name.replace("-", " ")
@@ -124,7 +124,6 @@ class Education(models.Model):
     """
     Education model
     """
-
     user = models.ForeignKey(User, related_name="education", on_delete=models.CASCADE)
     start_year = models.DateField(null=False, blank=False)
     end_year = models.DateField(null=True, blank=True)
@@ -148,4 +147,8 @@ class Project(models.Model):
     """
     user = models.ForeignKey(User, related_name="projects", on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
-    
+    reposity_url = models.URLField(blank=True, null=True)
+    deployed_url = models.URLField(blank=False, null=False)
+
+    def __str__(self):
+        return self.name
