@@ -16,13 +16,13 @@
   {% block extra_meta %}
   {% endblock %}
   <link rel="stylesheet" href="{% static 'css/cv_base.css' %}">
+  <link rel="shortcut icon" href="{% static 'icons/cv.svg' %}" type="image/x-icon">
   {% block extra_css %}
   {% endblock %}
 
   {% block core_js %}
-  <script src="https://cdn.tailwindcss.com"></script>
   {% endblock core_js %}
-  <title>{% block title %}{% endblock %}</title>
+  <title>{% block title %}{% endblock %}Dynamic CV</title>
 </head>
 
 {% comment %} Body {% endcomment %}
