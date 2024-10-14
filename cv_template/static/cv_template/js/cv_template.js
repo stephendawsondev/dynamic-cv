@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const sectionHeights = Array.from(sections).map(
       (section) => section.offsetHeight
     );
-    console.log("Section Heights:", sectionHeights);
 
     // Clear the initial page
     initialPage.innerHTML = "";
@@ -58,6 +57,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const pageLink = document.createElement("a");
       pageLink.href = "#";
       pageLink.textContent = `Page ${index + 1}`;
+      pageLink.classList.add(
+        "bg-violet-800",
+        "hover:bg-lime-600",
+        "text-white",
+        "py-2",
+        "px-4",
+        "rounded-sm",
+        "mx-2"
+      );
       pageLink.addEventListener("click", function (event) {
         event.preventDefault();
         showPage(index + 1);
@@ -90,6 +98,68 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.addEventListener("load", toggleMobileClass);
   window.addEventListener("resize", toggleMobileClass);
-
   window.addEventListener("load", layoutSections);
+
+  requirejs.config({
+    paths: {
+      jspdf: "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min",
+      html2canvas:
+        "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min",
+    },
+  });
+
+  require(["jspdf", "html2canvas"], function (jspdf, html2canvas) {
+    const { jsPDF } = jspdf;
+    window.html2canvas = html2canvas;
+
+    document
+      .getElementById("generate-pdf")
+      .addEventListener("click", function () {
+        const element = document.querySelector(".cv");
+        const pages = document.querySelectorAll(".page");
+
+        // Show all pages for PDF generation
+        pages.forEach((page) => (page.style.display = "block"));
+
+        html2canvas(element, {
+          scale: 1,
+          useCORS: true,
+          windowWidth: element.scrollWidth,
+          windowHeight: element.scrollHeight,
+        }).then((canvas) => {
+          document.body.appendChild(canvas);
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF({
+            unit: "mm",
+            format: "a4",
+            orientation: "portrait",
+          });
+
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const imgWidth = pageWidth;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+          let heightLeft = imgHeight;
+          let position = 0;
+          let pageCount = 0;
+
+          while (heightLeft > 0) {
+            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+            position -= pageHeight;
+            pageCount++;
+
+            if (heightLeft > 0) {
+              pdf.addPage();
+            }
+          }
+
+          pdf.save("my_cv.pdf");
+
+          // Revert the changes after PDF generation
+          pages.forEach((page) => (page.style.display = ""));
+        });
+      });
+  });
 });
