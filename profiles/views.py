@@ -176,7 +176,6 @@ class AddEducation(View):
             'location': post_data['location'],
             'degree': post_data['degree'],
             'start_year': post_data['start_year'],
-            'grade': post_data['grade'],
         }
         if 'end_year' in post_data:
             required_fields['end_year'] = post_data['end_year']

@@ -197,7 +197,6 @@ function enableRemoveButton(element) {
  */
 function checkActiveExperience() {
   let disableIds = this.getAttribute('data-disables').split(',');
-  console.log(this.checked);
   for (let disableId of disableIds) {
     let disableElement = document.getElementById(disableId);
     disableElement.disabled = this.checked;
