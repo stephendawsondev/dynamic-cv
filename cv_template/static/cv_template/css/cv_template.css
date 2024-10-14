@@ -2,6 +2,17 @@
     margin: 2rem 0;
 }
 
+[id^="div_id_"] input,
+div.ck.ck-editor__main,
+div.ck.ck-sticky-panel,
+input[type="checkbox"] {
+    border: 1px solid #5B21B6;
+}
+
+#id_cv_name {
+    border-radius: 0;
+}
+
 #div_id_use_default_summary {
     display: flex;
     flex-direction: row-reverse;
@@ -20,10 +31,6 @@
     align-items: center;
     padding: 1rem;
     margin-bottom: 10px;
-    border: 1px solid #5B21B6;
-}
-
-input[type="checkbox"] {
     border: 1px solid #5B21B6;
 }
 
