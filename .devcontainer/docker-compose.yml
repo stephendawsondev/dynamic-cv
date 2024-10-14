@@ -1,10 +1,14 @@
+version: "3"
+
 services:
   web:
-    image: qok44kc:bf59ed70085f5d4c05eac79ff7018ad08086f9c5
+    build:
+      context: .
+      dockerfile: Dockerfile
     command:
       ["gunicorn", "--bind", "0.0.0.0:3003", "dynamiccv.wsgi:application"]
     ports:
-      - "3005:3005"
+      - "3003:3003"
     environment:
       - DJANGO_SETTINGS_MODULE=dynamiccv.settings
     healthcheck:
