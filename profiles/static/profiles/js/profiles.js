@@ -17,6 +17,7 @@ function convertHtmlToDOM(htmlString) {
 // Data to be fed into the addExperienceHtml function
 const experienceProperties = {
   work: {
+    form: 'work-experience-form',
     target: 'work-list',
     dataSource: 'work-input-data',
     html: workExperienceHtml,
@@ -32,6 +33,7 @@ const experienceProperties = {
     }
   },
   education: {
+    form: 'education-form',
     target: 'education-list',
     dataSource: 'education-input-data',
     html: educationHtml,
@@ -48,6 +50,7 @@ const experienceProperties = {
     }
   },
   project: {
+    form: 'project-form',
     target: 'projects-list',
     dataSource: 'project-input-data',
     html: projectHtml,
@@ -64,8 +67,18 @@ const experienceProperties = {
  * @param {String} experienceType The key to reference the above object experienceProperties
  */
 function addExperienceHtml(experienceType) {
-
   let propertyObject = experienceProperties[experienceType];
+
+  // Remove the hidden bullet point inputs left behind by the form after it has reset
+  let bulletPointInputs = document.getElementById(propertyObject.form).getElementsByClassName('bullet-point-inputs');
+  for (let bullet of bulletPointInputs) {
+    bullet.setAttribute('data-item-id', '0');
+    while (bullet.children.length > 0) {
+      bullet.children[0].remove();
+    }
+  }
+
+  // Retrieving the data posted from the server
   let workExperienceData = JSON.parse(document.getElementById(propertyObject['dataSource']).innerText);
   let elements = convertHtmlToDOM(propertyObject.html);
   let itemListElement = elements[0];

@@ -11,7 +11,7 @@
   </div>
   <div id="project-input-data" class="hidden"></div>
   <form hx-post="{% url 'add_project' %}" hx-target="#project-input-data" id="project-form"
-    hx-on::after-request="addExperienceHtml('project')">
+    hx-on::after-request="this.reset()" onreset="addExperienceHtml('project')">
     {% csrf_token %}
     <div class="md:w-[50%]">
       {{ project_form.name|as_crispy_field }}

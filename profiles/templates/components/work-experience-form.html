@@ -11,7 +11,7 @@
   </div>
   <div id="work-input-data" class="hidden"></div>
   <form hx-post="{% url 'add_work_experience' %}" hx-target="#work-input-data" id="work-experience-form"
-    hx-on::after-request="addExperienceHtml('work')">
+    hx-on::after-request="this.reset()" onreset="addExperienceHtml('work')">
     {% csrf_token %}
     <div class="md:w-[50%]">
       {{ work_experience_form.organization|as_crispy_field }}
@@ -31,8 +31,8 @@
       <label for="id_current_work" class="ms-2 text-sm font-medium text-gray-900">I am currently
         working in this role</label>
     </div>
-    <div class="hidden" id="work-responsibilities" name="responsibilities" data-item-id="0"></div>
-    <div class="hidden" id="work-skills" name="skills" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" id="work-responsibilities" name="responsibilities" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" id="work-skills" name="skills" data-item-id="0"></div>
   </form>
   <div class="md:w-[50%]">
     <!-- Work responsibilities -->

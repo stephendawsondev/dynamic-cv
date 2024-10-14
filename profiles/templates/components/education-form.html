@@ -11,7 +11,7 @@
   </div>
   <div id="education-input-data" class="hidden"></div>
   <form hx-post="{% url 'add_education' %}" hx-target="#education-input-data" id="education-form"
-    hx-on::after-request="addExperienceHtml('education')">
+    hx-on::after-request="this.reset()" onreset="addExperienceHtml('education')">
     {% csrf_token %}
     <div class="md:w-[50%]">
       {{ education_form.school_name|as_crispy_field }}
@@ -34,8 +34,8 @@
     <div class="md:w-[50%]">
       {{ education_form.grade|as_crispy_field }}
     </div>
-    <div class="hidden" id="education-modules" name="modules" data-item-id="0"></div>
-    <div class="hidden" id="education-skills" name="skills" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" id="education-modules" name="modules" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" id="education-skills" name="skills" data-item-id="0"></div>
   </form>
   <div class="md:w-[50%]">
     <!-- Education Modules -->
