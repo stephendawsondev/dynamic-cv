@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('home.urls')),
     path('cv/', include('cv_template.urls')),
     path('profile/', include('profiles.urls')),
+    path('contact/', include('contact_us.urls')),
 ]
 
 handler403 = 'dynamiccv.views.handler403'
