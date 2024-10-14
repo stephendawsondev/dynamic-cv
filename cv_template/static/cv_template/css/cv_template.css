@@ -1,52 +1,53 @@
 [id^="div_id_"] {
-    margin: 2rem 0;
+  margin: 2rem 0;
 }
 
 [id^="div_id_"] input,
 div.ck.ck-editor__main,
 div.ck.ck-sticky-panel,
 input[type="checkbox"] {
-    border: 1px solid #5B21B6;
+  border: 1px solid #5b21b6;
 }
 
-#id_cv_name {
-    border-radius: 0;
+#id_cv_name,
+#id_position_title {
+  border-radius: 0;
 }
 
 #div_id_use_default_summary {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
 }
 
 #div_id_use_default_summary > input {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 #div_id_work_experience > div > div > label,
 #div_id_education > div > div > label,
 #div_id_projects > div > div > label {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    margin-bottom: 10px;
-    border: 1px solid #5B21B6;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 10px;
+  border: 1px solid #5b21b6;
 }
 
 input[type="checkbox"]:checked {
-    background-color: #8EDE17;
-    border-color: #5B21B6;
+  background-color: #8ede17;
+  border-color: #5b21b6;
 }
 
 /* Add CSS Grid styling */
 #div_id_skills .mb-3 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive columns */
-    gap: 1rem; /* Adjust the gap between items as needed */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
 }
 
 #div_id_skills .mr-3 {
-    margin-right: 0; /* Remove the right margin to avoid extra spacing */
+  margin-right: 0;
 }

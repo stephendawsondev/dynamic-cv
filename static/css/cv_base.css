@@ -1,21 +1,15 @@
-html {
+html,
+body {
   height: 100%;
   width: 100%;
-}
-
-@page {
-  size: A4;
   margin: 0;
+  padding: 0;
 }
 
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  margin: 0;
-  padding: 20px;
-  box-sizing: border-box;
   background-color: #f0f0f0;
   font-family: "Raleway", sans-serif;
   line-height: 1.6;
@@ -31,11 +25,9 @@ body {
 .page {
   width: 210mm;
   min-height: 297mm;
-  height: auto;
   padding: 10mm;
   box-sizing: border-box;
   background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   position: relative;
   display: none;
@@ -45,65 +37,20 @@ body {
   display: block;
 }
 
-@media print {
-  body {
-    display: block;
-    padding: 0;
-    background-color: white;
-  }
-
-  .page-navigation {
-    display: none !important;
-  }
-
-  .cv {
-    display: block;
-  }
-
+@media screen {
   .page {
-    width: 210mm;
-    min-height: 297mm;
-    height: auto;
-    page-break-after: always;
-    margin: 0;
-    padding: 10mm;
-    box-sizing: border-box;
-  }
-
-  .page:last-child {
-    page-break-after: auto;
-  }
-
-  .page-navigation {
-    display: none;
-  }
-}
-
-.page-navigation {
-  margin-top: 2em;
-  display: flex;
-  justify-content: center;
-}
-
-@media screen and (max-width: 767px) {
-  body.mobile {
-    transform-origin: top left;
-    transform: scale(0.5);
-    width: 200%;
-    height: 200%;
-    overflow-x: hidden;
-  }
-
-  body.mobile .page {
-    margin: 0 auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
 }
 
 @media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
   body {
-    transform: none !important;
-    width: auto !important;
-    height: auto !important;
+    background-color: white;
   }
 
   .cv {
@@ -111,7 +58,6 @@ body {
     width: 210mm;
     margin: 0 auto;
     background: white;
-    box-shadow: none;
   }
 
   .page {
@@ -122,30 +68,54 @@ body {
     margin: 0;
     padding: 10mm;
     box-sizing: border-box;
+    box-shadow: none;
   }
 
   .page:last-child {
-    page-break-after: auto;
+    page-break-after: avoid;
+  }
+
+  .page-navigation,
+  #generate-pdf {
+    display: none !important;
   }
 
   h3 {
     page-break-after: avoid;
   }
 
-  .project-section {
-    page-break-inside: avoid;
-  }
-
-  .project-section table {
-    page-break-inside: auto;
-  }
-
-  .project-section tr {
-    page-break-inside: avoid;
-  }
-
-  /* Add some extra space before sections that might start a new page */
   .cv-section {
-    margin-top: 10mm;
+    page-break-inside: avoid;
+  }
+}
+
+.page-navigation a,
+#generate-pdf {
+  cursor: pointer;
+  background-color: #5b21b6;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  border: none;
+  margin: 0 5px;
+  &:hover {
+    background-color: rgb(101 163 13);
+  }
+}
+
+#generate-pdf {
+  margin-top: 2em;
+}
+
+@media print {
+  .page {
+    box-shadow: none !important;
+    margin: 0 !important;
+    page-break-after: always;
+  }
+
+  .page:last-child {
+    page-break-after: avoid;
   }
 }

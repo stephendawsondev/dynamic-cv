@@ -116,18 +116,34 @@ document.addEventListener("DOMContentLoaded", function () {
       .getElementById("generate-pdf")
       .addEventListener("click", function () {
         const element = document.querySelector(".cv");
-        const pages = document.querySelectorAll(".page");
+        const pages = element.querySelectorAll(".page");
 
-        // Show all pages for PDF generation
-        pages.forEach((page) => (page.style.display = "block"));
+        // Create a clone of the CV element
+        const clone = element.cloneNode(true);
 
-        html2canvas(element, {
-          scale: 1,
+        // Apply styles to the clone
+        clone.style.position = "absolute";
+        clone.style.left = "-9999px";
+        clone.style.top = "0";
+        document.body.appendChild(clone);
+
+        // Show all pages in the clone
+        clone.querySelectorAll(".page").forEach((page) => {
+          page.style.display = "block";
+          page.style.boxShadow = "none";
+          page.style.margin = "0";
+          page.style.pageBreakAfter = "always";
+        });
+
+        html2canvas(clone, {
+          scale: 2,
           useCORS: true,
-          windowWidth: element.scrollWidth,
-          windowHeight: element.scrollHeight,
+          allowTaint: true,
+          backgroundColor: null,
         }).then((canvas) => {
-          document.body.appendChild(canvas);
+          // Remove the clone after capturing
+          document.body.removeChild(clone);
+
           const imgData = canvas.toDataURL("image/png");
           const pdf = new jsPDF({
             unit: "mm",
@@ -144,21 +160,20 @@ document.addEventListener("DOMContentLoaded", function () {
           let position = 0;
           let pageCount = 0;
 
-          while (heightLeft > 0) {
+          const significantContentThreshold = 10;
+
+          while (heightLeft > significantContentThreshold) {
             pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
             position -= pageHeight;
             pageCount++;
 
-            if (heightLeft > 0) {
+            if (heightLeft > significantContentThreshold) {
               pdf.addPage();
             }
           }
 
-          pdf.save("my_cv.pdf");
-
-          // Revert the changes after PDF generation
-          pages.forEach((page) => (page.style.display = ""));
+          pdf.save(document.title.split("-")[0].trim() + ".pdf");
         });
       });
   });
