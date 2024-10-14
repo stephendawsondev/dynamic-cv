@@ -52,7 +52,7 @@ function addSkillDeleteEvent(skillItem) {
 function deleteSkill(skill) {
   let csrfToken = findCsrfToken('skill-list-form');
   // Sends the AJAX to add the skill to the server
-  fetch(`/profile/remove-skill/${skill}`, {
+  fetch(`/profile/remove-skill/${skill}/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ window.onload = () => {
     }
 
     // Sends the AJAX to add the skill to the server
-    fetch(`/profile/add-skill/${skillTextSlug}`, {
+    fetch(`/profile/add-skill/${skillTextSlug}/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

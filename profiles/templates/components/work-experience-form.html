@@ -9,6 +9,7 @@
     {% csrf_token %}
     <div class="md:w-[50%]">
       {{ work_experience_form.organization|as_crispy_field }}
+      {{ work_experience_form.location|as_crispy_field }}
       {{ work_experience_form.position|as_crispy_field }}
     </div>
     <p class="block text-gray-700 text-sm font-bold mb-2">Dates Worked<span class="asteriskField">*</span></p>
