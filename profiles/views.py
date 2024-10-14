@@ -18,17 +18,20 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
 
         contact_information, created = ContactInformation.objects.get_or_create(
-            user=self.request.user)
+            user=user)
         context['contact_information_form'] = ContactInformationForm(
             instance=contact_information)
 
         summary_info, created = Summary.objects.get_or_create(
-            user=self.request.user)
+            user=user)
         context['summary_form'] = SummaryForm(instance=summary_info)
-        context['summary'] = Summary.objects.get(user=self.request.user).summary
+        context['summary'] = Summary.objects.get(user=user).summary
+
         context['work_experience_form'] = WorkExperienceForm()
+        context['work_experience_list'] = user.work_experience.all()
         return context
 
 

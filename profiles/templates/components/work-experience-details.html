@@ -1,0 +1,25 @@
+<div class="work-exp grid grid-cols-2 2xl:w-[50%]">
+  <p class="block text-gray-700 text-sm font-bold mb-2">Company Name</p>
+  <p class="work-exp-name block text-gray-700 text-sm mb-2">{{ work_exp.organization }}</p>
+  <p class="block text-gray-700 text-sm font-bold mb-2">Location</p>
+  <p class="work-exp-location block text-gray-700 text-sm mb-2">{{ work_exp.location }}</p>
+  <p class="block text-gray-700 text-sm font-bold mb-2">Job Title</p>
+  <p class="work-exp-position block text-gray-700 text-sm mb-2">{{ work_exp.position }}</p>
+  <p class="block text-gray-700 text-sm font-bold mb-2">Dates Worked</p>
+  <p class="work-exp-position block text-gray-700 text-sm mb-2">
+    {{ work_exp.start_date }} - {{ work_exp.end_date }}
+  </p>
+  <p class="block text-gray-700 text-sm font-bold mb-2">Duties/Responsibilities</p>
+  <ul class="pl-6">
+    {% for rsp in work_exp.bullet_points.all %}
+    <li class="work-exp-rsp list-disc text-gray-700 text-sm mb-2">{{ rsp }}</li>
+    {% endfor %}
+  </ul>
+  <p class="block text-gray-700 text-sm font-bold mb-2">Applied Skills</p>
+  <ul class="pl-6">
+    {% for skill in work_exp.skills.all %}
+    <li class="work-exp-skill list-disc text-gray-700 text-sm mb-2">{{ skill }}</li>
+    {% endfor %}
+  </ul>
+</div>
+<hr class="mb-8 2xl:w-[50%]">

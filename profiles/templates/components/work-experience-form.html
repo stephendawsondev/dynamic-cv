@@ -4,7 +4,11 @@
 <div id="work-experience">
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Work Experience</h1>
   <p class="block text-gray-700 text-sm mb-4">Please enter your work experience</p>
-  <div id="job-list"></div>
+  <div id="job-list">
+    {% for work_exp in work_experience_list %}
+    {% include 'components/work-experience-details.html' %}
+    {% endfor %}
+  </div>
   <form hx-post="{% url 'add_work_experience' %}" hx-target="#job-list" id="work-experience-form">
     {% csrf_token %}
     <div class="md:w-[50%]">
@@ -33,7 +37,7 @@
     <form data-main-input="work-responsibilities" id="responsibility-form" class="add-item-form mb-6">
       {% csrf_token %}
       <label for="new-responsibility-text"
-        class="block text-gray-700 text-sm font-bold mb-2">Roles/Responsibilities:</label>
+        class="block text-gray-700 text-sm font-bold mb-2">Duties/Responsibilities:</label>
 
       <ul id="responsibility-list" class="item-list pl-6 mb-3"></ul>
 
