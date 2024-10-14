@@ -87,6 +87,7 @@ class WorkExperience(models.Model):
     organization = models.CharField(max_length=150, null=False, blank=False)
     location = models.CharField(max_length=150, null=True, blank=True)
     bullet_points = models.ManyToManyField(WorkExperienceBullets)
+    applied_skills = models.ManyToManyField(Skill, related_name="work_experience")
 
     def __str__(self):
         return f"{self.position} - {self.organization}"
