@@ -5,12 +5,12 @@
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Projects</h1>
   <p class="block text-gray-700 text-sm mb-4">Enter any projects you have worked on</p>
   <div id="projects-list">
-    {% for education_exp in project_list %}
+    {% for project_exp in project_list %}
     {% include 'components/project-details.html' %}
     {% endfor %}
   </div>
   <div id="project-input-data" class="hidden"></div>
-  <form hx-post="{% url 'add_education' %}" hx-target="#project-input-data" id="project-form"
+  <form hx-post="{% url 'add_project' %}" hx-target="#project-input-data" id="project-form"
     hx-on::after-request="addExperienceHtml('project')">
     {% csrf_token %}
     <div class="md:w-[50%]">

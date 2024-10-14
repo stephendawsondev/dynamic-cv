@@ -23,4 +23,7 @@ urlpatterns = [
         views.AddEducation.as_view(),
         name="add_education",
     ),
+    path(
+        "add-project/", views.AddProject.as_view(), name="add_project",
+    ),
 ]

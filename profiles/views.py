@@ -9,7 +9,7 @@ from .forms import SummaryForm, ContactInformationForm, \
      WorkExperienceForm, EducationForm, ProjectForm
 from .models import Summary, ContactInformation, Skill, \
      WorkExperience, WorkExperienceBullets, \
-     Education, EducationBullets
+     Education, EducationBullets, Project
 
 import json
 
@@ -205,4 +205,22 @@ class AddEducation(View):
                 continue            
             list_item.save()
         education.save()
+        return HttpResponse(json.dumps(post_data))
+
+
+class AddProject(View):
+
+    def post(self, request):
+        post_data = request.POST.copy()
+        project_form = ProjectForm(request.POST)
+        if not project_form.is_valid():
+            return HttpResponse("Form is not valid")
+        
+        project = Project(
+            user=request.user,
+            name=post_data['name'],
+            repository_url=post_data['repository_url'],
+            deployed_url=post_data['deployed_url']
+        )
+        project.save()
         return HttpResponse(json.dumps(post_data))

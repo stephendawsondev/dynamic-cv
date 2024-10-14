@@ -1,10 +1,13 @@
 <div class="education-exp grid grid-cols-1 sm:grid-cols-2 2xl:w-[50%]">
   <p class="block text-gray-700 text-sm font-bold mb-2">Institution Name</p>
   <p class="education-exp-school-name block text-gray-700 text-sm mb-2">{{ education_exp.school_name }}</p>
+
   <p class="block text-gray-700 text-sm font-bold mb-2">Location</p>
   <p class="education-exp-location block text-gray-700 text-sm mb-2">{{ education_exp.location }}</p>
+
   <p class="block text-gray-700 text-sm font-bold mb-2">Degree</p>
   <p class="education-exp-degree block text-gray-700 text-sm mb-2">{{ education_exp.degree }}</p>
+
   <p class="block text-gray-700 text-sm font-bold mb-2">Years Attended</p>
   <p class="education-exp-date block text-gray-700 text-sm mb-2">
     {{ education_exp.start_year }} - {% if education_exp.end_year %}{{ education_exp.end_year }}{% else %}Present
@@ -12,12 +15,14 @@
   </p>
   <p class="block text-gray-700 text-sm font-bold mb-2">Grade</p>
   <p class="education-exp-grade block text-gray-700 text-sm mb-2">{{ education_exp.grade }}</p>
+
   <p class="block text-gray-700 text-sm font-bold mb-2">Modules Covered</p>
   <ul class="education-modules-list pl-6 mb-3">
     {% for item_name in education_exp.bullet_points.all %}
     {% include 'components/list-item.html' %}
     {% endfor %}
   </ul>
+
   <p class="block text-gray-700 text-sm font-bold mb-2">Applied Skills</p>
   <ul class="education-skill-list pl-6">
     {% for item_name in education_exp.applied_skills.all %}

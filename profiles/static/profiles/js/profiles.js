@@ -47,6 +47,16 @@ const experienceProperties = {
       'education-skills': 'education-skill-list'
     }
   },
+  project: {
+    target: 'projects-list',
+    dataSource: 'project-input-data',
+    html: projectHtml,
+    fields: {
+      name: 'project-exp-name',
+      repository_url: 'project-exp-repo',
+      deployed_url: 'project-exp-deploy',
+    }
+  }
 }
 
 /**
@@ -54,10 +64,11 @@ const experienceProperties = {
  * @param {String} experienceType The key to reference the above object experienceProperties
  */
 function addExperienceHtml(experienceType) {
+
   let propertyObject = experienceProperties[experienceType];
   let workExperienceData = JSON.parse(document.getElementById(propertyObject['dataSource']).innerText);
   let elements = convertHtmlToDOM(propertyObject.html);
-  let workListElement = elements[0];
+  let itemListElement = elements[0];
   
   // Filling out the new information into the new set of elements
   for (let [field, className] of Object.entries(propertyObject.fields)) {
@@ -75,20 +86,22 @@ function addExperienceHtml(experienceType) {
           endDate = propValue;
         }
       }
-      workListElement.getElementsByClassName(className)[0].innerText = `${startDate} - ${endDate}`;
+      itemListElement.getElementsByClassName(className)[0].innerText = `${startDate} - ${endDate}`;
     }
     else {
       // For all other fields
-      workListElement.getElementsByClassName(className)[0].innerText = value;
+      itemListElement.getElementsByClassName(className)[0].innerText = value;
     }
   }
 
-  for (let [key, value] of Object.entries(workExperienceData)) {
-    for (let [bulletField, className] of Object.entries(propertyObject.bulletPoints)) {
-      if (key.includes(bulletField)) {
-        let newListItem = convertHtmlToDOM(listItem)[0];
-        newListItem.innerText = value;
-        workListElement.getElementsByClassName(className)[0].appendChild(newListItem);
+  if ('bulletPoints' in propertyObject) {
+    for (let [key, value] of Object.entries(workExperienceData)) {
+      for (let [bulletField, className] of Object.entries(propertyObject.bulletPoints)) {
+        if (key.includes(bulletField)) {
+          let newListItem = convertHtmlToDOM(listItem)[0];
+          newListItem.innerText = value;
+          itemListElement.getElementsByClassName(className)[0].appendChild(newListItem);
+        }
       }
     }
   }
