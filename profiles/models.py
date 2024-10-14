@@ -10,7 +10,8 @@ class Summary(models.Model):
     """
 
     user = models.ForeignKey(
-        User, related_name="summary_user", on_delete=models.CASCADE)
+        User, related_name="summary_user", on_delete=models.CASCADE
+    )
     summary = models.CharField(max_length=500, null=True, blank=True)
 
     def __str__(self):
@@ -21,8 +22,8 @@ class Skill(models.Model):
     """
     Model for the user's skills
     """
-    user = models.ForeignKey(
-        User, related_name="user_skills", on_delete=models.CASCADE)
+
+    user = models.ForeignKey(User, related_name="user_skills", on_delete=models.CASCADE)
     name = models.CharField(max_length=30, blank=True, null=True)
 
     def __str__(self):
@@ -39,8 +40,10 @@ class ContactInformation(models.Model):
     """
     Contact Information model
     """
+
     user = models.ForeignKey(
-        User, related_name="contact_information", on_delete=models.CASCADE)
+        User, related_name="contact_information", on_delete=models.CASCADE
+    )
     first_name = models.CharField(max_length=50, null=False, blank=False)
     last_name = models.CharField(max_length=50, null=False, blank=False)
     email = models.EmailField(max_length=100, null=True, blank=True)
@@ -64,8 +67,10 @@ class WorkExperienceBullets(models.Model):
     """
     Bullet points for work experience model
     """
+
     user = models.ForeignKey(
-        User, related_name="work_bullets", on_delete=models.CASCADE)
+        User, related_name="work_bullets", on_delete=models.CASCADE
+    )
     bullet_point = models.CharField(max_length=150, null=False, blank=False)
 
     def __str__(self):
@@ -79,8 +84,10 @@ class WorkExperience(models.Model):
     """
     Work Experience model
     """
+
     user = models.ForeignKey(
-        User, related_name="work_experience", on_delete=models.CASCADE)
+        User, related_name="work_experience", on_delete=models.CASCADE
+    )
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
     position = models.CharField(max_length=150, null=False, blank=False)
@@ -90,7 +97,7 @@ class WorkExperience(models.Model):
     applied_skills = models.ManyToManyField(Skill, related_name="work_experience")
 
     def __str__(self):
-        return f"{self.position} - {self.organization}"
+        return f"{self.position} - {self.organization}, {self.start_date.strftime('%m/%y')} - {self.end_date.strftime('%m/%y') if self.end_date else 'Present'}"
 
     class Meta:
         verbose_name_plural = "Work Experience"
@@ -100,8 +107,10 @@ class EducationBullets(models.Model):
     """
     Bullet points for education model
     """
+
     user = models.ForeignKey(
-        User, related_name="education_bullets", on_delete=models.CASCADE)
+        User, related_name="education_bullets", on_delete=models.CASCADE
+    )
     bullet_point = models.CharField(max_length=150, null=False, blank=False)
 
     def __str__(self):
@@ -115,10 +124,10 @@ class Education(models.Model):
     """
     Education model
     """
-    user = models.ForeignKey(
-        User, related_name="education", on_delete=models.CASCADE)
-    start_year = models.CharField(max_length=4, null=False, blank=False)
-    end_year = models.CharField(max_length=4, null=True, blank=True)
+
+    user = models.ForeignKey(User, related_name="education", on_delete=models.CASCADE)
+    start_year = models.DateField(null=False, blank=False)
+    end_year = models.DateField(null=True, blank=True)
     degree = models.CharField(max_length=150, null=False, blank=False)
     school_name = models.CharField(max_length=150, null=False, blank=False)
     location = models.CharField(max_length=150, null=True, blank=True)
@@ -126,7 +135,7 @@ class Education(models.Model):
     bullet_points = models.ManyToManyField(EducationBullets)
 
     def __str__(self):
-        return f"{self.school_name} - {self.degree}"
+        return f"{self.degree} - {self.grade} - {self.school_name}, {self.start_year.strftime('%m/%y')} - {self.end_year.strftime('%m/%y') if self.end_year else 'Present'}"
 
     class Meta:
         verbose_name_plural = "Education"
