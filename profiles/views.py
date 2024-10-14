@@ -119,39 +119,39 @@ class AddWorkExperience(View):
         if not work_form.is_valid():
             return HttpResponse("Form is invalid")
         
-        # # Only add the necessary fields to prevent errors
-        # work_experience = WorkExperience(
-        #     user=request.user,
-        #     organization=post_data['organization'],
-        #     location=post_data['location'],
-        #     position=post_data['position'],
-        #     start_date=post_data['start_date'],
-        #     end_date=post_data['end_date']
-        # )
-        # work_experience.save()
+        # Only add the necessary fields to prevent errors
+        work_experience = WorkExperience(
+            user=request.user,
+            organization=post_data['organization'],
+            location=post_data['location'],
+            position=post_data['position'],
+            start_date=post_data['start_date'],
+            end_date=post_data['end_date']
+        )
+        work_experience.save()
 
-        # # Extracting the responsibilities and skills
-        # for key, value in post_data.items():
-        #     list_item = None
-        #     if 'work-responsibilities' in key:
-        #         list_item, created = WorkExperienceBullets.objects.get_or_create(
-        #             user_id=user.id,
-        #             bullet_point=value
-        #         )
-        #         work_experience.bullet_points.add(list_item)
-        #     elif 'work-skills' in key:
-        #         list_item, created = Skill.objects.get_or_create(
-        #             user_id=user.id,
-        #             name=value
-        #         )
-        #         if len(user.user_skills.filter(name=value)) == 0:
-        #             user.user_skills.add(list_item)
-        #             user.save()
-        #         work_experience.applied_skills.add(list_item)
-        #     else:
-        #         continue            
-        #     list_item.save()
-        # work_experience.save()
+        # Extracting the responsibilities and skills
+        for key, value in post_data.items():
+            list_item = None
+            if 'work-responsibilities' in key:
+                list_item, created = WorkExperienceBullets.objects.get_or_create(
+                    user_id=user.id,
+                    bullet_point=value
+                )
+                work_experience.bullet_points.add(list_item)
+            elif 'work-skills' in key:
+                list_item, created = Skill.objects.get_or_create(
+                    user_id=user.id,
+                    name=value
+                )
+                if len(user.user_skills.filter(name=value)) == 0:
+                    user.user_skills.add(list_item)
+                    user.save()
+                work_experience.applied_skills.add(list_item)
+            else:
+                continue            
+            list_item.save()
+        work_experience.save()
         return HttpResponse(json.dumps(post_data))
 
 

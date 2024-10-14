@@ -14,43 +14,12 @@ function convertHtmlToDOM(htmlString) {
 }
 
 
-/**
- * Converts a work experience form input into a list item to be displayed in the list.
- * Ignore the warnings for undeclared variables. They are declared in a script
- * tag in work-experience-form.html
- */
-function addWorkExperienceHtml() {
-  let workExperienceData = JSON.parse(document.getElementById('work-input-data').innerText);
-  let elements = convertHtmlToDOM(workExperienceHtml);
-  let workListElement = elements[0];
-  
-  // Filling out the new information into the new set of elements
-  workListElement.getElementsByClassName('work-exp-organization')[0].innerText = workExperienceData.organization;
-  workListElement.getElementsByClassName('work-exp-location')[0].innerText = workExperienceData.location;
-  workListElement.getElementsByClassName('work-exp-position')[0].innerText = workExperienceData.position;
-  workListElement.getElementsByClassName('work-exp-date')[0].innerText = `${workExperienceData.start_date} - ${workExperienceData.end_date}`;
-
-  for (let [key, value] of Object.entries(workExperienceData)) {
-    if (key.includes("work-responsibilities")) {
-      let newListItem = convertHtmlToDOM(responsibilityItem)[0];
-      newListItem.innerText = value;
-      workListElement.getElementsByClassName('work-rsp-list')[0].appendChild(newListItem);
-    }
-    else if (key.includes("work-skills")) {
-      let newListItem = convertHtmlToDOM(skillItem)[0];
-      newListItem.innerText = value;
-      workListElement.getElementsByClassName('work-skill-list')[0].appendChild(newListItem);
-    }
-  }
-  for (let element of elements) {
-    document.getElementById('work-list').appendChild(element);
-  }
-}
-
-
+// Data to be fed into the addExperienceHtml function
 const experienceProperties = {
   work: {
     target: 'work-list',
+    dataSource: 'work-input-data',
+    html: workExperienceHtml,
     fields: {
       organization: 'work-exp-organization',
       location: 'work-exp-location',
@@ -63,12 +32,69 @@ const experienceProperties = {
     }
   },
   education: {
-
+    target: 'education-list',
+    dataSource: 'education-input-data',
+    html: educationHtml,
+    fields: {
+      school_name: 'education-exp-school-name',
+      location: 'education-exp-location',
+      degree: 'education-exp-degree',
+      date: 'education-exp-date',
+      grade: 'education-exp-grade',
+    },
+    bulletPoints: {
+      'education-modules': 'education-modules-list',
+      'education-skills': 'education-skill-list'
+    }
   },
 }
 
+/**
+ * 
+ * @param {String} experienceType The key to reference the above object experienceProperties
+ */
 function addExperienceHtml(experienceType) {
+  let propertyObject = experienceProperties[experienceType];
+  let workExperienceData = JSON.parse(document.getElementById(propertyObject['dataSource']).innerText);
+  let elements = convertHtmlToDOM(propertyObject.html);
+  let workListElement = elements[0];
+  
+  // Filling out the new information into the new set of elements
+  for (let [field, className] of Object.entries(propertyObject.fields)) {
+    let value = workExperienceData[field];
 
+    // Connecting the start and end date
+    if (field == 'date') {
+      let startDate = null;
+      let endDate = 'Present';
+      for (let [propField, propValue] of Object.entries(workExperienceData)) {
+        if (propField.includes('start_')) {
+          startDate = propValue;
+        }
+        else if (propField.includes('end_')) {
+          endDate = propValue;
+        }
+      }
+      workListElement.getElementsByClassName(className)[0].innerText = `${startDate} - ${endDate}`;
+    }
+    else {
+      // For all other fields
+      workListElement.getElementsByClassName(className)[0].innerText = value;
+    }
+  }
+
+  for (let [key, value] of Object.entries(workExperienceData)) {
+    for (let [bulletField, className] of Object.entries(propertyObject.bulletPoints)) {
+      if (key.includes(bulletField)) {
+        let newListItem = convertHtmlToDOM(listItem)[0];
+        newListItem.innerText = value;
+        workListElement.getElementsByClassName(className)[0].appendChild(newListItem);
+      }
+    }
+  }
+  for (let element of elements) {
+    document.getElementById(propertyObject.target).appendChild(element);
+  }
 }
 
 

@@ -11,19 +11,15 @@
   </p>
   <p class="block text-gray-700 text-sm font-bold mb-2">Duties/Responsibilities</p>
   <ul class="work-rsp-list pl-6 mb-3">
-    {% with "work-exp-rsp" as list_class %}
     {% for item_name in work_exp.bullet_points.all %}
     {% include 'components/list-item.html' %}
     {% endfor %}
-    {% endwith %}
   </ul>
   <p class="block text-gray-700 text-sm font-bold mb-2">Applied Skills</p>
   <ul class="work-skill-list pl-6">
-    {% with "work-exp-skill" as list_class %}
     {% for item_name in work_exp.applied_skills.all %}
     {% include 'components/list-item.html' %}
     {% endfor %}
-    {% endwith %}
   </ul>
 </div>
 <hr class="mb-8 2xl:w-[50%]">

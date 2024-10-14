@@ -11,7 +11,7 @@
   </div>
   <div id="education-input-data" class="hidden"></div>
   <form hx-post="{% url 'add_education' %}" hx-target="#education-input-data" id="education-form"
-    hx-on::after-request="console.log('Success!!!')">
+    hx-on::after-request="addExperienceHtml('education')">
     {% csrf_token %}
     <div class="md:w-[50%]">
       {{ education_form.school_name|as_crispy_field }}
@@ -77,13 +77,4 @@
   <button type="submit" form="education-form"
     class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add Work
     Experience</button>
-
-  <!-- Save the HTML components in JavaScript -->
-  {% with "item_class" as item_class %}
-  <script id="work-experience-constants">
-    const educationHtml = `{% include 'components/work-experience-details.html' %}`;
-    const moduleItem = `{% include 'components/list-item.html' %}`.replace('item_class', 'work-exp-rsp');
-    const educationSkillItem = `{% include 'components/list-item.html' %}`.replace('item_class', 'work-exp-skill');
-  </script>
-  {% endwith %}
 </div>

@@ -117,6 +117,13 @@
     };
 </script>
 
+<!-- Components to be used to dynamically create elements -->
+<script>
+    const workExperienceHtml = `{% include 'components/work-experience-details.html' %}`;
+    const educationHtml = `{% include 'components/education-details.html' %}`;
+    const listItem = `{% include 'components/list-item.html' %}`;
+</script>
+
 <script src="{% static 'profiles/js/profiles.js' %}"></script>
 <script src="{% static 'profiles/js/skills.js' %}"></script>
 {% endblock %}
