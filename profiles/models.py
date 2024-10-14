@@ -147,7 +147,7 @@ class Project(models.Model):
     """
     user = models.ForeignKey(User, related_name="projects", on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
-    reposity_url = models.URLField(blank=True, null=True)
+    repository_url = models.URLField(blank=True, null=True)
     deployed_url = models.URLField(blank=False, null=False)
 
     def __str__(self):
