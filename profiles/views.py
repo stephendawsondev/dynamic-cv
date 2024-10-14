@@ -5,7 +5,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-from .forms import SummaryForm, ContactInformationForm, WorkExperienceForm
+from .forms import SummaryForm, ContactInformationForm, \
+     WorkExperienceForm, EducationForm
 from .models import Summary, ContactInformation, Skill, \
      WorkExperience, WorkExperienceBullets
 
@@ -33,7 +34,10 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context['summary'] = Summary.objects.get(user=user).summary
 
         context['work_experience_form'] = WorkExperienceForm()
-        context['work_experience_list'] = user.work_experience.all()
+        context['education_list'] = user.work_experience.all()
+
+        context['education_form'] = EducationForm()
+        context['education_list'] = user.education.all()
         return context
 
 
@@ -105,32 +109,6 @@ class RemoveSkill(View):
             return HttpResponse("Fail")
 
 
-def create_list_item_html(list_type, id, display):
-    return f"""
-    <li id="{list_type}-{id}" class="{list_type}-item list-disc">
-    <span class="flex justify-between">
-        <span>{display}</span>
-        <button type="button" class="delete-skill" data-skill="{id}">
-            <span class="text-2xl">&times;</span>
-        </button>
-        </span>
-    </li>
-    """
-
-
-class AddResponsibility(View):
-
-    def post(self, request):
-        rsp = request.POST['responsibility']
-        user = request.user
-        rsp_object = user.work_bullets.get_or_create(bullet_point=rsp)
-        return HttpResponse(create_list_item_html(
-            'responsibility',
-            rsp_object[0].id,
-            rsp
-        ))
-
-
 class AddWorkExperience(View):
 
     def post(self, request):
@@ -173,3 +151,9 @@ class AddWorkExperience(View):
             list_item.save()
         work_experience.save()
         return HttpResponse(json.dumps(post_data))
+
+
+class AddEducation(View):
+
+    def post(self, request):
+        return HttpResponse('Successful')

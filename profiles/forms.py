@@ -1,6 +1,6 @@
 from django import forms
 from django_ckeditor_5.widgets import CKEditor5Widget
-from .models import Summary, ContactInformation, WorkExperience
+from .models import Summary, ContactInformation, WorkExperience, Education
 
 
 class SummaryForm(forms.ModelForm):
@@ -66,4 +66,28 @@ class WorkExperienceForm(forms.ModelForm):
             "position": "Job Title",
             "start_date": "Start",
             "end_date": "End",
+        }
+
+class EducationForm(forms.ModelForm):
+    """
+    Form to add education
+    """
+
+    class Meta:
+        model = Education
+        fields = [
+            "school_name",
+            "location",
+            "degree",
+            "start_year",
+            "end_year",
+            "grade"
+        ]
+        labels = {
+            "organization": "Institution Name",
+            "location": "Location",
+            "degree": "Degree",
+            "start_date": "Start",
+            "end_date": "End",
+            "grade": "Grade"
         }

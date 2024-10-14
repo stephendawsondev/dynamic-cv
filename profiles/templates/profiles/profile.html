@@ -11,29 +11,29 @@
             data-tabs-toggle="#default-styled-tab-content"
             data-tabs-active-classes="text-black hover:text-purple-600 bg-lime-500" role="tablist">
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800 active"
-                    id="detail-styled-tab" data-tabs-target="#styled-detail" type="button" role="tab"
-                    aria-controls="detail" aria-selected="false">Your Details</button>
+                <button class="w-full py-2 text-violet-800 border-2 border-violet-800 active" id="detail-styled-tab"
+                    data-tabs-target="#styled-detail" type="button" role="tab" aria-controls="detail"
+                    aria-selected="false">Your Details</button>
             </li>
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800"
-                    id="summary-styled-tab" data-tabs-target="#styled-summary" type="button" role="tab"
-                    aria-controls="summary" aria-selected="false">Summary</button>
+                <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="summary-styled-tab"
+                    data-tabs-target="#styled-summary" type="button" role="tab" aria-controls="summary"
+                    aria-selected="false">Summary</button>
             </li>
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800"
-                    id="skills-styled-tab" data-tabs-target="#styled-skills" type="button" role="tab"
-                    aria-controls="skills" aria-selected="false">Skills</button>
+                <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="skills-styled-tab"
+                    data-tabs-target="#styled-skills" type="button" role="tab" aria-controls="skills"
+                    aria-selected="false">Skills</button>
             </li>
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800"
-                    id="work-experience-styled-tab" data-tabs-target="#styled-work-experience" type="button" role="tab"
-                    aria-controls="work-experience" aria-selected="false">Work Experience</button>
+                <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="work-experience-styled-tab"
+                    data-tabs-target="#styled-work-experience" type="button" role="tab" aria-controls="work-experience"
+                    aria-selected="false">Work Experience</button>
             </li>
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800"
-                    id="education-styled-tab" data-tabs-target="#styled-education" type="button" role="tab"
-                    aria-controls="education" aria-selected="false">Education</button>
+                <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="education-styled-tab"
+                    data-tabs-target="#styled-education" type="button" role="tab" aria-controls="education"
+                    aria-selected="false">Education</button>
             </li>
         </ul>
         <div class="p-6 bg-gray-50 text-medium text-gray-500 rounded-lg w-full">
@@ -55,10 +55,7 @@
             </div>
             <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-education" role="tabpanel"
                 aria-labelledby="educations-tab">
-                <p class="text-sm text-gray-500">This is some placeholder content the <strong
-                        class="font-medium text-gray-800">Education tab's associated content</strong>. Clicking another
-                    tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control
-                    the content visibility and styling.</p>
+                {% include 'components/education-form.html' %}
             </div>
         </div>
     </div>

@@ -14,13 +14,13 @@ urlpatterns = [
         "remove-skill/<slug:skill>/", views.RemoveSkill.as_view(), name="remove_skill"
     ),
     path(
-        "add-responsibility/",
-        views.AddResponsibility.as_view(),
-        name="add_responsibility",
-    ),
-    path(
-        "add-work_experience/",
+        "add-work-experience/",
         views.AddWorkExperience.as_view(),
         name="add_work_experience",
+    ),
+    path(
+        "add-education/",
+        views.AddEducation.as_view(),
+        name="add_education",
     ),
 ]
