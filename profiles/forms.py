@@ -46,10 +46,12 @@ class WorkExperienceForm(forms.ModelForm):
     class Meta:
         model = WorkExperience
         fields = [
-            'organization', 'position', 'start_date', 'end_date',
+            'organization', 'location', 'position',
+            'start_date', 'end_date',
         ]
         labels = {
             'organization': 'Company Name',
+            'location': 'Location',
             'position': 'Job Title',
             'start_date': 'Start',
             'end_date': 'End',

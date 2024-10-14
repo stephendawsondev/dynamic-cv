@@ -6,7 +6,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .forms import SummaryForm, ContactInformationForm, WorkExperienceForm
-from .models import Summary, ContactInformation, Skill, WorkExperienceBullets
+from .models import Summary, ContactInformation, Skill, \
+     WorkExperience, WorkExperienceBullets
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -123,3 +124,46 @@ class AddResponsibility(View):
             rsp_object[0].id,
             rsp
         ))
+
+
+class AddWorkExperience(View):
+
+    def post(self, request):
+        post_data = request.POST.copy()
+        work_form = WorkExperienceForm(request.POST)
+        user = request.user
+        if not work_form.is_valid():
+            return HttpResponse("Form is invalid")
+
+        work_experience = WorkExperience(
+            user=request.user,
+            organization=request.POST['organization'],
+            position=request.POST['position'],
+            start_date=request.POST['start_date'],
+            end_date=request.POST['end_date']
+        )
+        work_experience.save()
+
+        # Extracting the responsibilities and skills
+        for key, value in post_data.items():
+            list_item = None
+            if 'work-responsibilities' in key:
+                list_item, created = WorkExperienceBullets.objects.get_or_create(
+                    user_id=user.id,
+                    bullet_point=value
+                )
+                work_experience.bullet_points.add(list_item)
+            elif 'work-skills' in key:
+                list_item, created = Skill.objects.get_or_create(
+                    user_id=user.id,
+                    name=value
+                )
+                if len(user.user_skills.filter(name=value)) == 0:
+                    user.user_skills.add(list_item)
+                    user.save()
+                work_experience.applied_skills.add(list_item)
+            else:
+                continue            
+            list_item.save()
+        work_experience.save()
+        return HttpResponse("Success")
