@@ -1,58 +1,33 @@
-FROM ubuntu:22.04
+# Dockerfile
 
-ENV PYTHON_VERSION 3.9.17
-ENV NODE_MAJOR 16
-ENV DEBIAN_FRONTEND=noninteractive
-#Set of all dependencies needed for pyenv to work on Ubuntu
-RUN apt-get update \ 
-    && apt-get install -y --no-install-recommends make build-essential libssl-dev libpq-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget ca-certificates curl gnupg llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev mecab-ipadic-utf8 git postgresql-client telnet unzip zlib1g-dev
+# Use an official Python runtime as a parent image
+FROM python:3.9.17
 
-RUN curl https://cli-assets.heroku.com/install.sh | sh
-RUN mkdir -p /etc/apt/keyrings && \
-    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
-    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list  && \
-    apt-get update && apt-get install nodejs -y
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-ARG USERNAME=codeany
-RUN useradd -ms /bin/bash $USERNAME
-USER $USERNAME
-WORKDIR /home/$USERNAME
+# Set the working directory in the container
+WORKDIR /dynamiccv
 
-# Set-up necessary Env vars for PyEnv
-ENV PYENV_ROOT /home/$USERNAME/.pyenv
-ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+RUN mkdir -p /var/log/django
 
-# Install pyenv
-RUN set -ex \
-    && curl https://pyenv.run | bash \
-    && pyenv update \
-    && pyenv install $PYTHON_VERSION \
-    && pyenv global $PYTHON_VERSION \
-    && pyenv rehash \
-    && python3 -m pip install --no-cache-dir --upgrade pip \
-    && python3 -m pip install --no-cache-dir --upgrade setuptools wheel virtualenv pipenv pylint rope flake8  mypy autopep8 pep8 pylama pydocstyle bandit notebook twine
+# Copy the current directory contents into the container at /dynamiccv
+COPY . /dynamiccv/
 
-ENV PATH=$PATH:"/home/codeany/.local/bin"
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN echo 'alias python=python3' >> ~/.bashrc && \
-    echo 'export PIP_USER=yes' >> ~/.bashrc && \
-    echo 'alias pip=pip3' >> ~/.bashrc && \
-    echo 'alias psql="psql mydb"' >>  ~/.bashrc
+# Install Node.js dependencies if package.json exists
+RUN if [ -f package.json ]; then npm install; fi
 
-COPY ./build-assets/heroku_config.sh /home/$USERNAME/.theia/heroku_config.sh
-RUN echo 'alias heroku_config=". $HOME/.theia/heroku_config.sh"' >> ~/.bashrc
+# Make port 3003 available to the world outside this container
+EXPOSE 3003
 
-COPY ./build-assets/make_url.py /home/$USERNAME/.theia/make_url.py
-RUN echo 'alias make_url="python3 $HOME/.theia/make_url.py "' >> ~/.bashrc
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -f http://localhost:3003/health/ || exit 1
 
-COPY ./build-assets/http_server.py /home/$USERNAME/.theia/http_server.py
-RUN echo 'alias http_server="python3 $HOME/.theia/http_server.py "' >> ~/.bashrc
+# Run the application using Gunicorn for production
+CMD ["gunicorn", "--bind", "0.0.0.0:3003", "--access-logfile", "-", "--error-logfile", "-", "dynamiccv.wsgi:application"]
 
-
-USER root
-RUN chown -R $USERNAME:$USERNAME /home/$USERNAME/.theia
-
-CMD ["tail", "-f", "/dev/null"]
-
-# Allows proxy to work for react/drf on cloud ide's
-ENV DANGEROUSLY_DISABLE_HOST_CHECK=true
