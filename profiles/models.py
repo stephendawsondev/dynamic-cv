@@ -23,7 +23,8 @@ class Skill(models.Model):
     Model for the user's skills
     """
 
-    user = models.ForeignKey(User, related_name="user_skills", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, related_name="user_skills", on_delete=models.CASCADE)
     name = models.CharField(max_length=30, blank=True, null=True)
 
     def __str__(self):
@@ -94,7 +95,8 @@ class WorkExperience(models.Model):
     organization = models.CharField(max_length=150, null=False, blank=False)
     location = models.CharField(max_length=150, null=True, blank=True)
     bullet_points = models.ManyToManyField(WorkExperienceBullets)
-    applied_skills = models.ManyToManyField(Skill, related_name="work_experience")
+    applied_skills = models.ManyToManyField(
+        Skill, related_name="work_experience")
 
     def __str__(self):
         return f"{self.position} - {self.organization}, {self.start_date.strftime('%m/%y')} - {self.end_date.strftime('%m/%y') if self.end_date else 'Present'}"
@@ -124,7 +126,8 @@ class Education(models.Model):
     """
     Education model
     """
-    user = models.ForeignKey(User, related_name="education", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, related_name="education", on_delete=models.CASCADE)
     start_year = models.DateField(null=False, blank=False)
     end_year = models.DateField(null=True, blank=True)
     degree = models.CharField(max_length=150, null=False, blank=False)
@@ -145,7 +148,8 @@ class Project(models.Model):
     """
     Projects model
     """
-    user = models.ForeignKey(User, related_name="projects", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, related_name="projects", on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
     repository_url = models.URLField(blank=True, null=True)
     deployed_url = models.URLField(blank=True, null=True)
