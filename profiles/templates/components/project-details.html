@@ -1,3 +1,5 @@
+{% load static %}
+
 <div>
   <h2 id="project-collapse-heading-{{ forloop.counter }}" class="project-collapse-heading 2xl:w-[50%]">
     <button type="button"
@@ -11,7 +13,7 @@
     </button>
   </h2>
   <div id="project-collapse-{{ forloop.counter }}"
-    class="project-collapse-body hidden border{% if forloop.last %} rounded-b-xl{% else %} border-b-0{% endif %} border-gray-200 p-5 2xl:w-[50%]"
+    class="project-collapse-body hidden border{% if forloop.last %} rounded-b-xl{% else %} border-b-0{% endif %} border-gray-200 p-5 2xl:w-[50%] relative"
     aria-labelledby="project-collapse-heading-{{ forloop.counter }}">
     <div class="project-exp grid grid-cols-1 sm:grid-cols-2">
       <p class="block text-gray-700 text-sm font-bold mb-2">Project Name</p>
@@ -30,6 +32,14 @@
         aria-label="Go to the deployed URL for {{ project_exp.name }}" target="_blank" rel="noopener">
         {{ project_exp.deployed_url }}</a>
       {% endif %}
+    </div>
+    <div class="absolute top-4 right-4 flex text-gray-700">
+      <button class="w-6 h-6 mr-4">
+        <img src="{% static 'icons/pencil.svg' %}">
+      </button>
+      <button class="w-6 h-6">
+        <img src="{% static 'icons/bin.svg' %}">
+      </button>
     </div>
   </div>
 </div>

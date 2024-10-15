@@ -1,3 +1,5 @@
+{% load static %}
+
 <div>
   <h2 id="work-collapse-heading-{{ forloop.counter }}" class="work-collapse-heading 2xl:w-[50%]">
     <button type="button"
@@ -12,7 +14,7 @@
     </button>
   </h2>
   <div id="work-collapse-body-{{ forloop.counter }}"
-    class="work-collapse-body hidden border{% if forloop.last %} rounded-b-xl{% else %} border-b-0{% endif %} border-gray-200 p-5 2xl:w-[50%]"
+    class="work-collapse-body hidden border{% if forloop.last %} rounded-b-xl{% else %} border-b-0{% endif %} border-gray-200 p-5 2xl:w-[50%] relative"
     aria-labelledby="work-collapse-heading-{{ forloop.counter }}">
     <div class="work-exp grid grid-cols-1 sm:grid-cols-2">
       <p class="block text-gray-700 text-sm font-bold mb-2">Company Name</p>
@@ -46,6 +48,14 @@
         {% endfor %}
       </ul>
       {% endif %}
+    </div>
+    <div class="absolute top-4 right-4 flex text-gray-700">
+      <button class="w-6 h-6 mr-4">
+        <img src="{% static 'icons/pencil.svg' %}">
+      </button>
+      <button class="w-6 h-6">
+        <img src="{% static 'icons/bin.svg' %}">
+      </button>
     </div>
   </div>
 </div>

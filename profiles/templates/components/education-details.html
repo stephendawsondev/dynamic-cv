@@ -1,3 +1,5 @@
+{% load static %}
+
 <div>
   <h2 id="education-collapse-heading-{{ forloop.counter }}" class="education-collapse-heading 2xl:w-[50%]">
     <button type="button"
@@ -13,7 +15,7 @@
     </button>
   </h2>
   <div id="education-collapse-{{ forloop.counter }}"
-    class="education-collapse-body hidden border{% if forloop.last %} rounded-b-xl{% else %} border-b-0{% endif %} border-gray-200 p-5 2xl:w-[50%]"
+    class="education-collapse-body hidden border{% if forloop.last %} rounded-b-xl{% else %} border-b-0{% endif %} border-gray-200 p-5 2xl:w-[50%] relative"
     aria-labelledby="education-collapse-heading-{{ forloop.counter }}">
     <div class="education-exp grid grid-cols-1 sm:grid-cols-2">
       <p class="block text-gray-700 text-sm font-bold mb-2">Institution Name</p>
@@ -53,6 +55,14 @@
         {% endfor %}
       </ul>
       {% endif %}
+    </div>
+    <div class="absolute top-4 right-4 flex text-gray-700">
+      <button class="w-6 h-6 mr-4">
+        <img src="{% static 'icons/pencil.svg' %}">
+      </button>
+      <button class="w-6 h-6">
+        <img src="{% static 'icons/bin.svg' %}">
+      </button>
     </div>
   </div>
 </div>
