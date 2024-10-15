@@ -10,6 +10,7 @@ input[type="checkbox"] {
 }
 
 #id_cv_name,
+#id_position,
 #id_position_title {
   border-radius: 0;
 }
