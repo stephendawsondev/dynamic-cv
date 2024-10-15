@@ -126,15 +126,36 @@
   }
 </style>
 {% endblock %}
-{% block title %}{{ cv.contact_information.first_name }}'s Generated CV{% endblock %}
+{% block title %}{{ cv.contact_information.first_name }}'s Generated CV - {% endblock %}
 {% block content %}
+<div class="navigation-buttons">
+  <div class="back-button">
+    <a href="{% url 'cv_template' %}">Go back</a>
+  </div>
+  <div class="page-navigation">
+
+    {% comment %} Don't add anything here - these are automatically created with
+    the below JS {% endcomment %}
+  </div>
+  <button id="generate-pdf">
+    Download as PDF
+  </button>
+</div>
 <div class="cv">
   <div class="page active">
     <section class="cv-section intro">
       <div class="titles">
-        <h1>{% if cv.contact_information.first_name %}{{ cv.contact_information.first_name }}{% endif %}
-          {% if cv.contact_information.last_name %}{{ cv.contact_information.last_name }}{% endif %}</h1>
-        <h2 class="position-title emphasis-color">Full-stack Developer</h2>
+        <h1>
+          {% if cv.contact_information.first_name %}
+          {{ cv.contact_information.first_name }}
+          {% endif %}
+          {% if cv.contact_information.last_name %}
+          {{ cv.contact_information.last_name }}
+          {% endif %}
+        </h1>
+        {% if cv.position_title %}
+        <h2 class="position-title emphasis-color">{{ cv.position_title }}</h2>
+        {% endif %}
       </div>
       <ul class="links">
         {% if cv.contact_information.github %}
@@ -153,7 +174,6 @@
         {% endif %}
       </ul>
       <ul class="contact-details">
-
         <li class="location">{% if cv.contact_information.city %}{{ cv.contact_information.city }}{% endif %},
           {% if cv.contact_information.country %}{{ cv.contact_information.country }}{% endif %}
         </li>
@@ -219,8 +239,9 @@
     </section>
     {% endif %}
   </div>
+  {% if cv.projects.all.count > 0 %}
   <section class="cv-section project-section solo-projects">
-    <h3 class="emphasis-color">Solo Projects</h3>
+    <h3 class="emphasis-color">Projects</h3>
     <table>
       <thead>
         <tr>
@@ -231,126 +252,24 @@
         </tr>
       </thead>
       <tbody>
+        {% for project in cv.projects.all %}
         <tr>
-          <td>Cork Car Cut</td>
+          <td>{{ project.name }}</td>
           <td>
-            Developed a responsive 8-page web application using Svelte 5 and
-            SvelteKit, achieving a 90+ Lighthouse performance scores.
+
           </td>
           <td>HTML, CSS, JavaScript, Svelte 5, SvelteKit.</td>
           <td>
-            <a href="https://github.com/stephendawsondev/cork-car-cut-svelte">
-              github.com/stephendawsondev/cork-car-cut-svelte
+            <a href="{{ product.repository_url }}">
+              {{ project.repository_url | clean_url }}
             </a>
           </td>
         </tr>
-        <tr>
-          <td>A Great Step</td>
-          <td>
-            Built a step-tracker app using modern JavaScript and Browser APIs,
-            achieved 99+ Lighthouse performance scores, leading to increased
-            page load performance.
-          </td>
-          <td>Balsamiq, HTML, CSS, JavaScript, Svelte 5, SvelteKit.</td>
-          <td>
-            <a href="https://github.com/stephendawsondev/a-great-step-svelte">
-              github.com/stephendawsondev/a-great-step-svelte
-            </a>
-          </td>
-        </tr>
-        <tr>
-          <td>Sleep Healthily</td>
-          <td>
-            Created an e-commerce website for 6 sleep products, integrating
-            AWS S3, Stripe payments, and achieving 80+ Lighthouse performance
-            scores.
-          </td>
-          <td>
-            Django, Python, HTML, CSS, Bootstrap, JavaScript, PostgreSQL,
-            jQuery, AWS S3, Git, Stripe.
-          </td>
-          <td>
-            <a href="https://github.com/stephendawsondev/a-great-step-svelte">
-              github.com/stephendawsondev/a-great-step-svelte
-            </a>
-          </td>
-        </tr>
-        <tr>
-          <td>Stackportfol.io</td>
-          <td>
-            Design, development and self-hosting of developer-portfolio
-            platform with over 70 projects hosted to date.
-          </td>
-          <td>
-            Django, Python, HTML, CSS, Tailwind, DaisyUI, JavaScript,
-            PostgreSQL, Unittest, Jest, Cloudinary, Git.
-          </td>
-          <td>Private Repo</td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </section>
-  <section class="cv-section project-section collaborative-projects">
-    <h3 class="emphasis-color">Collaborative Projects</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Project name</th>
-          <th>Description</th>
-          <th>Technologies</th>
-          <th>Github link</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Happiness Unleashed</td>
-          <td>
-            Developed an act-of-kindness platform in 5 days, featuring 3 core
-            functionalities to spread happiness.
-          </td>
-          <td>
-            Django, JavaScript, Cloudinary, HTML, PostgreSQL, CSS, Bootstrap,
-            Git.
-          </td>
-          <td>
-            <a href="https://github.com/stephendawsondev/happiness-unleashed">
-              github.com/stephendawsondev/happiness-unleashed
-            </a>
-          </td>
-        </tr>
-        <tr>
-          <td>Budget Buddy</td>
-          <td>
-            Created a budgeting app with 3 main modules (income, expense,
-            savings goals) in a 5-day hackathon, achieving 95% user task
-            completion rate in testing.
-          </td>
-          <td>
-            HTML, CSS, JavaScript, Python, Django, Git, Bootstrap, PostgreSQL,
-            Cloudinary, Heroku.
-          </td>
-          <td>
-            <a href="https://github.com/stephendawsondev/Budget-Buddy">
-              github.com/stephendawsondev/Budget-Buddy
-            </a>
-          </td>
-        </tr>
-        <tr>
-          <td>Judgement Day</td>
-          <td>
-            Built a retro-style game with 2 enemy types in 5 days, using a
-            JavaScript gaming framework.
-          </td>
-          <td>HTML, CSS, JavaScript, Git, Kaboom.js.</td>
-          <td>
-            <a href="https://github.com/stephendawsondev/j-day">
-              github.com/stephendawsondev/j-day
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+  {% endif %}
   <section class="cv-section technical-skill-set">
     <h3 class="emphasis-color">Technical Skill Set</h3>
     <ul>
@@ -375,14 +294,6 @@
     </ul>
   </section>
 </div>
-<div class="page-navigation mb-5">
-  {% comment %} Don't add anything here - these are automatically created with
-  the below JS {% endcomment %}
-</div>
-<button id="generate-pdf" class="bg-violet-800 hover:bg-lime-600 text-white font-bold py-2 px-4 rounded-sm">
-  Download as PDF
-</button>
-
 {% endblock %}
 
 {% block extra_js %}
