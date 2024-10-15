@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView, DetailView, TemplateView
+from django.views.generic import ListView, CreateView, DetailView, TemplateView, View
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -10,6 +10,7 @@ from .models import CVTemplate, CVAnalysis
 from .forms import CVTemplateForm
 
 from profiles.models import Summary, ContactInformation
+from django.shortcuts import redirect
 
 
 class CvList(ListView):
@@ -64,26 +65,23 @@ class GeneratedCV(LoginRequiredMixin, DetailView):
         return CVTemplate.objects.get(pk=pk)
 
 
-class CVAnalyzerView(LoginRequiredMixin, TemplateView):
+class CVAnalyzerView(LoginRequiredMixin, View):
     """
     A view to analyze job position of the CV against top market criteria
     per job position
     """
 
-    template_name = "cv_template/cv_analyzer.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get(self, request, *args, **kwargs):
         saved_cv = CVTemplate.objects.get(pk=self.kwargs.get("pk"))
         cv = CVAnalyzer(saved_cv)
         position_top_skills = cv.get_position_skills()
         summary_errors = cv.check_spelling_errors()
         match_per, missing_skills = cv.get_match_on_top_skills(position_top_skills)
         potential_skills = cv.get_potential_missing_skills(missing_skills)
-        context["analysis_info"] = self._create_cv_analysis_obj(
+        analysis = self._create_cv_analysis_obj(
             saved_cv, position_top_skills, summary_errors, match_per, potential_skills
         )
-        return context
+        return redirect('view_analysis', pk=analysis.id)
 
     def _create_cv_analysis_obj(
         self,
@@ -93,16 +91,25 @@ class CVAnalyzerView(LoginRequiredMixin, TemplateView):
         match_per: int,
         potential_skills: list,
     ):
-        analysis = CVAnalysis.objects.create(
+        # Check if an analysis already exists for the given CV
+        analysis, created = CVAnalysis.objects.update_or_create(
             user=self.request.user,
             cv=saved_cv,
-            potential_skills=potential_skills,
-            spelling_errors=summary_errors,
-            top_tech_skills=position_top_skills.get("technical_skills", []),
-            top_soft_skills=position_top_skills.get("soft_skills", []),
-            top_tech_comp_skills=position_top_skills.get("tech_competencies", []),
-            top_qualifications=position_top_skills.get("qualifications", []),
-            top_methodologies=position_top_skills.get("methodologies", []),
-            match_per=match_per,
+            defaults={
+                "potential_skills": potential_skills,
+                "spelling_errors": summary_errors,
+                "top_tech_skills": position_top_skills.get("technical_skills", []),
+                "top_soft_skills": position_top_skills.get("soft_skills", []),
+                "top_tech_comp_skills": position_top_skills.get("tech_competencies", []),
+                "top_qualifications": position_top_skills.get("qualifications", []),
+                "top_methodologies": position_top_skills.get("methodologies", []),
+                "match_per": match_per,
+            },
         )
         return analysis
+
+
+class CVAnalysisDetail(DetailView):
+    model = CVAnalysis
+    template_name = "cv_template/cv_analyzer.html"
+    context_object_name = "analysis_info"
