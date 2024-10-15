@@ -27,6 +27,7 @@ const experienceProperties = {
       position: 'work-exp-position',
       date: 'work-exp-date'
     },
+    optionalFields: ['location'],
     bulletPoints: {
       'work-responsibilities': 'work-rsp-list',
       'work-skills': 'work-skill-list',
@@ -52,7 +53,7 @@ const experienceProperties = {
       date: 'education-exp-date',
       grade: 'education-exp-grade',
     },
-    optionalFields: ['grade'],
+    optionalFields: ['location', 'grade'],
     bulletPoints: {
       'education-modules': 'education-modules-list',
       'education-skills': 'education-skill-list',
@@ -216,6 +217,9 @@ function addExperienceHtml(experienceType) {
     }
     // Removing any item lists that don't contain any items
     for (let [bulletField, className] of Object.entries(propertyObject.bulletPoints)) {
+      if (bulletField === 'formInputs') {
+        continue;
+      }
       if (!(className in populatedItemLists)) {
         deleteItemListRow(itemListElement.getElementsByClassName(className)[0]);
       }
@@ -244,6 +248,33 @@ function clearForm(experienceType) {
       while (listElement.children.length > 0) {
         listElement.children[0].remove();
       }
+    }
+  }
+
+  // Re-enable all optional fields and making them required again, if disabled
+  let optionalFields = [];
+  if ('optionalFields' in propertyObject) {
+    optionalFields = [...propertyObject.optionalFields];
+  }
+  // Adding the date to the optional fields to be processed
+  if ('date' in propertyObject.fields) {
+    switch (experienceType) {
+      case 'work':
+        optionalFields.push(`end_date`);
+        break;
+      case 'education':
+        optionalFields.push(`end_year`);
+        break;
+      default:
+        break;
+    }
+  }
+  for (let optionalField of optionalFields) {
+    let optionalInput = document.getElementById(`id_${optionalField}`);
+    if (optionalInput.hasAttribute('disabled')) {
+      console.log('DISABLED');
+      optionalInput.removeAttribute('disabled');
+      optionalInput.setAttribute('required', true);
     }
   }
 
