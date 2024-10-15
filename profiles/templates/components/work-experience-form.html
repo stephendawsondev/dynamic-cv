@@ -6,7 +6,11 @@
   <p class="block text-gray-700 text-sm">Please enter your work experience</p>
   <div id="work-list" data-accordion="collapse" class="my-4">
     {% for work_exp in work_experience_list %}
+    {% with work_exp.bullet_points.all as generate_bullet_points %}
+    {% with work_exp.applied_skills.all as generate_skills %}
     {% include 'components/work-experience-details.html' %}
+    {% endwith %}
+    {% endwith %}
     {% endfor %}
   </div>
   <div id="work-input-data" class="hidden"></div>

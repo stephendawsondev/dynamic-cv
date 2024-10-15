@@ -6,7 +6,13 @@
   <p class="block text-gray-700 text-sm mb-4">Please enter your education details</p>
   <div id="education-list" data-accordion="collapse" class="my-4">
     {% for education_exp in education_list %}
+    {% with education_exp.bullet_points.all as generate_bullet_points %}
+    {% with education_exp.applied_skills.all as generate_skills %}
+    {% with education_exp.grade as has_grade %}
     {% include 'components/education-details.html' %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
     {% endfor %}
   </div>
   <div id="education-input-data" class="hidden"></div>

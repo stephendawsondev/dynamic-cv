@@ -170,41 +170,41 @@ class AddEducation(View):
             return HttpResponse("Form is invalid")
         
         # Only add the necessary fields to prevent errors
-        required_fields = {
-            'user': request.user,
-            'school_name': post_data['school_name'],
-            'location': post_data['location'],
-            'degree': post_data['degree'],
-            'start_year': post_data['start_year'],
-        }
-        if 'end_year' in post_data:
-            required_fields['end_year'] = post_data['end_year']
-            required_fields['grade'] = post_data['grade']
-        education = Education(**required_fields)
-        education.save()
+        # required_fields = {
+        #     'user': request.user,
+        #     'school_name': post_data['school_name'],
+        #     'location': post_data['location'],
+        #     'degree': post_data['degree'],
+        #     'start_year': post_data['start_year'],
+        # }
+        # if 'end_year' in post_data:
+        #     required_fields['end_year'] = post_data['end_year']
+        #     required_fields['grade'] = post_data['grade']
+        # education = Education(**required_fields)
+        # education.save()
 
-        # Extracting the responsibilities and skills
-        for key, value in post_data.items():
-            list_item = None
-            if 'education-modules' in key:
-                list_item, created = EducationBullets.objects.get_or_create(
-                    user_id=user.id,
-                    bullet_point=value
-                )
-                education.bullet_points.add(list_item)
-            elif 'education-skills' in key:
-                list_item, created = Skill.objects.get_or_create(
-                    user_id=user.id,
-                    name=value.replace(' ', '-')
-                )
-                if len(user.user_skills.filter(name=value)) == 0:
-                    user.user_skills.add(list_item)
-                    user.save()
-                education.applied_skills.add(list_item)
-            else:
-                continue            
-            list_item.save()
-        education.save()
+        # # Extracting the responsibilities and skills
+        # for key, value in post_data.items():
+        #     list_item = None
+        #     if 'education-modules' in key:
+        #         list_item, created = EducationBullets.objects.get_or_create(
+        #             user_id=user.id,
+        #             bullet_point=value
+        #         )
+        #         education.bullet_points.add(list_item)
+        #     elif 'education-skills' in key:
+        #         list_item, created = Skill.objects.get_or_create(
+        #             user_id=user.id,
+        #             name=value.replace(' ', '-')
+        #         )
+        #         if len(user.user_skills.filter(name=value)) == 0:
+        #             user.user_skills.add(list_item)
+        #             user.save()
+        #         education.applied_skills.add(list_item)
+        #     else:
+        #         continue            
+        #     list_item.save()
+        # education.save()
         return HttpResponse(json.dumps(post_data))
 
 
@@ -216,11 +216,11 @@ class AddProject(View):
         if not project_form.is_valid():
             return HttpResponse("Form is not valid")
         
-        project = Project(
-            user=request.user,
-            name=post_data['name'],
-            repository_url=post_data['repository_url'],
-            deployed_url=post_data['deployed_url']
-        )
-        project.save()
+        # project = Project(
+        #     user=request.user,
+        #     name=post_data['name'],
+        #     repository_url=post_data['repository_url'],
+        #     deployed_url=post_data['deployed_url']
+        # )
+        # project.save()
         return HttpResponse(json.dumps(post_data))
