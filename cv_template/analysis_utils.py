@@ -115,7 +115,7 @@ class CVAnalyzer:
                     missing_skills.append(skill)
 
         # Calculate the percentage match
-        total_skills = len(position_skills)
+        total_skills = sum(len(skills) for skills in position_skills.values())
         if total_skills == 0:
             return 0  # Avoid division by zero
 
