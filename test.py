@@ -1,0 +1,48 @@
+gpt_resp = {
+    "technical_skills": ["React", "JavaScript", "HTML", "CSS", "Redux"],
+    "soft_skills": [
+        "Communication",
+        "Problem-solving",
+        "Teamwork",
+        "Time management",
+        "Creativity",
+    ],
+    "tech_competencies": [
+        "UI/UX design principles",
+        "Responsive design",
+        "Version control",
+        "Cross-browser compatibility",
+        "Web performance optimization",
+    ],
+    "qualifications": [
+        "Bachelor's degree in Computer Science or related field",
+        "2+ years of experience in front end development",
+        "Familiarity with Agile methodology",
+    ],
+}
+
+spelling_errs = {
+    "intutive": {"correction": "intuitive"},
+    "responsve": {"correction": "response"},
+    "collabrative": {"correction": "collaborative"},
+    "javascrip": {"correction": None},
+    "css,": {"correction": "case"},
+    "junnior": {"correction": "junior"},
+    "framerworks": {"correction": "frameworks"},
+    "lern": {"correction": "learn"},
+    "react.": {"correction": "react"},
+    "html,": {"correction": None},
+    "pages.": {"correction": "pages"},
+    "front-end": {"correction": "fronted"},
+    "tech": {"correction": "teach"},
+    "oppotunities": {"correction": "opportunities"},
+    "wth": {"correction": "with"},
+    "pasion": {"correction": "passion"},
+    "skills.": {"correction": "skills"},
+    "envirenment.": {"correction": "environment"},
+    "devloper": {"correction": "developer"},
+    "alwayz": {"correction": "always"},
+    "impove": {"correction": "improve"},
+    "contribut": {"correction": "contribute"},
+    "experinced": {"correction": "experienced"},
+}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>CV Analysis for Position Title: {{analysis_info.position_title}}</h1>
+    
+    <h2>Potential Skills</h2>
+    <ul>
+        {% for skill in analysis_info.potential_skills %}
+            <li>{{ skill }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Spelling Errors</h2>
+    <ul>
+        {% for error in analysis_info.spelling_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Top Tech Skills</h2>
+    <ul>
+        {% for skill in analysis_info.top_tech_skills %}
+            <li>{{ skill }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Top Soft Skills</h2>
+    <ul>
+        {% for skill in analysis_info.top_soft_skills %}
+            <li>{{ skill }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Top Tech Competency Skills</h2>
+    <ul>
+        {% for skill in analysis_info.top_tech_comp_skills %}
+            <li>{{ skill }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Top Qualifications</h2>
+    <ul>
+        {% for qualification in analysis_info.top_qualifications %}
+            <li>{{ qualification }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Top Methodologies</h2>
+    <ul>
+        {% for methodology in analysis_info.top_methodologies %}
+            <li>{{ qualification }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Position Title</h2>
+    <p>{{ analysis_info.position_title }}</p>
+
+    <h2>Match Percentage</h2>
+    <p>{{ analysis_info.match_per }}%</p>
+{% endblock %}
