@@ -1,85 +1,8 @@
+{% extends 'cv_base.html' %}
 {% load static %}
 {% load helper_tags %}
-{% block content %}
+{% block extra_css %}
 <style>
-  html {
-    height: 100%;
-    width: 100%;
-  }
-
-  @page {
-    size: A4;
-    margin: 0;
-  }
-
-  body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: #f0f0f0;
-    font-family: "Raleway", sans-serif;
-    line-height: 1.6;
-    font-size: 10pt;
-  }
-
-  .cv {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .page {
-    width: 210mm;
-    height: 297mm;
-    padding: 10mm;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    position: relative;
-    display: none;
-  }
-
-  .page.active {
-    display: block;
-  }
-
-  @media print {
-    body {
-      display: block;
-      padding: 0;
-      background-color: white;
-    }
-
-    .page-navigation {
-      display: none !important;
-    }
-
-    .cv {
-      display: block;
-    }
-
-    .page {
-      width: 210mm;
-      height: 297mm;
-      page-break-after: always;
-      box-shadow: none;
-      margin-bottom: 0;
-      display: block !important;
-    }
-
-    .page:last-child {
-      page-break-after: auto;
-    }
-
-    .page-navigation {
-      display: none;
-    }
-  }
-
   .emphasis-color {
     color: #6495ed;
   }
@@ -184,315 +107,196 @@
     margin-bottom: 5px;
   }
 
-  .page-navigation {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-  }
-
-  .page-navigation a {
-    padding: 10px 20px;
-    font-size: 16px;
-    text-decoration: none;
-    color: #007bff;
-    border: 1px solid #007bff;
-    border-radius: 5px;
-    margin: 0 5px;
-    cursor: pointer;
-  }
-
-  .page-navigation a:hover {
-    background-color: #007bff;
-    color: white;
-  }
-
-  .page-navigation a.inactive {
-    color: #999;
-    border-color: #999;
-    cursor: default;
-  }
-
-  .page-navigation a.inactive:hover {
-    background-color: transparent;
-    color: #999;
-  }
-
-  @media screen and (max-width: 767px) {
-    body.mobile {
-      transform-origin: top left;
-      transform: scale(0.5);
-      width: 200%;
-      height: 200%;
-      overflow-x: hidden;
-    }
-
-    body.mobile .page {
-      margin: 0 auto;
-    }
-  }
-
   @media print {
-    body {
-      transform: none !important;
-      width: auto !important;
-      height: auto !important;
+    h3 {
+      page-break-after: avoid;
+    }
+
+    .project-section {
+      page-break-inside: avoid;
+    }
+
+    .project-section table {
+      page-break-inside: auto;
+    }
+
+    .project-section tr {
+      page-break-inside: avoid;
     }
   }
 </style>
-
-<body class="desktop">
-  <div class="cv">
-    <div class="page active">
-      <section class="cv-section intro">
-        <div class="titles">
-          <h1>{% if cv.contact_information.first_name %}{{ cv.contact_information.first_name }}{% endif %}
-            {% if cv.contact_information.last_name %}{{ cv.contact_information.last_name }}{% endif %}</h1>
-          <h2 class="position-title emphasis-color">Full-stack Developer</h2>
-        </div>
-        <ul class="links">
-          {% if cv.contact_information.github %}
-          <li>
-            <a href="{{ cv.contact_information.github }}">
-              {{ cv.contact_information.github | clean_url }}
-            </a>
-          </li>
-          {% endif %}
-          {% if cv.contact_information.linkedin %}
-          <li>
-            <a href="{{ contact_information.linkedin }}">
-              {{ cv.contact_information.linkedin | clean_url }}
-            </a>
-          </li>
-          {% endif %}
-        </ul>
-        <ul class="contact-details">
-
-          <li class="location">{% if cv.contact_information.city %}{{ cv.contact_information.city }}{% endif %},
-            {% if cv.contact_information.country %}{{ cv.contact_information.country }}{% endif %}
-          </li>
-          {% if cv.contact_information.email %}
-          <li class="email">
-            <a href="mailto:{{ cv.contact_information.email }}">
-              stephendawson@protonmail.com
-            </a>
-          </li>
-          {% endif %}
-          {% if cv.contact_information.phone_number %}
-          <li class="phone">{{ cv.contact_information.phone_number }}</li>
-          {% endif %}
-        </ul>
-        {% if cv.summary %}
-        <p class="summary">
-          {{ cv.summary }}
-        </p>
-        {% endif %}
-      </section>
-      {% if cv.education.all.count > 0 %}
-      <section class="cv-section education-section">
-        <h3 class="emphasis-color">Education</h3>
-        <table>
-          {% for education in cv.education.all %}
-          <tr>
-            <td class="date-cell">{{ education.start_year }} -
-              {% if education.end_year %}{{ education.end_year }}{% else %}Present{% endif %}
-            </td>
-            <td>{% if education.school_name %} {{ education.school_name }}{% endif %}</td>
-            <td>{% if education.location %} {{ education.location }}{% endif %}</td>
-            <td class="accreditation">
-              {% if education.degree %} {{ education.degree }}{% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-        </table>
-      </section>
-      {% endif %}
-      {% if cv.work_experience.all.count > 0 %}
-      <section class="cv-section work-experience-section">
-        <h3 class="emphasis-color">Work Experience</h3>
-        {% for work_experience in cv.work_experience.all %}
-        <div class="job">
-          <div class="header">
-            <div class="details">
-              {{ work_experience.organization }} - {{ work_experience.position }} - {{ work_experience.location }}
-            </div>
-            <div class="date">
-              {{ work_experience.start_date }} -
-              {% if work_experience.end_date %}{{ work_experience.end_date }}{% else %}Present{% endif %}
-            </div>
-          </div>
-          {% if work_experience.bullet_points.all.count > 0 %}
-          <ul class="work-details">
-            {% for work_bullet in work_experience.bullet_points.all %}
-            <li>{{ work_bullet }}</li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-        </div>
-        {% endfor %}
-      </section>
-      {% endif %}
-    </div>
-    <section class="cv-section project-section solo-projects">
-      <h3 class="emphasis-color">Solo Projects</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Project name</th>
-            <th>Description</th>
-            <th>Technologies</th>
-            <th>Github link</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Cork Car Cut</td>
-            <td>
-              Developed a responsive 8-page web application using Svelte 5 and
-              SvelteKit, achieving a 90+ Lighthouse performance scores.
-            </td>
-            <td>HTML, CSS, JavaScript, Svelte 5, SvelteKit.</td>
-            <td>
-              <a href="https://github.com/stephendawsondev/cork-car-cut-svelte">
-                github.com/stephendawsondev/cork-car-cut-svelte
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>A Great Step</td>
-            <td>
-              Built a step-tracker app using modern JavaScript and Browser APIs,
-              achieved 99+ Lighthouse performance scores, leading to increased
-              page load performance.
-            </td>
-            <td>Balsamiq, HTML, CSS, JavaScript, Svelte 5, SvelteKit.</td>
-            <td>
-              <a href="https://github.com/stephendawsondev/a-great-step-svelte">
-                github.com/stephendawsondev/a-great-step-svelte
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Sleep Healthily</td>
-            <td>
-              Created an e-commerce website for 6 sleep products, integrating
-              AWS S3, Stripe payments, and achieving 80+ Lighthouse performance
-              scores.
-            </td>
-            <td>
-              Django, Python, HTML, CSS, Bootstrap, JavaScript, PostgreSQL,
-              jQuery, AWS S3, Git, Stripe.
-            </td>
-            <td>
-              <a href="https://github.com/stephendawsondev/a-great-step-svelte">
-                github.com/stephendawsondev/a-great-step-svelte
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Stackportfol.io</td>
-            <td>
-              Design, development and self-hosting of developer-portfolio
-              platform with over 70 projects hosted to date.
-            </td>
-            <td>
-              Django, Python, HTML, CSS, Tailwind, DaisyUI, JavaScript,
-              PostgreSQL, Unittest, Jest, Cloudinary, Git.
-            </td>
-            <td>Private Repo</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-    <section class="cv-section project-section collaborative-projects">
-      <h3 class="emphasis-color">Collaborative Projects</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Project name</th>
-            <th>Description</th>
-            <th>Technologies</th>
-            <th>Github link</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Happiness Unleashed</td>
-            <td>
-              Developed an act-of-kindness platform in 5 days, featuring 3 core
-              functionalities to spread happiness.
-            </td>
-            <td>
-              Django, JavaScript, Cloudinary, HTML, PostgreSQL, CSS, Bootstrap,
-              Git.
-            </td>
-            <td>
-              <a href="https://github.com/stephendawsondev/happiness-unleashed">
-                github.com/stephendawsondev/happiness-unleashed
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Budget Buddy</td>
-            <td>
-              Created a budgeting app with 3 main modules (income, expense,
-              savings goals) in a 5-day hackathon, achieving 95% user task
-              completion rate in testing.
-            </td>
-            <td>
-              HTML, CSS, JavaScript, Python, Django, Git, Bootstrap, PostgreSQL,
-              Cloudinary, Heroku.
-            </td>
-            <td>
-              <a href="https://github.com/stephendawsondev/Budget-Buddy">
-                github.com/stephendawsondev/Budget-Buddy
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Judgement Day</td>
-            <td>
-              Built a retro-style game with 2 enemy types in 5 days, using a
-              JavaScript gaming framework.
-            </td>
-            <td>HTML, CSS, JavaScript, Git, Kaboom.js.</td>
-            <td>
-              <a href="https://github.com/stephendawsondev/j-day">
-                github.com/stephendawsondev/j-day
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-    <section class="cv-section technical-skill-set">
-      <h3 class="emphasis-color">Technical Skill Set</h3>
-      <ul>
-        <li>
-          <strong>Languages:</strong> HTML, CSS, JavaScript, Python, TypeScript,
-          Liquid (Templating), Ejs (Templating), Node, Svelte.
-        </li>
-        <li><strong>Databases:</strong> MongoDB, PostgreSQL, Sqlite3.</li>
-        <li>
-          <strong>Frameworks/Libraries:</strong> React, Bootstrap, Express,
-          SvelteKit, Jest, Flask, Django, Tailwind, DaisyUI.
-        </li>
-        <li><strong>Other:</strong> Git, Github, GitHub Projects.</li>
-      </ul>
-    </section>
-
-    <section class="cv-section additional-information">
-      <h3 class="emphasis-color">Additional Information/Interests</h3>
-      <ul>
-        <li>Listen to the Syntax podcast to stay up-to-date on tech.</li>
-        <li>Working proficiency in French and Spanish.</li>
-      </ul>
-    </section>
+{% endblock %}
+{% block title %}{{ cv.contact_information.first_name }}'s Generated CV - {% endblock %}
+{% block content %}
+<div class="navigation-buttons">
+  <div class="back-button">
+    <a href="{% url 'cv_template' %}">Go back</a>
   </div>
   <div class="page-navigation">
+
     {% comment %} Don't add anything here - these are automatically created with
     the below JS {% endcomment %}
   </div>
-</body>
+  <button id="generate-pdf">
+    Download as PDF
+  </button>
+</div>
+<div class="cv">
+  <div class="page active">
+    <section class="cv-section intro">
+      <div class="titles">
+        <h1>
+          {% if cv.contact_information.first_name %}
+          {{ cv.contact_information.first_name }}
+          {% endif %}
+          {% if cv.contact_information.last_name %}
+          {{ cv.contact_information.last_name }}
+          {% endif %}
+        </h1>
+        {% if cv.position_title %}
+        <h2 class="position-title emphasis-color">{{ cv.position_title }}</h2>
+        {% endif %}
+      </div>
+      <ul class="links">
+        {% if cv.contact_information.github %}
+        <li>
+          <a href="{{ cv.contact_information.github }}">
+            {{ cv.contact_information.github | clean_url }}
+          </a>
+        </li>
+        {% endif %}
+        {% if cv.contact_information.linkedin %}
+        <li>
+          <a href="{{ contact_information.linkedin }}">
+            {{ cv.contact_information.linkedin | clean_url }}
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+      <ul class="contact-details">
+        <li class="location">{% if cv.contact_information.city %}{{ cv.contact_information.city }}{% endif %},
+          {% if cv.contact_information.country %}{{ cv.contact_information.country }}{% endif %}
+        </li>
+        {% if cv.contact_information.email %}
+        <li class="email">
+          <a href="mailto:{{ cv.contact_information.email }}">
+            stephendawson@protonmail.com
+          </a>
+        </li>
+        {% endif %}
+        {% if cv.contact_information.phone_number %}
+        <li class="phone">{{ cv.contact_information.phone_number }}</li>
+        {% endif %}
+      </ul>
+      {% if cv.summary %}
+      <p class="summary">
+        {{ cv.summary }}
+      </p>
+      {% endif %}
+    </section>
+    {% if cv.education.all.count > 0 %}
+    <section class="cv-section education-section">
+      <h3 class="emphasis-color">Education</h3>
+      <table>
+        {% for education in cv.education.all %}
+        <tr>
+          <td class="date-cell">{{ education.start_year }} -
+            {% if education.end_year %}{{ education.end_year }}{% else %}Present{% endif %}
+          </td>
+          <td>{% if education.school_name %} {{ education.school_name }}{% endif %}</td>
+          <td>{% if education.location %} {{ education.location }}{% endif %}</td>
+          <td class="accreditation">
+            {% if education.degree %} {{ education.degree }}{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </section>
+    {% endif %}
+    {% if cv.work_experience.all.count > 0 %}
+    <section class="cv-section work-experience-section">
+      <h3 class="emphasis-color">Work Experience</h3>
+      {% for work_experience in cv.work_experience.all %}
+      <div class="job">
+        <div class="header">
+          <div class="details">
+            {{ work_experience.organization }} - {{ work_experience.position }} - {{ work_experience.location }}
+          </div>
+          <div class="date">
+            {{ work_experience.start_date }} -
+            {% if work_experience.end_date %}{{ work_experience.end_date }}{% else %}Present{% endif %}
+          </div>
+        </div>
+        {% if work_experience.bullet_points.all.count > 0 %}
+        <ul class="work-details">
+          {% for work_bullet in work_experience.bullet_points.all %}
+          <li>{{ work_bullet }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </section>
+    {% endif %}
+  </div>
+  {% if cv.projects.all.count > 0 %}
+  <section class="cv-section project-section solo-projects">
+    <h3 class="emphasis-color">Projects</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Project name</th>
+          <th>Description</th>
+          <th>Technologies</th>
+          <th>Github link</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in cv.projects.all %}
+        <tr>
+          <td>{{ project.name }}</td>
+          <td>
+
+          </td>
+          <td>HTML, CSS, JavaScript, Svelte 5, SvelteKit.</td>
+          <td>
+            <a href="{{ product.repository_url }}">
+              {{ project.repository_url | clean_url }}
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endif %}
+  <section class="cv-section technical-skill-set">
+    <h3 class="emphasis-color">Technical Skill Set</h3>
+    <ul>
+      <li>
+        <strong>Languages:</strong> HTML, CSS, JavaScript, Python, TypeScript,
+        Liquid (Templating), Ejs (Templating), Node, Svelte.
+      </li>
+      <li><strong>Databases:</strong> MongoDB, PostgreSQL, Sqlite3.</li>
+      <li>
+        <strong>Frameworks/Libraries:</strong> React, Bootstrap, Express,
+        SvelteKit, Jest, Flask, Django, Tailwind, DaisyUI.
+      </li>
+      <li><strong>Other:</strong> Git, Github, GitHub Projects.</li>
+    </ul>
+  </section>
+
+  <section class="cv-section additional-information">
+    <h3 class="emphasis-color">Additional Information/Interests</h3>
+    <ul>
+      <li>Listen to the Syntax podcast to stay up-to-date on tech.</li>
+      <li>Working proficiency in French and Spanish.</li>
+    </ul>
+  </section>
+</div>
 {% endblock %}
 
+{% block extra_js %}
 <script src="{% static 'cv_template/js/cv_template.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+{% endblock %}

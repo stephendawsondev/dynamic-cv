@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const sectionHeights = Array.from(sections).map(
       (section) => section.offsetHeight
     );
-    console.log("Section Heights:", sectionHeights);
 
     // Clear the initial page
     initialPage.innerHTML = "";
@@ -52,7 +51,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updatePageNavigation() {
     const pages = document.querySelectorAll(".page");
-    pageNavigationContainer.innerHTML = "";
 
     pages.forEach((page, index) => {
       const pageLink = document.createElement("a");
@@ -90,6 +88,87 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.addEventListener("load", toggleMobileClass);
   window.addEventListener("resize", toggleMobileClass);
-
   window.addEventListener("load", layoutSections);
+
+  requirejs.config({
+    paths: {
+      jspdf: "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min",
+      html2canvas:
+        "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min",
+    },
+  });
+
+  require(["jspdf", "html2canvas"], function (jspdf, html2canvas) {
+    const { jsPDF } = jspdf;
+    window.html2canvas = html2canvas;
+
+    document
+      .getElementById("generate-pdf")
+      .addEventListener("click", function () {
+        const element = document.querySelector(".cv");
+        const pages = element.querySelectorAll(".page");
+
+        document.body.classList.add("generating-pdf");
+
+        // Create a clone of the CV element
+        const clone = element.cloneNode(true);
+
+        // Apply styles to the clone
+        clone.style.position = "absolute";
+        clone.style.left = "-9999px";
+        clone.style.top = "0";
+        document.body.appendChild(clone);
+
+        // Show all pages in the clone
+        clone.querySelectorAll(".page").forEach((page) => {
+          page.style.display = "block";
+          page.style.boxShadow = "none";
+          page.style.margin = "0";
+          page.style.pageBreakAfter = "always";
+        });
+
+        html2canvas(clone, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: null,
+        }).then((canvas) => {
+          // Remove the clone after capturing
+          document.body.removeChild(clone);
+
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF({
+            unit: "mm",
+            format: "a4",
+            orientation: "portrait",
+          });
+
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const imgWidth = pageWidth;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+          let heightLeft = imgHeight;
+          let position = 0;
+          let pageCount = 0;
+
+          const significantContentThreshold = 10;
+
+          while (heightLeft > significantContentThreshold) {
+            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+            position -= pageHeight;
+            pageCount++;
+
+            if (heightLeft > significantContentThreshold) {
+              pdf.addPage();
+            }
+          }
+
+          pdf.save(document.title.split("-")[0].trim() + ".pdf");
+
+          document.body.classList.remove("generating-pdf");
+        });
+      });
+  });
 });
