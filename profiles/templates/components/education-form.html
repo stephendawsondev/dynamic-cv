@@ -3,7 +3,6 @@
 
 <div id="education">
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Education</h1>
-  <p class="block text-gray-700 text-sm mb-4">Please enter your education details</p>
   <div id="education-list" data-accordion="collapse" class="my-4">
     {% for education_exp in education_list %}
     {% with education_exp.bullet_points.all as generate_bullet_points %}
@@ -15,6 +14,11 @@
     {% endwith %}
     {% endfor %}
   </div>
+  {% if work_experience_list %}
+  <h2 class="block text-violet-700 text-l font-bold mb-3">+ Add Education</h2>
+  {% else %}
+  <p class="block text-gray-700 text-sm mb-4">Please enter your education history</p>
+  {% endif %}
   <div id="education-input-data" class="hidden"></div>
   <form hx-post="{% url 'add_education' %}" hx-target="#education-input-data" id="education-form"
     hx-on::after-request="this.reset()" onreset="addExperienceHtml('education')">

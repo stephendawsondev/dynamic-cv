@@ -272,7 +272,6 @@ function clearForm(experienceType) {
   for (let optionalField of optionalFields) {
     let optionalInput = document.getElementById(`id_${optionalField}`);
     if (optionalInput.hasAttribute('disabled')) {
-      console.log('DISABLED');
       optionalInput.removeAttribute('disabled');
       optionalInput.setAttribute('required', true);
     }

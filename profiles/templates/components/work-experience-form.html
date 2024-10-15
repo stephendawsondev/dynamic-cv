@@ -3,7 +3,6 @@
 
 <div id="work-experience">
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Work Experience</h1>
-  <p class="block text-gray-700 text-sm">Please enter your work experience</p>
   <div id="work-list" data-accordion="collapse" class="my-4">
     {% for work_exp in work_experience_list %}
     {% with work_exp.bullet_points.all as generate_bullet_points %}
@@ -13,6 +12,11 @@
     {% endwith %}
     {% endfor %}
   </div>
+  {% if work_experience_list %}
+  <h2 class="block text-violet-700 text-l font-bold mb-3">+ Add Work Experience</h2>
+  {% else %}
+  <p class="block text-gray-700 text-sm mb-4">Please enter your work experience</p>
+  {% endif %}
   <div id="work-input-data" class="hidden"></div>
   <form hx-post="{% url 'add_work_experience' %}" hx-target="#work-input-data" id="work-experience-form"
     hx-on::after-request="this.reset()" onreset="addExperienceHtml('work')">
