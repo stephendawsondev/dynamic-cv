@@ -1,8 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
   const cv = document.querySelector(".cv");
   const sections = document.querySelectorAll(".cv-section");
-  const pageHeightPx = 1129;
   const pageNavigationContainer = document.querySelector(".page-navigation");
+
+  function getElementHeight(el) {
+    const styles = window.getComputedStyle(el);
+    const margin =
+      parseFloat(styles["marginTop"]) + parseFloat(styles["marginBottom"]);
+    return Math.ceil(el.offsetHeight + margin);
+  }
 
   function createNewPage() {
     const newPage = document.createElement("div");
@@ -12,6 +18,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function layoutSections() {
     const initialPage = cv.querySelector(".page");
+    const pageStyle = window.getComputedStyle(initialPage);
+    const pageHeightPx =
+      initialPage.offsetHeight -
+      parseFloat(pageStyle.paddingTop) -
+      parseFloat(pageStyle.paddingBottom);
 
     // Append all sections to the initial page
     for (const section of sections) {
@@ -22,9 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Calculate section heights
-    const sectionHeights = Array.from(sections).map(
-      (section) => section.offsetHeight
-    );
+    const sectionHeights = Array.from(sections).map(getElementHeight);
 
     // Clear the initial page
     initialPage.innerHTML = "";
@@ -104,39 +113,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document
       .getElementById("generate-pdf")
-      .addEventListener("click", function () {
+      .addEventListener("click", async function () {
         const element = document.querySelector(".cv");
         const pages = element.querySelectorAll(".page");
 
         document.body.classList.add("generating-pdf");
 
-        // Create a clone of the CV element
-        const clone = element.cloneNode(true);
-
-        // Apply styles to the clone
-        clone.style.position = "absolute";
-        clone.style.left = "-9999px";
-        clone.style.top = "0";
-        document.body.appendChild(clone);
-
-        // Show all pages in the clone
-        clone.querySelectorAll(".page").forEach((page) => {
-          page.style.display = "block";
-          page.style.boxShadow = "none";
-          page.style.margin = "0";
-          page.style.pageBreakAfter = "always";
-        });
-
-        html2canvas(clone, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: null,
-        }).then((canvas) => {
-          // Remove the clone after capturing
-          document.body.removeChild(clone);
-
-          const imgData = canvas.toDataURL("image/png");
+        try {
           const pdf = new jsPDF({
             unit: "mm",
             format: "a4",
@@ -145,30 +128,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
           const pageWidth = pdf.internal.pageSize.getWidth();
           const pageHeight = pdf.internal.pageSize.getHeight();
-          const imgWidth = pageWidth;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-          let heightLeft = imgHeight;
-          let position = 0;
-          let pageCount = 0;
+          for (let i = 0; i < pages.length; i++) {
+            const page = pages[i];
 
-          const significantContentThreshold = 10;
+            const clone = page.cloneNode(true);
+            clone.style.width = `${pageWidth}mm`;
+            clone.style.height = `${pageHeight}mm`;
+            clone.style.display = "block";
+            clone.style.position = "absolute";
+            clone.style.left = "-9999px";
+            clone.style.top = "0";
+            document.body.appendChild(clone);
 
-          while (heightLeft > significantContentThreshold) {
-            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-            position -= pageHeight;
-            pageCount++;
+            const canvas = await html2canvas(clone, {
+              scale: 2,
+              useCORS: true,
+              allowTaint: true,
+              backgroundColor: null,
+            });
 
-            if (heightLeft > significantContentThreshold) {
+            document.body.removeChild(clone);
+
+            const imgData = canvas.toDataURL("image/png");
+
+            pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
+
+            if (i < pages.length - 1) {
               pdf.addPage();
             }
           }
 
           pdf.save(document.title.split("-")[0].trim() + ".pdf");
-
+        } catch (error) {
+          console.error("Error generating PDF:", error);
+        } finally {
           document.body.classList.remove("generating-pdf");
-        });
+        }
       });
   });
 });
