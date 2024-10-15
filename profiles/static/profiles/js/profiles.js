@@ -345,12 +345,13 @@ function updateAccordionIcons(accordionParentId) {
   for (let i = 0; i < children.length; i++) {
     let child = children[i];
     let heading = child.getElementsByTagName('h2')[0];
+    // Remove FlowBites default color settings when the accordion is clicked
+    heading.className = 'work-collapse-heading 2xl:w-[50%]';
     let isActive = (heading.getAttribute('aria-expanded') == 'true');
     let button = heading.getElementsByTagName('button')[0];
     button.classList.remove('rounded-b-xl');
     let buttonIcon = heading.getElementsByTagName('svg')[0];
     buttonIcon.classList.remove('rotate-180');
-
     
     if (!isActive) {
       buttonIcon.classList.add('rotate-180');
