@@ -128,6 +128,19 @@
 {% endblock %}
 {% block title %}{{ cv.contact_information.first_name }}'s Generated CV - {% endblock %}
 {% block content %}
+<div class="navigation-buttons">
+  <div class="back-button">
+    <a href="{% url 'cv_template' %}">Go back</a>
+  </div>
+  <div class="page-navigation">
+
+    {% comment %} Don't add anything here - these are automatically created with
+    the below JS {% endcomment %}
+  </div>
+  <button id="generate-pdf">
+    Download as PDF
+  </button>
+</div>
 <div class="cv">
   <div class="page active">
     <section class="cv-section intro">
@@ -281,14 +294,6 @@
     </ul>
   </section>
 </div>
-<div class="page-navigation mb-5">
-  {% comment %} Don't add anything here - these are automatically created with
-  the below JS {% endcomment %}
-</div>
-<button id="generate-pdf">
-  Download as PDF
-</button>
-
 {% endblock %}
 
 {% block extra_js %}

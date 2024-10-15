@@ -51,21 +51,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updatePageNavigation() {
     const pages = document.querySelectorAll(".page");
-    pageNavigationContainer.innerHTML = "";
 
     pages.forEach((page, index) => {
       const pageLink = document.createElement("a");
       pageLink.href = "#";
       pageLink.textContent = `Page ${index + 1}`;
-      pageLink.classList.add(
-        "bg-violet-800",
-        "hover:bg-lime-600",
-        "text-white",
-        "py-2",
-        "px-4",
-        "rounded-sm",
-        "mx-2"
-      );
       pageLink.addEventListener("click", function (event) {
         event.preventDefault();
         showPage(index + 1);
@@ -117,6 +107,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .addEventListener("click", function () {
         const element = document.querySelector(".cv");
         const pages = element.querySelectorAll(".page");
+
+        document.body.classList.add("generating-pdf");
 
         // Create a clone of the CV element
         const clone = element.cloneNode(true);
@@ -174,6 +166,8 @@ document.addEventListener("DOMContentLoaded", function () {
           }
 
           pdf.save(document.title.split("-")[0].trim() + ".pdf");
+
+          document.body.classList.remove("generating-pdf");
         });
       });
   });

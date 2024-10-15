@@ -16,6 +16,14 @@ body {
   font-size: 10pt;
 }
 
+.navigation-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  width: 100%;
+}
+
 .cv {
   display: flex;
   flex-direction: column;
@@ -47,6 +55,10 @@ body {
   @page {
     size: A4;
     margin: 0;
+  }
+
+  .navigation-buttons {
+    display: none;
   }
 
   body {
@@ -90,7 +102,9 @@ body {
 }
 
 .page-navigation a,
+.back-button a,
 #generate-pdf {
+  display: inline-block;
   cursor: pointer;
   background-color: #5b21b6;
   color: white;
@@ -98,14 +112,10 @@ body {
   border-radius: 5px;
   text-decoration: none;
   border: none;
-  margin: 0 5px;
+  margin-left: 0.5em;
   &:hover {
     background-color: rgb(101 163 13);
   }
-}
-
-#generate-pdf {
-  margin-top: 2em;
 }
 
 @media print {
@@ -118,4 +128,30 @@ body {
   .page:last-child {
     page-break-after: avoid;
   }
+}
+
+@media screen and (max-width: 767px) {
+  body.mobile {
+    transform-origin: top left;
+    transform: scale(0.49);
+    width: 200%;
+    height: 200%;
+    overflow-x: hidden;
+  }
+
+  body.mobile .page {
+    margin: 0 auto;
+  }
+}
+
+body.generating-pdf {
+  transform: none !important;
+  width: 100% !important;
+  height: auto !important;
+  overflow-x: visible !important;
+}
+
+body.generating-pdf .page {
+  margin: 0 !important;
+  transform: none !important;
 }
