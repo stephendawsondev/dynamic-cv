@@ -340,16 +340,23 @@ function deleteItemListRow(deleteElement) {
  * @param {String} accordionParentId The id of the parent accordion element
  */
 function updateAccordionIcons(accordionParentId) {
-  let accordionParent = document.getElementById(accordionParentId); 
+  let accordionParent = document.getElementById(accordionParentId);
   let children = accordionParent.children;
-  for (let child of children) {
+  for (let i = 0; i < children.length; i++) {
+    let child = children[i];
     let heading = child.getElementsByTagName('h2')[0];
     let isActive = (heading.getAttribute('aria-expanded') == 'true');
+    let button = heading.getElementsByTagName('button')[0];
+    button.classList.remove('rounded-b-xl');
     let buttonIcon = heading.getElementsByTagName('svg')[0];
     buttonIcon.classList.remove('rotate-180');
 
+    
     if (!isActive) {
       buttonIcon.classList.add('rotate-180');
+      if (i === children.length - 1) {
+        button.classList.add('rounded-b-xl');
+      }
     }
   }
 }
@@ -434,17 +441,18 @@ function checkActiveExperience() {
     disableElement.required = !this.checked;
   }
 }
+
 const experienceActiveChecks = document.getElementsByClassName('is-active-check');
 for (let checkbox of experienceActiveChecks) {
   checkbox.addEventListener('click', checkActiveExperience);
 }
+
 // Forcing dependent elements that are not required by default to be required
 const dependentIds = ['id_end_date', 'id_end_year', 'id_grade'];
 for (let depId of dependentIds) {
   let element = document.getElementById(depId);
   element.required = true;
 }
-
 
 // Adding the bullet points to the list
 const addItemForms = document.getElementsByClassName('add-item-form');
@@ -459,3 +467,13 @@ for (let itemInput of addItemInputs) {
     this.setCustomValidity("");
   });
 }
+
+// Initializing all accordions. Must use a timeout because window.onload is called to quick
+setTimeout(() => {
+  for (let [experienceType, objectProperties] of Object.entries(experienceProperties)) {
+    let accordionElement = document.getElementById(objectProperties.target);
+    if (accordionElement.children.length > 0) {
+      setAccordion(accordionElement, experienceType);
+    }
+  }
+}, 700);
