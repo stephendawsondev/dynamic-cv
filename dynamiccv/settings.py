@@ -205,8 +205,6 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-print("API" + os.environ.get('OPENAI_API_KEY'))
-
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
 # Default primary key field type
