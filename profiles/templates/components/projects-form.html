@@ -15,6 +15,7 @@
     {% csrf_token %}
     <div class="md:w-[50%]">
       {{ project_form.name|as_crispy_field }}
+      {{ project_form.description|as_crispy_field }}
       {{ project_form.repository_url|as_crispy_field }}
       {{ project_form.deployed_url|as_crispy_field }}
     </div>

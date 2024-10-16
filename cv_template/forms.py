@@ -37,19 +37,19 @@ class CVTemplateForm(forms.ModelForm):
         fields = [
             "cv_name",
             "position_title",
-            "summary",
             "use_default_summary",
-            "skills",
-            "work_experience",
+            "summary",
             "education",
+            "work_experience",
             "projects",
+            "skills",
         ]
 
         labels = {
             "cv_name": "CV Name",
+            "position_title": "Position Title",
             "summary": "Summary",
             "use_default_summary": "Use Default Summary",
-            "position_title": "Position Title",
             "skills": "Relevant Skills",
             "work_experience": "Relevant Work Experience",
             "education": "Relevant Education",
