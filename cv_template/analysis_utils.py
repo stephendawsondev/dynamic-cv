@@ -57,7 +57,7 @@ class CVAnalyzer:
 
         results = []
         for mistake in mistakes:
-            if mistake.lower() in exclusion_list:
+            if mistake.strip(".,").lower() in exclusion_list:
                 continue
             correction = spell.correction(mistake)
 

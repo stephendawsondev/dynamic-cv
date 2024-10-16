@@ -1,3 +1,4 @@
+import json
 from django.views.generic import ListView, CreateView, DetailView, TemplateView, View
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib import messages
@@ -60,9 +61,11 @@ class GeneratedCV(LoginRequiredMixin, DetailView):
     template_name = "cv_template/generated_cv.html"
     context_object_name = "cv"
 
-    def get_object(self, queryset=None):
-        pk = self.kwargs.get("pk")
-        return CVTemplate.objects.get(pk=pk)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cv"] = self.get_object()
+        context["cv_analysis"] = CVAnalysis.objects.filter(cv=self.get_object()).first()
+        return context
 
 
 class CVAnalyzerView(LoginRequiredMixin, View):
@@ -73,14 +76,26 @@ class CVAnalyzerView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         saved_cv = CVTemplate.objects.get(pk=self.kwargs.get("pk"))
+
+        try:
+            analysis = CVAnalysis.objects.get(cv=saved_cv)
+            if saved_cv.updated_at < analysis.created_at:
+                return redirect('generated_cv', pk=saved_cv.pk)     
+        except CVAnalysis.DoesNotExist:
+            pass
+
         cv = CVAnalyzer(saved_cv)
-        position_top_skills = cv.get_position_skills()
-        summary_errors = cv.check_spelling_errors()
-        match_per, missing_skills = cv.get_match_on_top_skills(position_top_skills)
-        potential_skills = cv.get_potential_missing_skills(missing_skills)
-        analysis = self._create_cv_analysis_obj(
-            saved_cv, position_top_skills, summary_errors, match_per, potential_skills
-        )
+        try:
+            position_top_skills = cv.get_position_skills()
+            summary_errors = cv.check_spelling_errors()
+            match_per, missing_skills = cv.get_match_on_top_skills(position_top_skills)
+            potential_skills = cv.get_potential_missing_skills(missing_skills)
+            analysis = self._create_cv_analysis_obj(
+                saved_cv, position_top_skills, summary_errors, match_per, potential_skills
+            )
+        except json.JSONDecodeError as e:
+            messages.error(self.request, "An error occurred while analyzing the CV. Please try again later.")
+            return redirect('cv_list')
         return redirect('view_analysis', pk=analysis.id)
 
     def _create_cv_analysis_obj(
