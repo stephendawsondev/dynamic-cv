@@ -5,6 +5,7 @@ import json
 from .data.exclusion_list import exclusion_list
 
 from .models import CVTemplate
+from bs4 import BeautifulSoup
 
 
 class CVAnalyzer:
@@ -52,7 +53,11 @@ class CVAnalyzer:
         Checks the summary for spelling errors and returns potential mistakes and suggestions
         """
         spell = SpellChecker()
-        words = self.cv.summary.split()
+        # Convert HTML to plain text
+        soup = BeautifulSoup(self.cv.summary, "html.parser")
+        plain_text_summary = soup.get_text()
+
+        words = plain_text_summary.split()
         mistakes = spell.unknown(words)
 
         results = []
