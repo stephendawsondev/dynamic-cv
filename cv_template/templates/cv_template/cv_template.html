@@ -3,13 +3,91 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'cv_template/css/cv_template.css' %}">
+<style>
+  .cv-preview {
+    font-family: "Raleway", sans-serif;
+    line-height: 1.6;
+    font-size: 10pt;
+  }
+
+  .cv-preview h1 {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 23pt;
+    margin: 0;
+  }
+
+  .cv-preview h2 {
+    text-align: center;
+    font-size: 16pt;
+    margin: 0;
+    color: #6495ed;
+  }
+
+  .cv-preview h3 {
+    color: #6495ed;
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+  }
+
+  .cv-preview h3::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: black;
+    margin-top: 10px;
+  }
+
+  .cv-preview ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .cv-preview .intro ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .cv-preview table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .cv-preview td {
+    padding: 5px;
+  }
+
+  .cv-preview .date-cell {
+    width: 15%;
+  }
+
+  .cv-preview .accreditation {
+    width: 30%;
+  }
+
+  .cv-preview .job .header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+  }
+
+  .cv-preview .technical-skill-set ul,
+  .cv-preview .additional-information ul {
+    padding-left: 20px;
+    list-style-type: disc;
+  }
+</style>
 {% endblock %}
 
-{% block title %}{% endblock %}
+{% block title %}CV Creator{% endblock %}
 
 {% block content %}
-<div class="container mx-auto p-3">
-  <form method="post" id="skill-form" class="md:w-[50%]">
+<div class="container mx-auto p-3 lg:flex lg:flex-row">
+  <form method="post" id="skill-form" class="w-full lg:w-1/2 lg:pr-4">
     {% csrf_token %}
     {{ form|crispy }}
     {{ form.media }}
@@ -17,7 +95,70 @@
       class="text-white bg-violet-800 hover:bg-lime-500 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Create
       CV</button>
   </form>
+  <div class="cv-preview-container hidden lg:block lg:w-1/2 lg:pl-4 ">
+    <div class="cv-preview bg-white p-5 shadow-md lg:sticky lg:top-0">
+      <section class="intro">
+        <h1 id="preview-name">{% if first_name and last_name %}{{ first_name }} {{ last_name }}{% endif %}</h1>
+        <h2 id="preview-position"></h2>
+        <ul class="links">
+          {% if github_url %}
+          <li><a href="{{ github_url }}">{{ github_url }}</a></li>
+          {% endif %}
+          {% if linkedin_url %}
+          <li><a href="{{ linkedin_url }}">{{ linkedin_url }}</a></li>
+          {% endif %}
+        </ul>
+        <ul class="contact-details">
+          {% if city or country %}
+          <li>
+            {% if city %}{{ city }}{% endif %}{% if city and country %}, {% endif %}{% if country %}{{ country }}
+            {% endif %}
+          </li>
+          {% endif %}
+          {% if email %}
+          <li><a href="mailto:{{ email }}">{{ email }}</a></li>
+          {% endif %}
+          {% if phone_number %}
+          <li>{{ phone_number }}</li>
+          {% endif %}
+        </ul>
+        <div class="my-3 summary" id="preview-summary"></div>
+      </section>
+      <section class="education-section">
+        <h3>Education</h3>
+        <table id="preview-education"></table>
+      </section>
+      <section class="work-experience-section">
+        <h3>Work Experience</h3>
+        <div id="preview-work-experience"></div>
+      </section>
+      <section class="project-section">
+        <h3>Projects</h3>
+        <table id="preview-projects">
+          <thead>
+            <tr>
+              <th>Project name</th>
+              <th>Description</th>
+              <th>Deployed URL</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+      <section class="technical-skill-set">
+        <h3>Technical Skill Set</h3>
+        <ul id="preview-skills"></ul>
+      </section>
+      <section class="additional-information">
+        <h3>Additional Information/Interests</h3>
+        <ul id="preview-additional-info"></ul>
+      </section>
+    </div>
+  </div>
 </div>
+<button type="button" id="preview-button"
+  class="fixed bottom-5 right-5 lg:hidden text-violet-800 bg-white border-2 border-violet-800 hover:bg-violet-100 focus:outline-none focus:ring-4 focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2 z-50">Preview
+  CV</button>
 {% endblock %}
 
 {% block extra_js %}
@@ -33,42 +174,180 @@
 
     // Create and insert the disabled text area
     const form = document.querySelector('#skill-form');
-    const contactSelect = document.querySelector('#id_contact_information');
-    const contactLabel = document.querySelector('label[for="id_contact_information"]');
+    const previewButton = document.querySelector('#preview-button');
+    const previewContainer = document.querySelector('.cv-preview-container');
 
-    const contactDisplay = document.createElement('textarea');
-    contactDisplay.id = 'contact_information_display';
-    contactDisplay.className = 'bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 block w-full leading-normal text-gray-700 mb-3';
-    contactDisplay.disabled = true;
+    function togglePreview() {
+      if (window.innerWidth < 1024) { // 'lg' breakpoint
+        if (previewContainer.classList.contains('hidden')) {
+          previewContainer.classList.remove('hidden');
+          previewContainer.classList.add('fixed', 'inset-0', 'z-50', 'bg-white', 'overflow-auto', 'p-4');
+          previewButton.textContent = 'Hide Preview';
+        } else {
+          previewContainer.classList.add('hidden');
+          previewContainer.classList.remove('fixed', 'inset-0', 'z-50', 'bg-white', 'overflow-auto', 'p-4');
+          previewButton.textContent = 'Preview CV';
+        }
+      }
+    }
 
-    const contactDisplayLabel = document.createElement('label');
-    contactDisplayLabel.htmlFor = 'contact_information_display';
-    contactDisplayLabel.className = 'block text-gray-700 text-sm font-bold mb-2';
-    contactDisplayLabel.innerText = 'Selected Contact Information';
+    previewButton.addEventListener('click', togglePreview);
 
-    contactLabel.parentNode.insertBefore(contactDisplayLabel, contactLabel.nextSibling);
-    contactDisplayLabel.parentNode.insertBefore(contactDisplay, contactDisplayLabel.nextSibling);
-
-    // Update the text area with the selected option
-    contactSelect.addEventListener('change', function (event) {
-      const selectedOption = event.target.options[event.target.selectedIndex];
-      contactDisplay.value = selectedOption.text;
+    previewContainer.addEventListener('click', function (event) {
+      if (window.innerWidth < 1024 && event.target === previewContainer) {
+        togglePreview();
+      }
     });
 
-    // Initial update of the text area
-    const initialSelectedOption = contactSelect.options[contactSelect.selectedIndex];
-    contactDisplay.value = initialSelectedOption.text;
-  });
-</script>
+    function handleResize() {
+      if (window.innerWidth >= 1024) {
+        previewContainer.classList.remove('hidden', 'fixed', 'inset-0', 'z-50', 'bg-white', 'overflow-auto', 'p-4');
+        previewContainer.classList.add('lg:block');
+        previewButton.classList.add('hidden');
+      } else {
+        previewContainer.classList.add('hidden');
+        previewContainer.classList.remove('lg:block');
+        previewButton.classList.remove('hidden');
+      }
+    }
 
-<script>
-  const defaultSummary = document.querySelector('#id_use_default_summary');
-  defaultSummary.addEventListener('change', function (event) {
-    const summary = document.querySelector('#div_id_summary');
-    if (event.target.checked) {
-      summary.style.display = 'none';
-    } else {
-      summary.style.display = 'block';
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    function updateSummaryPreview() {
+      const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
+      const summaryPreview = document.getElementById('preview-summary');
+      if (useDefaultSummaryInput.checked) {
+        summaryPreview.innerHTML = '{{ default_summary|escapejs }}';
+      } else {
+        const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');
+        if (richTextEditor) {
+          summaryPreview.innerHTML = richTextEditor.innerHTML;
+        }
+      }
+    }
+
+    form.addEventListener('input', function (event) {
+      if (!event.target.closest('.ck-editor')) {
+        updatePreview();
+      }
+    });
+
+    if (window.CKEDITOR) {
+      CKEDITOR.on('instanceReady', function (evt) {
+        evt.editor.on('change', function () {
+          updateSummaryPreview();
+        });
+      });
+    }
+
+    const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
+    useDefaultSummaryInput.addEventListener('change', updateSummaryPreview);
+
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="education"], input[type="checkbox"][name^="work_experience"], input[type="checkbox"][name^="skills"], input[type="checkbox"][name^="projects"]');
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', updatePreview);
+    });
+
+    function updateLinks() {
+      const links = document.querySelectorAll('.cv-preview .links li');
+      links.forEach(li => {
+        const link = li.querySelector('a');
+        if (link) {
+          li.textContent = link.href.replace(/^https?:\/\//, '');
+        }
+      });
+    }
+
+    function updatePreview() {
+      const positionInput = document.getElementById('id_position_title');
+      if (positionInput) {
+        document.getElementById('preview-position').textContent = positionInput.value;
+      }
+
+      updateSummaryPreview();
+
+      const educationPreview = document.getElementById('preview-education');
+      educationPreview.innerHTML = '';
+      const educationCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="education"]:checked');
+      educationCheckboxes.forEach(checkbox => {
+        const educationInfo = checkbox.parentElement.textContent.trim().split(' - ');
+        if (educationInfo.length >= 4) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+          <td class="date-cell">09/10-05/14</td>
+          <td>Example University</td>
+          <td>Example Location</td>
+          <td class="accreditation">Example degree</td>
+        `;
+          educationPreview.appendChild(tr);
+        }
+      });
+
+      const workExperiencePreview = document.getElementById('preview-work-experience');
+      workExperiencePreview.innerHTML = '';
+      const workExperienceCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="work_experience"]:checked');
+      workExperienceCheckboxes.forEach(checkbox => {
+        const workInfo = checkbox.parentElement.textContent.trim().split(' - ');
+        if (workInfo.length >= 3) {
+          const div = document.createElement('div');
+          div.className = 'job';
+          div.innerHTML = `
+          <div class="header">
+            <div class="details">${workInfo[1]} - ${workInfo[0]}</div>
+            <div class="date">${workInfo[2]}</div>
+          </div>
+          <ul class="work-details">
+            <li>Your first key responsibility or achievement will be listed here.</li>
+            <li>Your second key responsibility or achievement will be listed here.</li>
+            <li>Your third key responsibility or achievement will be listed here.</li>
+          </ul>
+        `;
+          workExperiencePreview.appendChild(div);
+        }
+      });
+
+      const projectsPreview = document.getElementById('preview-projects').getElementsByTagName('tbody')[0];
+      projectsPreview.innerHTML = '';
+      const projectCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="projects"]:checked');
+      projectCheckboxes.forEach(checkbox => {
+        const projectInfo = checkbox.parentElement.textContent.trim().split(' - ');
+        if (projectInfo.length >= 1) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+          <td>${projectInfo[0]}</td>
+          <td>This is where the project description will go. It will provide a brief overview of the project.</td>
+          <td>example.com/${projectInfo[0].toLowerCase().replace(/\s+/g, '-')}</td>
+        `;
+          projectsPreview.appendChild(tr);
+        }
+      });
+
+      const skillsPreview = document.getElementById('preview-skills');
+      const skillsCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="skills"]:checked');
+      const skillsList = Array.from(skillsCheckboxes).map(checkbox => checkbox.parentElement.textContent.trim());
+      skillsPreview.textContent = skillsList.join(', ');
+
+      updateLinks();
+    }
+
+    updatePreview();
+
+    const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');
+    if (richTextEditor) {
+      const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.type === 'childList' || mutation.type === 'characterData') {
+            updateSummaryPreview();
+          }
+        });
+      });
+
+      observer.observe(richTextEditor, {
+        childList: true,
+        characterData: true,
+        subtree: true
+      });
     }
   });
 </script>
