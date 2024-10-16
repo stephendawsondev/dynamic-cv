@@ -1,5 +1,5 @@
 import json
-from django.views.generic import ListView, CreateView, DetailView, TemplateView, View
+from django.views.generic import ListView, CreateView, DetailView, DeleteView, View, UpdateView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -172,3 +172,30 @@ class CVAnalysisDetail(DetailView):
     model = CVAnalysis
     template_name = "cv_template/cv_analyzer.html"
     context_object_name = "analysis_info"
+
+
+class DeleteCV(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """ A view to delete a CV """
+    model = CVTemplate
+    success_url = "/cv/cv-list/"
+
+    def test_func(self):
+        return self.request.user == self.get_object().user
+
+
+class UpdateCV(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """ A view to delete a CV """
+    model = CVTemplate
+    template_name = "cv_template/cv_template.html"
+    form_class = CVTemplateForm
+
+    def get_form_kwargs(self):
+        kwargs = super(UpdateCV, self).get_form_kwargs()
+        kwargs["request"] = self.request
+        return kwargs
+
+    def get_success_url(self):
+        return reverse("generated_cv", kwargs={"pk": self.object.pk})
+
+    def test_func(self):
+        return self.request.user == self.get_object().user
