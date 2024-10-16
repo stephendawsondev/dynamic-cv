@@ -78,12 +78,22 @@
 
 
 <!-- Components to be used to dynamically create elements -->
+{% with True as generate_bullet_points %}
+{% with True as generate_skills %}
+{% with True as has_grade %}
+{% with True as has_repo_url %}
+{% with True as has_deployed_url %}
 <script>
     const workExperienceHtml = `{% include 'components/work-experience-details.html' %}`;
     const educationHtml = `{% include 'components/education-details.html' %}`;
     const projectHtml = `{% include 'components/project-details.html' %}`;
     const listItem = `{% include 'components/list-item.html' %}`;
 </script>
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
 
 <script src="{% static 'profiles/js/profiles.js' %}"></script>
 <script src="{% static 'profiles/js/skills.js' %}"></script>

@@ -3,20 +3,26 @@
 
 <div id="projects">
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Projects</h1>
-  <p class="block text-gray-700 text-sm mb-4">Enter any projects you have worked on</p>
-  <div id="projects-list">
+  <div id="projects-list" data-accordion="collapse" class="my-4">
     {% for project_exp in project_list %}
+    {% with project_exp.repository_url as has_repo_url %}
+    {% with project_exp.deployed_url as has_deployed_url %}
     {% include 'components/project-details.html' %}
+    {% endwith %}
+    {% endwith %}
     {% endfor %}
   </div>
+  {% if project_list %}
+  <h2 class="block text-violet-700 text-l font-bold mb-3">+ Add Project</h2>
+  {% else %}
+  <p class="block text-gray-700 text-sm mb-4">Please enter any projects you have worked on</p>
+  {% endif %}
   <div id="project-input-data" class="hidden"></div>
   <form hx-post="{% url 'add_project' %}" hx-target="#project-input-data" id="project-form"
     hx-on::after-request="this.reset()" onreset="addExperienceHtml('project')">
     {% csrf_token %}
     <div class="md:w-[50%]">
-      {{ project_form.name|as_crispy_field }}
-      {{ project_form.repository_url|as_crispy_field }}
-      {{ project_form.deployed_url|as_crispy_field }}
+      {{ project_form|crispy }}
     </div>
     <button type="submit" class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add
       Project</button>
