@@ -6,10 +6,10 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .forms import SummaryForm, ContactInformationForm, \
-     WorkExperienceForm, EducationForm, ProjectForm
+    WorkExperienceForm, EducationForm, ProjectForm
 from .models import Summary, ContactInformation, Skill, \
-     WorkExperience, WorkExperienceBullets, \
-     Education, EducationBullets, Project
+    WorkExperience, WorkExperienceBullets, \
+    Education, EducationBullets, Project
 
 import json
 
@@ -66,6 +66,7 @@ class UpdateSummary(LoginRequiredMixin, View):
             return HttpResponse('<p class="success">Summary updated successfully!</p>')
         else:
             return HttpResponse('<p class="error">Please provide a valid summary.</p>')
+
 
 class CreateUpdateContactInformation(LoginRequiredMixin, View):
     """
@@ -124,7 +125,7 @@ class AddWorkExperience(LoginRequiredMixin, View):
         user = request.user
         if not work_form.is_valid():
             return HttpResponse("Form is invalid")
-        
+
         # Only add the necessary fields to prevent errors
         required_fields = {
             'user': request.user,
@@ -157,7 +158,7 @@ class AddWorkExperience(LoginRequiredMixin, View):
                     user.save()
                 work_experience.applied_skills.add(list_item)
             else:
-                continue            
+                continue
             list_item.save()
         work_experience.save()
         return HttpResponse(json.dumps(post_data))
@@ -171,7 +172,7 @@ class AddEducation(LoginRequiredMixin, View):
         user = request.user
         if not education_form.is_valid():
             return HttpResponse("Form is invalid")
-        
+
         # Only add the necessary fields to prevent errors
         required_fields = {
             'user': request.user,
@@ -205,7 +206,7 @@ class AddEducation(LoginRequiredMixin, View):
                     user.save()
                 education.applied_skills.add(list_item)
             else:
-                continue            
+                continue
             list_item.save()
         education.save()
         return HttpResponse(json.dumps(post_data))
@@ -218,7 +219,7 @@ class AddProject(LoginRequiredMixin, View):
         project_form = ProjectForm(request.POST)
         if not project_form.is_valid():
             return HttpResponse("Form is not valid")
-        
+
         project = Project(
             user=request.user,
             name=post_data['name'],

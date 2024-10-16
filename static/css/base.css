@@ -2,10 +2,12 @@
 
 html {
   scrollbar-gutter: stable; /* Reserves space for the scrollbar gutter */
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: "Roboto", sans-serif;
+  scroll-behavior: smooth;
 }
 
 h1,
