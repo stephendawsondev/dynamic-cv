@@ -72,7 +72,7 @@ class WorkExperienceBullets(models.Model):
     user = models.ForeignKey(
         User, related_name="work_bullets", on_delete=models.CASCADE
     )
-    bullet_point = models.CharField(max_length=150, null=False, blank=False)
+    bullet_point = models.CharField(max_length=210, null=False, blank=False)
 
     def __str__(self):
         return str(self.bullet_point)
@@ -94,7 +94,8 @@ class WorkExperience(models.Model):
     position = models.CharField(max_length=150, null=False, blank=False)
     organization = models.CharField(max_length=150, null=False, blank=False)
     location = models.CharField(max_length=150, null=True, blank=True)
-    bullet_points = models.ManyToManyField(WorkExperienceBullets, related_name="related_experience")
+    bullet_points = models.ManyToManyField(
+        WorkExperienceBullets, related_name="related_experience")
     applied_skills = models.ManyToManyField(
         Skill, related_name="work")
 
@@ -134,7 +135,8 @@ class Education(models.Model):
     school_name = models.CharField(max_length=150, null=False, blank=False)
     location = models.CharField(max_length=150, null=True, blank=True)
     grade = models.CharField(max_length=50, null=True, blank=True)
-    bullet_points = models.ManyToManyField(EducationBullets, related_name="related_experience")
+    bullet_points = models.ManyToManyField(
+        EducationBullets, related_name="related_experience")
     applied_skills = models.ManyToManyField(Skill, related_name="education")
 
     def __str__(self):
