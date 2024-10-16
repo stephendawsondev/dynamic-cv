@@ -40,7 +40,7 @@
                     <p class="mb-4 font-semibold">The following skills and competencies have been identified as the top skills needed for the position title of {{analysis_info.cv.position_title}}</p>
                     <ul class="space-y-4 text-gray-500 list-inside">
                         <li>
-                            Top Tech Skills
+                            <span class="text-violet-800">Top Tech Skills</span>
                             <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
                                 {% for skill in analysis_info.top_tech_skills %}
                                     <li>{{ skill }}</li>
@@ -49,7 +49,7 @@
                         </li>
 
                         <li>
-                            Top Soft Skills
+                            <span class="text-violet-800">Top Soft Skills</span>
                             <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
                                 {% for skill in analysis_info.top_soft_skills %}
                                     <li>{{ skill }}</li>
@@ -58,7 +58,7 @@
                         </li>
 
                         <li>
-                            Top Tech Competency Skills
+                            <span class="text-violet-800">Top Tech Competency Skills</span>
                             <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
                                 {% for skill in analysis_info.top_tech_comp_skills %}
                                     <li>{{ skill }}</li>
@@ -67,7 +67,7 @@
                         </li>
 
                         <li>
-                            Top Qualifications
+                            <span class="text-violet-800">Top Qualifications</span>
                             <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
                                 {% for qualification in analysis_info.top_qualifications %}
                                     <li>{{ qualification }}</li>
@@ -76,7 +76,7 @@
                         </li>
 
                         <li>
-                            Top Methodologies
+                            <span class="text-violet-800">Top Methodologies</span>
                             <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
                             {% for methodology in analysis_info.top_methodologies %}
                                 <li>{{ methodology }}</li>
