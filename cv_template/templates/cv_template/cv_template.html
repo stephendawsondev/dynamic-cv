@@ -3,12 +3,125 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'cv_template/css/cv_template.css' %}">
+<style>
+  .cv-preview-container {
+    width: 100%;
+    max-width: 50%;
+    height: 100vh;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+  }
+
+  .cv-preview {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: "Raleway", sans-serif;
+    line-height: 1.6;
+    font-size: 10pt;
+  }
+
+  .cv-preview h1 {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 23pt;
+    margin: 0;
+  }
+
+  .cv-preview h2 {
+    text-align: center;
+    font-size: 16pt;
+    margin: 0;
+    color: #6495ed;
+  }
+
+  .cv-preview h3 {
+    color: #6495ed;
+    margin-bottom: 10px;
+  }
+
+  .cv-preview h3::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: black;
+    margin-top: 10px;
+  }
+
+  .cv-preview ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .cv-preview .intro ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .cv-preview table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .cv-preview td {
+    padding: 5px;
+  }
+
+  .cv-preview .date-cell {
+    width: 15%;
+  }
+
+  .cv-preview .accreditation {
+    width: 30%;
+  }
+
+  .cv-preview .job .header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+  }
+
+  .cv-preview .technical-skill-set ul,
+  .cv-preview .additional-information ul {
+    padding-left: 20px;
+    list-style-type: disc;
+  }
+
+  @media (max-width: 1023px) {
+    .cv-preview-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .cv-preview {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 500px;
+      max-height: 90%;
+      overflow-y: auto;
+    }
+  }
+</style>
 {% endblock %}
 
-{% block title %}{% endblock %}
+{% block title %}CV Creator{% endblock %}
 
 {% block content %}
-<div class="container mx-auto p-3">
+<div class="container lg:flex lg:flex-row mx-auto p-3">
   <form method="post" id="skill-form" class="md:w-[50%]">
     {% csrf_token %}
     {{ form|crispy }}
@@ -16,52 +129,207 @@
     <button type="submit"
       class="text-white bg-violet-800 hover:bg-lime-500 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Create
       CV</button>
+    <button type="button" id="preview-button"
+      class="lg:hidden text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Preview
+      CV</button>
   </form>
+  <div class="cv-preview-container">
+    <div class="cv-preview">
+      <section class="intro">
+        <h1 id="preview-name">{% if first_name and last_name %}{{ first_name }} {{ last_name }}{% endif %}</h1>
+        <h2 id="preview-position"></h2>
+        <ul class="links">
+          {% if github_url %}
+          <li><a href="{{ github_url }}">{{ github_url }}</a></li>
+          {% endif %}
+          {% if linkedin_url %}
+          <li><a href="{{ linkedin_url }}">{{ linkedin_url }}</a></li>
+          {% endif %}
+        </ul>
+        <ul class="contact-details">
+          {% if city or country %}
+          <li>
+            {% if city %}{{ city }}{% endif %}{% if city and country %}, {% endif %}{% if country %}{{ country }}
+            {% endif %}
+          </li>
+          {% endif %}
+          {% if email %}
+          <li><a href="mailto:{{ email }}">{{ email }}</a></li>
+          {% endif %}
+          {% if phone_number %}
+          <li>{{ phone_number }}</li>
+          {% endif %}
+        </ul>
+        <div class="summary" id="preview-summary"></div>
+      </section>
+      <section class="education-section">
+        <h3>Education</h3>
+        <table id="preview-education"></table>
+      </section>
+
+      <section class="work-experience-section">
+        <h3>Work Experience</h3>
+        <div id="preview-work-experience"></div>
+      </section>
+
+      <section class="project-section">
+        <h3>Projects</h3>
+        <table id="preview-projects">
+          <thead>
+            <tr>
+              <th>Project name</th>
+              <th>Repository URL</th>
+              <th>Deployed URL</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section class="technical-skill-set">
+        <h3>Technical Skill Set</h3>
+        <ul id="preview-skills"></ul>
+      </section>
+
+      <section class="additional-information">
+        <h3>Additional Information/Interests</h3>
+        <ul id="preview-additional-info"></ul>
+      </section>
+    </div>
+  </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // Create and insert the disabled text area
     const form = document.querySelector('#skill-form');
-    const contactSelect = document.querySelector('#id_contact_information');
-    const contactLabel = document.querySelector('label[for="id_contact_information"]');
+    const previewButton = document.querySelector('#preview-button');
+    const previewContainer = document.querySelector('.cv-preview-container');
 
-    const contactDisplay = document.createElement('textarea');
-    contactDisplay.id = 'contact_information_display';
-    contactDisplay.className = 'bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 block w-full leading-normal text-gray-700 mb-3';
-    contactDisplay.disabled = true;
-
-    const contactDisplayLabel = document.createElement('label');
-    contactDisplayLabel.htmlFor = 'contact_information_display';
-    contactDisplayLabel.className = 'block text-gray-700 text-sm font-bold mb-2';
-    contactDisplayLabel.innerText = 'Selected Contact Information';
-
-    contactLabel.parentNode.insertBefore(contactDisplayLabel, contactLabel.nextSibling);
-    contactDisplayLabel.parentNode.insertBefore(contactDisplay, contactDisplayLabel.nextSibling);
-
-    // Update the text area with the selected option
-    contactSelect.addEventListener('change', function (event) {
-      const selectedOption = event.target.options[event.target.selectedIndex];
-      contactDisplay.value = selectedOption.text;
+    previewButton.addEventListener('click', function () {
+      previewContainer.style.display = 'block';
     });
 
-    // Initial update of the text area
-    const initialSelectedOption = contactSelect.options[contactSelect.selectedIndex];
-    contactDisplay.value = initialSelectedOption.text;
-  });
-</script>
+    previewContainer.addEventListener('click', function (event) {
+      if (event.target === previewContainer) {
+        previewContainer.style.display = 'none';
+      }
+    });
 
-<script>
-  const defaultSummary = document.querySelector('#id_use_default_summary');
-  defaultSummary.addEventListener('change', function (event) {
-    const summary = document.querySelector('#div_id_summary');
-    if (event.target.checked) {
-      summary.style.display = 'none';
-    } else {
-      summary.style.display = 'block';
+    // Function to update the summary preview
+    function updateSummaryPreview() {
+      const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
+      const summaryPreview = document.getElementById('preview-summary');
+      if (useDefaultSummaryInput.checked) {
+        summaryPreview.innerHTML = '{{ default_summary|escapejs }}';
+      } else {
+        const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');
+        if (richTextEditor) {
+          summaryPreview.innerHTML = richTextEditor.innerHTML;
+        }
+      }
     }
+
+    form.addEventListener('input', function (event) {
+      if (!event.target.closest('.ck-editor')) {
+        updatePreview();
+      }
+    });
+
+    if (window.CKEDITOR) {
+      CKEDITOR.on('instanceReady', function (evt) {
+        evt.editor.on('change', function () {
+          updateSummaryPreview();
+        });
+      });
+    }
+
+    const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
+    useDefaultSummaryInput.addEventListener('change', updateSummaryPreview);
+
+    function updatePreview() {
+      const positionInput = document.getElementById('id_position_title');
+      if (positionInput) {
+        document.getElementById('preview-position').textContent = positionInput.value;
+      }
+
+      updateSummaryPreview();
+
+      const educationPreview = document.getElementById('preview-education');
+      educationPreview.innerHTML = '';
+      const educationFormsets = document.querySelectorAll('[id^="education-"]');
+      educationFormsets.forEach(formset => {
+        const schoolNameInput = formset.querySelector('[id$="-school_name"]');
+        const startYearInput = formset.querySelector('[id$="-start_year"]');
+        const endYearInput = formset.querySelector('[id$="-end_year"]');
+        const locationInput = formset.querySelector('[id$="-location"]');
+        const degreeInput = formset.querySelector('[id$="-degree"]');
+        if (schoolNameInput && schoolNameInput.value) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+          <td class="date-cell">${startYearInput ? startYearInput.value : ''} - ${endYearInput && endYearInput.value ? endYearInput.value : 'Present'}</td>
+          <td>${schoolNameInput.value}</td>
+          <td>${locationInput ? locationInput.value : ''}</td>
+          <td class="accreditation">${degreeInput ? degreeInput.value : ''}</td>
+        `;
+          educationPreview.appendChild(tr);
+        }
+      });
+
+      const workExperiencePreview = document.getElementById('preview-work-experience');
+      workExperiencePreview.innerHTML = '';
+      const workExperienceFormsets = document.querySelectorAll('[id^="work_experience-"]');
+      workExperienceFormsets.forEach(formset => {
+        const organizationInput = formset.querySelector('[id$="-organization"]');
+        const positionInput = formset.querySelector('[id$="-position"]');
+        const locationInput = formset.querySelector('[id$="-location"]');
+        const startDateInput = formset.querySelector('[id$="-start_date"]');
+        const endDateInput = formset.querySelector('[id$="-end_date"]');
+        if (organizationInput && organizationInput.value) {
+          const div = document.createElement('div');
+          div.className = 'job';
+          div.innerHTML = `
+          <div class="header">
+            <div class="details">${organizationInput.value} - ${positionInput ? positionInput.value : ''} - ${locationInput ? locationInput.value : ''}</div>
+            <div class="date">${startDateInput ? startDateInput.value : ''} - ${endDateInput && endDateInput.value ? endDateInput.value : 'Present'}</div>
+          </div>
+        `;
+          workExperiencePreview.appendChild(div);
+        }
+      });
+
+      const projectsPreview = document.getElementById('preview-projects').getElementsByTagName('tbody')[0];
+      projectsPreview.innerHTML = '';
+      const projectFormsets = document.querySelectorAll('[id^="projects-"]');
+      projectFormsets.forEach(formset => {
+        const nameInput = formset.querySelector('[id$="-name"]');
+        const repoUrlInput = formset.querySelector('[id$="-repository_url"]');
+        const deployedUrlInput = formset.querySelector('[id$="-deployed_url"]');
+        if (nameInput && nameInput.value) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+          <td>${nameInput.value}</td>
+          <td>${repoUrlInput ? `<a href="${repoUrlInput.value}">${repoUrlInput.value}</a>` : ''}</td>
+          <td>${deployedUrlInput ? `<a href="${deployedUrlInput.value}">${deployedUrlInput.value}</a>` : ''}</td>
+        `;
+          projectsPreview.appendChild(tr);
+        }
+      });
+
+      const skillsPreview = document.getElementById('preview-skills');
+      skillsPreview.innerHTML = '';
+      const skillsInput = document.getElementById('id_technical_skills');
+      if (skillsInput && skillsInput.value) {
+        const skills = skillsInput.value.split(',').map(skill => skill.trim());
+        skills.forEach(skill => {
+          const li = document.createElement('li');
+          li.textContent = skill;
+          skillsPreview.appendChild(li);
+        });
+      }
+    }
+    updatePreview();
   });
 </script>
 {% endblock %}
