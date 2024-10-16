@@ -43,7 +43,10 @@
           aria-controls="projects" data-tabs-target="#tab-projects" href="{% url 'profile' %}?tab=projects">Projects</a>
       </li>
     </ul>
-    <form class="p-10 bg-gray-50 text-medium text-gray-500 rounded-lg w-full" id="edit-item-form">
+
+    <form action="{% url 'edit_item' item_type experience_item.id %}" method="POST"
+      class="p-10 bg-gray-50 text-medium text-gray-500 rounded-lg w-full" id="edit-item-form">
+      {% csrf_token %}
       <h1 class="block text-violet-700 text-2xl font-bold mb-2">Edit {{ display_type }}</h1>
       <div class="lg:w-[50%]">
         {% for field in experience_form %}

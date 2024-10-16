@@ -229,20 +229,42 @@ class AddProject(LoginRequiredMixin, View):
         return HttpResponse(json.dumps(post_data))
 
 
+def find_experience(request, item_type, item_id):
+    try:
+        if item_type == 'work':
+            return request.user.work_experience.get(id=item_id)
+        elif item_type == 'education':
+            return request.user.education.get(id=item_id)
+        elif item_type == 'education':
+            return request.user.projects.get(id=item_id)
+        else:
+            messages.error(request, "Item not found")
+            return None
+    except (WorkExperience.DoesNotExist,
+            Education.DoesNotExist,
+            Project.DoesNotExist):
+        messages.error(request, "That item is not in \
+                       your profile")
+        return None
+    except Exception as e:
+        messages.error(request, f"An error occurred. {e}")
+        return None
+
+
 class EditItem(LoginRequiredMixin, View):
 
     def get(self, request, item_type, item_id):
-        context = {
-            'item_type': item_type,
-            'cancel_tab': item_type
-        }
-        try:
+        item_exp = find_experience(request, item_type, item_id)
+        if item_exp:
+            context = {
+                'item_type': item_type,
+                'cancel_tab': item_type,
+                'experience_item': item_exp
+            }
             if item_type == 'work':
-                context['display_type'] = 'Work Experience'
-                work_exp = request.user.work_experience.get(id=item_id)
                 context.update({
-                    'experience_item': work_exp,
-                    'experience_form': WorkExperienceForm(instance=work_exp),
+                    'display_type': 'Work Experience',
+                    'experience_form': WorkExperienceForm(instance=item_exp),
                     'checkbox': {
                         'action': 'working',
                         'disables': 'id_end_date'
@@ -252,11 +274,10 @@ class EditItem(LoginRequiredMixin, View):
                     'bullet_point_label': 'Duties/Responsibilities'
                 })
             elif item_type == 'education':
-                context['display_type'] = 'Education'
-                education_exp = request.user.education.get(id=item_id)
                 context.update({
-                    'experience_item': education_exp,
-                    'experience_form': EducationForm(instance=education_exp),
+                    'display_type': 'Education',
+                    'experience_item': item_exp,
+                    'experience_form': EducationForm(instance=item_exp),
                     'checkbox': {
                         'action': 'studying',
                         'disables': 'id_end_year,id_grade'
@@ -267,20 +288,24 @@ class EditItem(LoginRequiredMixin, View):
                 })
             elif item_type == 'project':
                 context['display_type'] = 'Project'
-                project_exp = request.user.projects.get(id=item_id)
-                context['experience_item'] = project_exp
-                context['experience_form'] = ProjectForm(instance=project_exp)
+                context['experience_form'] = ProjectForm(instance=item_exp)
             else:
                 context['display_type'] = 'Item'
-        except (WorkExperience.DoesNotExist,
-                Education.DoesNotExist,
-                Project.DoesNotExist):
-            messages.error(request,
-                           f"That {context['display_type']} is not in \
-                            your profile")
-            return redirect('profile')
-        except Exception as e:
-            messages.error(request, f"An error occurred. {e}")
-            return redirect('profile')
 
-        return render(request, 'profiles/edit_experience_item.html', context)
+            return render(request, 'profiles/edit_experience_item.html', context)
+        else:
+            return redirect('profile')
+    
+    def post(self, request, item_type, item_id):
+        item = find_experience(request, item_type, item_id)
+        form = None
+        if item_type == 'work':
+            form = WorkExperienceForm(request.POST, instance=item)
+        elif item_type == 'education':
+            form = EducationForm(request.POST, instance=item)
+        elif item_type == 'projects':
+            form = ProjectForm(request.POST, instance=item)
+        
+        if form and form.is_valid():
+            form.save()
+        return redirect('profile')

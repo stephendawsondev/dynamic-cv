@@ -85,6 +85,7 @@
 {% with True as has_grade %}
 {% with True as has_repo_url %}
 {% with True as has_deployed_url %}
+{% with True as has_location %}
 {% with 0 as item_id %}
 <script>
     const workExperienceHtml = `{% include 'components/work-experience-details.html' %}`;
@@ -92,6 +93,7 @@
     const projectHtml = `{% include 'components/project-details.html' %}`;
     const listItem = `{% include 'components/list-item.html' %}`;
 </script>
+{% endwith %}
 {% endwith %}
 {% endwith %}
 {% endwith %}
