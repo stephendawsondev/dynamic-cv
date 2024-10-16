@@ -9,7 +9,9 @@
     {% with education_exp.applied_skills.all as generate_skills %}
     {% with education_exp.grade as has_grade %}
     {% with education_exp.id as item_id %}
+    {% with education_exp.location as has_location %}
     {% include 'components/education-details.html' %}
+    {% endwith %}
     {% endwith %}
     {% endwith %}
     {% endwith %}

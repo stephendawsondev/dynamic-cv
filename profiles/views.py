@@ -6,10 +6,10 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .forms import SummaryForm, ContactInformationForm, \
-    WorkExperienceForm, EducationForm, ProjectForm
+     WorkExperienceForm, EducationForm, ProjectForm
 from .models import Summary, ContactInformation, Skill, \
-    WorkExperience, WorkExperienceBullets, \
-    Education, EducationBullets, Project
+     WorkExperience, WorkExperienceBullets, \
+     Education, EducationBullets, Project
 
 import json
 
@@ -306,7 +306,7 @@ class EditItem(LoginRequiredMixin, View):
             form = EducationForm(request.POST, instance=item)
         elif item_type == 'projects':
             form = ProjectForm(request.POST, instance=item)
-        
+
         if form and form.is_valid():
             item = form.save()
 
@@ -317,20 +317,21 @@ class EditItem(LoginRequiredMixin, View):
             # Updating the bullet points
             bullet_names = []
             skill_names = []
-            
+
             # Extract the bullet points from the form
             for field, value in request.POST.items():
                 if 'bullet-inputs' in field:
                     bullet_names.append(value)
                 elif 'skill-inputs' in field:
                     skill_names.append(value)
-            
+
             # Remove the old bullets that are not in the new list
             for bullet in item.bullet_points.all():
                 if bullet.bullet_point in bullet_names:
                     bullet_names.remove(bullet.bullet_point)
                 else:
                     item.bullet_points.remove(bullet)
+                    # Removing the bullet point if it has no references
                     if bullet.related_experience.count() == 0:
                         bullet.delete()
                     else:

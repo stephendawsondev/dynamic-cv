@@ -161,7 +161,6 @@ function addExperienceHtml(experienceType) {
     }
     else {
       // For all other fields
-      console.log(className);
       let itemDetailValue = itemListElement.getElementsByClassName(className)[0];
       itemDetailValue.innerText = value;
 
