@@ -17,6 +17,7 @@ from django.shortcuts import redirect
 class CvList(ListView):
     model = CVTemplate
     template_name = "cv_template/cv_list.html"
+    context_object_name = "cv_list"
 
 
 class CreateCV(LoginRequiredMixin, CreateView):
