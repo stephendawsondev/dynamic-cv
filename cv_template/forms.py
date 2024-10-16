@@ -19,7 +19,8 @@ class CVTemplateForm(forms.ModelForm):
 
         self.request = kwargs.pop("request")
         super(CVTemplateForm, self).__init__(*args, **kwargs)
-        self.fields["skills"].queryset = Skill.objects.filter(user=self.request.user)
+        self.fields["skills"].queryset = Skill.objects.filter(
+            user=self.request.user)
         self.fields["work_experience"].queryset = WorkExperience.objects.filter(
             user=self.request.user
         )
@@ -35,9 +36,9 @@ class CVTemplateForm(forms.ModelForm):
         model = CVTemplate
         fields = [
             "cv_name",
+            "position_title",
             "summary",
             "use_default_summary",
-            "position_title",
             "skills",
             "work_experience",
             "education",
@@ -62,6 +63,7 @@ class CVTemplateForm(forms.ModelForm):
         }
 
     skills = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
-    work_experience = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
+    work_experience = CustomMMCF(
+        queryset=None, widget=forms.CheckboxSelectMultiple)
     education = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
     projects = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
