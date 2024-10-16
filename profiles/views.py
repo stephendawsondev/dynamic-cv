@@ -6,10 +6,10 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .forms import SummaryForm, ContactInformationForm, \
-     WorkExperienceForm, EducationForm, ProjectForm
+    WorkExperienceForm, EducationForm, ProjectForm
 from .models import Summary, ContactInformation, Skill, \
-     WorkExperience, WorkExperienceBullets, \
-     Education, EducationBullets, Project
+    WorkExperience, WorkExperienceBullets, \
+    Education, EducationBullets, Project
 
 import json
 
@@ -223,6 +223,7 @@ class AddProject(LoginRequiredMixin, View):
         project = Project(
             user=request.user,
             name=post_data['name'],
+            description=post_data['description'],
             repository_url=post_data['repository_url'],
             deployed_url=post_data['deployed_url']
         )
@@ -296,7 +297,7 @@ class EditItem(LoginRequiredMixin, View):
             return render(request, 'profiles/edit_experience_item.html', context)
         else:
             return redirect('profile')
-    
+
     def post(self, request, item_type, item_id):
         item = find_experience(request, item_type, item_id)
         form = None
@@ -345,7 +346,7 @@ class EditItem(LoginRequiredMixin, View):
                     # We don't need to delete skills without references
                     # as they can be accessed through the skills tab
                     skill.save()
-            
+
             # Adding new bullets
             for new_bullet in bullet_names:
                 bullet_class = None
@@ -367,5 +368,5 @@ class EditItem(LoginRequiredMixin, View):
                 skill_obj.save()
                 item.applied_skills.add(skill_obj)
             item.save()
-            
+
         return redirect('profile')
