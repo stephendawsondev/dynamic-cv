@@ -12,7 +12,7 @@ class Summary(models.Model):
     user = models.ForeignKey(
         User, related_name="summary_user", on_delete=models.CASCADE
     )
-    summary = models.CharField(max_length=500, null=True, blank=True)
+    summary = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
         return f"{self.summary}"
