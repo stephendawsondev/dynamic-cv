@@ -21,8 +21,10 @@
       <p class="block text-gray-700 text-sm font-bold mb-2">Institution Name</p>
       <p class="education-exp-school-name block text-gray-700 text-sm mb-2">{{ education_exp.school_name }}</p>
 
+      {% if has_location %}
       <p class="block text-gray-700 text-sm font-bold mb-2">Location</p>
       <p class="education-exp-location block text-gray-700 text-sm mb-2">{{ education_exp.location }}</p>
+      {% endif %}
 
       <p class="block text-gray-700 text-sm font-bold mb-2">Degree</p>
       <p class="education-exp-degree block text-gray-700 text-sm mb-2">{{ education_exp.degree }}</p>
@@ -56,11 +58,12 @@
       </ul>
       {% endif %}
     </div>
-    <div class="absolute top-4 right-4 flex text-gray-700">
-      <button class="w-6 h-6 mr-4">
+    <div class="absolute top-2 right-2 md:top-4 md:right-4 flex text-gray-700">
+      <a type="button" class="edit-item w-4 h-4 sm:w-6 sm:h-6 mr-4" href="{% url 'edit_item' 'education' item_id %}"
+        aria-label="Edit this item">
         <img src="{% static 'icons/pencil.svg' %}">
-      </button>
-      <button class="w-6 h-6">
+      </a>
+      <button class="w-4 h-4 sm:w-6 sm:h-6">
         <img src="{% static 'icons/bin.svg' %}">
       </button>
     </div>

@@ -13,32 +13,34 @@
             <li class="w-full" role="presentation">
                 <button class="w-full py-2 text-violet-800 border-2 border-violet-800 active" id="detail-styled-tab"
                     data-tabs-target="#styled-detail" type="button" role="tab" aria-controls="detail"
-                    aria-selected="false">Your Details</button>
+                    aria-selected="{% if tab == 'details' %}true{% else %}false{% endif %}">Your
+                    Details</button>
             </li>
             <li class="w-full" role="presentation">
                 <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="summary-styled-tab"
                     data-tabs-target="#styled-summary" type="button" role="tab" aria-controls="summary"
-                    aria-selected="false">Summary</button>
+                    aria-selected="{% if tab == 'summary' %}true{% else %}false{% endif %}">Summary</button>
             </li>
             <li class="w-full" role="presentation">
                 <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="skills-styled-tab"
                     data-tabs-target="#styled-skills" type="button" role="tab" aria-controls="skills"
-                    aria-selected="false">Skills</button>
+                    aria-selected="{% if tab == 'skills' %}true{% else %}false{% endif %}">Skills</button>
             </li>
             <li class="w-full" role="presentation">
                 <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="work-experience-styled-tab"
                     data-tabs-target="#styled-work-experience" type="button" role="tab" aria-controls="work-experience"
-                    aria-selected="false">Work Experience</button>
+                    aria-selected="{% if tab == 'work_experience' %}true{% else %}false{% endif %}">Work
+                    Experience</button>
             </li>
             <li class="w-full" role="presentation">
                 <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="education-styled-tab"
                     data-tabs-target="#styled-education" type="button" role="tab" aria-controls="education"
-                    aria-selected="false">Education</button>
+                    aria-selected="{% if tab == 'education' %}true{% else %}false{% endif %}">Education</button>
             </li>
             <li class="w-full" role="presentation">
                 <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="projects-styled-tab"
                     data-tabs-target="#styled-projects" type="button" role="tab" aria-controls="projects"
-                    aria-selected="false">Projects</button>
+                    aria-selected="{% if tab == 'projects' %}true{% else %}false{% endif %}">Projects</button>
             </li>
         </ul>
         <div class="p-6 bg-gray-50 text-medium text-gray-500 rounded-lg w-full">
@@ -83,6 +85,8 @@
 {% with True as has_grade %}
 {% with True as has_repo_url %}
 {% with True as has_deployed_url %}
+{% with True as has_location %}
+{% with 0 as item_id %}
 <script>
     const workExperienceHtml = `{% include 'components/work-experience-details.html' %}`;
     const educationHtml = `{% include 'components/education-details.html' %}`;
@@ -94,7 +98,10 @@
 {% endwith %}
 {% endwith %}
 {% endwith %}
+{% endwith %}
+{% endwith %}
 
-<script src="{% static 'profiles/js/profiles.js' %}"></script>
 <script src="{% static 'profiles/js/skills.js' %}"></script>
+<script src="{% static 'profiles/js/profiles.js' %}"></script>
+<script src="{% static 'profiles/js/edit_profile.js' %}"></script>
 {% endblock %}

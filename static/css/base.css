@@ -32,3 +32,12 @@ p:not(.cv-sample-container p) {
 [type="checkbox"] {
   margin-bottom: 4px;
 }
+
+input[disabled] {
+  background-color: #EDEDED;
+}
+
+/* Aligning the close button with the rest of the bullet points */
+.delete-list-item>span {
+  line-height: 0;
+}
