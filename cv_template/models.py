@@ -41,7 +41,7 @@ class CVTemplate(models.Model):
     education = models.ManyToManyField(Education, related_name="cv_education")
     projects = models.ManyToManyField(
         Project, related_name="cv_projects", blank=True)
-    color = ColorField(default='#6495ed')
+    color = ColorField(default="#6495ED")
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
