@@ -1,5 +1,7 @@
 # Dynamic CV
 
+![Mockup](readme/mockup.PNG)
+
 Dynamic CV is a tool designed to help users create customized CVs tailored to specific job applications. It allows users to input their professional information and, by analyzing job titles provided for the given CV, suggests relevant skills and experiences to include. This streamlines the process of creating personalized CVs quickly, ensuring applicants highlight the most suitable qualifications for each role. Users can save multiple versions and download them as PDFs or Word documents, making it easier to adapt applications for different job opportunities.
 
 Dynamic CV offers a smart analysis feature that not only checks for spelling errors but also identifies essential skills that may be missing from your CV. By evaluating the typical skill sets associated with your previous job titles, it intelligently suggests areas for enhancement, ensuring your resume highlights all relevant qualifications. This insight helps you align your profile with the key requirements of prospective roles, making your application more competitive and well-rounded.
