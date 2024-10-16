@@ -63,8 +63,16 @@ class GeneratedCV(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["cv"] = self.get_object()
-        context["cv_analysis"] = CVAnalysis.objects.filter(cv=self.get_object()).first()
+        cv = self.get_object()
+        cv_analysis = CVAnalysis.objects.filter(cv=self.get_object()).first()
+
+        context["analysed"] = False
+        if cv_analysis:
+            if cv_analysis.created_at > cv.updated_at:
+                context["analysed"] = True
+        
+        context["cv"] = cv
+        context["cv_analysis"] = cv_analysis
         return context
 
 
@@ -80,7 +88,7 @@ class CVAnalyzerView(LoginRequiredMixin, View):
         try:
             analysis = CVAnalysis.objects.get(cv=saved_cv)
             if saved_cv.updated_at < analysis.created_at:
-                return redirect('generated_cv', pk=saved_cv.pk)     
+                return redirect('generated_cv', pk=saved_cv.pk) 
         except CVAnalysis.DoesNotExist:
             pass
 
