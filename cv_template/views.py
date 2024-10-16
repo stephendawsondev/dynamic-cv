@@ -189,6 +189,16 @@ class UpdateCV(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = "cv_template/cv_template.html"
     form_class = CVTemplateForm
 
+    def form_valid(self, form):
+        use_default_summary = form.cleaned_data.get("use_default_summary")
+        if use_default_summary:
+            try:
+                summary = Summary.objects.get(user=self.request.user).summary
+            except Summary.DoesNotExist:
+                summary = ""
+            form.instance.summary = summary
+        return super(UpdateCV, self).form_valid(form)
+
     def get_form_kwargs(self):
         kwargs = super(UpdateCV, self).get_form_kwargs()
         kwargs["request"] = self.request
