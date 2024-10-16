@@ -34,8 +34,8 @@
 
 <body class="flex flex-col h-screen">
   {% comment %} Header {% endcomment %}
-  <header>
-    <div class="container mx-auto md:mt-3">
+  <header class="bg-violet-800">
+    <div class="container mx-auto">
       {% include 'includes/nav.html' %}
     </div>
   </header>
@@ -43,7 +43,7 @@
 
   {% if messages %}
   <!-- messages -->
-  <div class="toasts container mx-auto flex justify-end absolute top-14 md:top-28">
+  <div class="toasts container mx-auto flex justify-end">
     {% for message in messages %}
     {% include 'includes/toast.html' %}
     {% endfor %}
@@ -75,7 +75,7 @@
                 <a href="/contact" class="hover:underline">Contact us</a>
               </li>
               <li>
-                <a href="{% url 'privacy_policy' %}" class="hover:underline">Legal</a>
+                <a href="/legal" class="hover:underline">Legal</a>
               </li>
             </ul>
           </div>
