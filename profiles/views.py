@@ -1,15 +1,15 @@
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .forms import SummaryForm, ContactInformationForm, \
-    WorkExperienceForm, EducationForm, ProjectForm
+     WorkExperienceForm, EducationForm, ProjectForm
 from .models import Summary, ContactInformation, Skill, \
-    WorkExperience, WorkExperienceBullets, \
-    Education, EducationBullets, Project
+     WorkExperience, WorkExperienceBullets, \
+     Education, EducationBullets, Project
 
 import json
 
@@ -23,6 +23,9 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+
+        if self.request.GET and 'tab' in self.request.GET:
+            context['tab'] = self.request.GET['tab']
 
         contact_information, created = ContactInformation.objects.get_or_create(
             user=user)
@@ -88,7 +91,7 @@ class CreateUpdateContactInformation(LoginRequiredMixin, View):
             return HttpResponse('<p class="error">Please provide valid contact information.</p>')
 
 
-class AddSkill(View):
+class AddSkill(LoginRequiredMixin, View):
 
     def post(self, request, skill):
         user = request.user
@@ -101,7 +104,7 @@ class AddSkill(View):
             return HttpResponse("Success")
 
 
-class RemoveSkill(View):
+class RemoveSkill(LoginRequiredMixin, View):
 
     def post(self, request, skill):
         user = request.user
@@ -114,7 +117,7 @@ class RemoveSkill(View):
             return HttpResponse("Fail")
 
 
-class AddWorkExperience(View):
+class AddWorkExperience(LoginRequiredMixin, View):
 
     def post(self, request):
         post_data = request.POST.copy()
@@ -161,7 +164,7 @@ class AddWorkExperience(View):
         return HttpResponse(json.dumps(post_data))
 
 
-class AddEducation(View):
+class AddEducation(LoginRequiredMixin, View):
 
     def post(self, request):
         post_data = request.POST.copy()
@@ -209,7 +212,7 @@ class AddEducation(View):
         return HttpResponse(json.dumps(post_data))
 
 
-class AddProject(View):
+class AddProject(LoginRequiredMixin, View):
 
     def post(self, request):
         post_data = request.POST.copy()
@@ -225,3 +228,144 @@ class AddProject(View):
         )
         project.save()
         return HttpResponse(json.dumps(post_data))
+
+
+def find_experience(request, item_type, item_id):
+    try:
+        if item_type == 'work':
+            return request.user.work_experience.get(id=item_id)
+        elif item_type == 'education':
+            return request.user.education.get(id=item_id)
+        elif item_type == 'education':
+            return request.user.projects.get(id=item_id)
+        else:
+            messages.error(request, "Item not found")
+            return None
+    except (WorkExperience.DoesNotExist,
+            Education.DoesNotExist,
+            Project.DoesNotExist):
+        messages.error(request, "That item is not in \
+                       your profile")
+        return None
+    except Exception as e:
+        messages.error(request, f"An error occurred. {e}")
+        return None
+
+
+class EditItem(LoginRequiredMixin, View):
+
+    def get(self, request, item_type, item_id):
+        item_exp = find_experience(request, item_type, item_id)
+        if item_exp:
+            context = {
+                'item_type': item_type,
+                'cancel_tab': item_type,
+                'experience_item': item_exp
+            }
+            if item_type == 'work':
+                context.update({
+                    'display_type': 'Work Experience',
+                    'experience_form': WorkExperienceForm(instance=item_exp),
+                    'checkbox': {
+                        'action': 'working',
+                        'disables': 'id_end_date'
+                    },
+                    'cancel_tab': 'work_experience',
+                    'bullet_points': request.user.work_experience.all(),
+                    'bullet_point_label': 'Duties/Responsibilities'
+                })
+            elif item_type == 'education':
+                context.update({
+                    'display_type': 'Education',
+                    'experience_item': item_exp,
+                    'experience_form': EducationForm(instance=item_exp),
+                    'checkbox': {
+                        'action': 'studying',
+                        'disables': 'id_end_year,id_grade'
+                    },
+                    'cancel_tab': 'education',
+                    'bullet_points': request.user.education.all(),
+                    'bullet_point_label': 'Modules Covered'
+                })
+            elif item_type == 'project':
+                context['display_type'] = 'Project'
+                context['experience_form'] = ProjectForm(instance=item_exp)
+            else:
+                context['display_type'] = 'Item'
+
+            return render(request, 'profiles/edit_experience_item.html', context)
+        else:
+            return redirect('profile')
+    
+    def post(self, request, item_type, item_id):
+        item = find_experience(request, item_type, item_id)
+        form = None
+        if item_type == 'work':
+            form = WorkExperienceForm(request.POST, instance=item)
+        elif item_type == 'education':
+            form = EducationForm(request.POST, instance=item)
+        elif item_type == 'projects':
+            form = ProjectForm(request.POST, instance=item)
+
+        if form and form.is_valid():
+            item = form.save()
+
+            # For projects, we can end the function here
+            if item_type == 'project':
+                return redirect('profile')
+
+            # Updating the bullet points
+            bullet_names = []
+            skill_names = []
+
+            # Extract the bullet points from the form
+            for field, value in request.POST.items():
+                if 'bullet-inputs' in field:
+                    bullet_names.append(value)
+                elif 'skill-inputs' in field:
+                    skill_names.append(value)
+
+            # Remove the old bullets that are not in the new list
+            for bullet in item.bullet_points.all():
+                if bullet.bullet_point in bullet_names:
+                    bullet_names.remove(bullet.bullet_point)
+                else:
+                    item.bullet_points.remove(bullet)
+                    # Removing the bullet point if it has no references
+                    if bullet.related_experience.count() == 0:
+                        bullet.delete()
+                    else:
+                        bullet.save()
+            for skill in item.applied_skills.all():
+                skill_name_f = skill.name.replace('-', ' ')
+                if skill_name_f in skill_names:
+                    skill_names.remove(skill_name_f)
+                else:
+                    item.getattr(item_type).remove(skill)
+                    # We don't need to delete skills without references
+                    # as they can be accessed through the skills tab
+                    skill.save()
+            
+            # Adding new bullets
+            for new_bullet in bullet_names:
+                bullet_class = None
+                if item_type == 'work':
+                    bullet_class = WorkExperienceBullets
+                elif item_type == 'education':
+                    bullet_class = EducationBullets
+                bullet_obj, created = bullet_class.objects.get_or_create(
+                    user=request.user,
+                    bullet_point=new_bullet
+                )
+                bullet_obj.save()
+                item.bullet_points.add(bullet_obj)
+            for new_skill in skill_names:
+                skill_obj, created = Skill.objects.get_or_create(
+                    user=request.user,
+                    name=new_skill
+                )
+                skill_obj.save()
+                item.applied_skills.add(skill_obj)
+            item.save()
+            
+        return redirect('profile')

@@ -8,7 +8,11 @@
     {% with education_exp.bullet_points.all as generate_bullet_points %}
     {% with education_exp.applied_skills.all as generate_skills %}
     {% with education_exp.grade as has_grade %}
+    {% with education_exp.id as item_id %}
+    {% with education_exp.location as has_location %}
     {% include 'components/education-details.html' %}
+    {% endwith %}
+    {% endwith %}
     {% endwith %}
     {% endwith %}
     {% endwith %}
@@ -44,8 +48,10 @@
     <div class="md:w-[50%]">
       {{ education_form.grade|as_crispy_field }}
     </div>
-    <div class="hidden bullet-point-inputs" id="education-modules" name="modules" data-item-id="0"></div>
-    <div class="hidden bullet-point-inputs" id="education-skills" name="skills" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" aria-hidden="true" id="education-modules" name="modules" data-item-id="0">
+    </div>
+    <div class="hidden bullet-point-inputs" aria-hidden="true" id="education-skills" name="skills" data-item-id="0">
+    </div>
   </form>
   <div class="md:w-[50%]">
     <!-- Education Modules -->

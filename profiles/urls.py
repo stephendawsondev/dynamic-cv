@@ -26,4 +26,9 @@ urlpatterns = [
     path(
         "add-project/", views.AddProject.as_view(), name="add_project",
     ),
+    path(
+      "edit-item/<str:item_type>/<int:item_id>/",
+      views.EditItem.as_view(),
+      name="edit_item",
+    ),
 ]
