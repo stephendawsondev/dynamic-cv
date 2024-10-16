@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Analyzed CV - {{analysis_info.cv.position_title}}{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-4">
+        <h1 class="text-center font-semibold">CV Analysis for Position Title: {{analysis_info.cv.position_title}}</h1>
+
+        <div class="text-center p-3">
+            <p>Your CV is a {{ analysis_info.match_per }}% match</p>
+            <div class="w-48 bg-gray-200 rounded-full h-2.5 mx-auto">
+                <div class="bg-lime-500 h-2.5 rounded-full" style="width: {{ analysis_info.match_per }}%"></div>
+            </div>
+        </div>
+        
+
+        <div class="md:flex pt-3">
+            <ul class="flex flex-col text-lg font-medium text-violet-800 w-60" id="default-styled-tab"
+                data-tabs-toggle="#default-styled-tab-content"
+                data-tabs-active-classes="text-black hover:text-purple-600 bg-lime-500" role="tablist">
+                <li class="w-full" role="presentation">
+                    <button class="w-full py-2 text-violet-800 border-2 border-violet-800 active" id="detail-styled-tab"
+                        data-tabs-target="#styled-detail" type="button" role="tab" aria-controls="detail"
+                        aria-selected="false">Role</button>
+                </li>
+                <li class="w-full" role="presentation">
+                    <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="summary-styled-tab"
+                        data-tabs-target="#styled-summary" type="button" role="tab" aria-controls="summary"
+                        aria-selected="false">Grammar</button>
+                </li>
+                <li class="w-full" role="presentation">
+                    <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="skills-styled-tab"
+                        data-tabs-target="#styled-skills" type="button" role="tab" aria-controls="skills"
+                        aria-selected="false">Skills</button>
+                </li>
+            </ul>
+            <div class="p-6 bg-gray-50 text-medium text-gray-800 rounded-lg w-full">
+                <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-detail" role="tabpanel"
+                    aria-labelledby="detail-tab">
+                    <p class="mb-4 font-semibold">The following skills and competencies have been identified as the top skills needed for the position title of {{analysis_info.cv.position_title}}</p>
+                    <ul class="space-y-4 text-gray-500 list-inside">
+                        <li>
+                            <span class="text-violet-800">Top Tech Skills</span>
+                            <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
+                                {% for skill in analysis_info.top_tech_skills %}
+                                    <li>{{ skill }}</li>
+                                {% endfor %}
+                            </ol>
+                        </li>
+
+                        <li>
+                            <span class="text-violet-800">Top Soft Skills</span>
+                            <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
+                                {% for skill in analysis_info.top_soft_skills %}
+                                    <li>{{ skill }}</li>
+                                {% endfor %}
+                            </ol>
+                        </li>
+
+                        <li>
+                            <span class="text-violet-800">Top Tech Competency Skills</span>
+                            <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
+                                {% for skill in analysis_info.top_tech_comp_skills %}
+                                    <li>{{ skill }}</li>
+                                {% endfor %}
+                            </ol>
+                        </li>
+
+                        <li>
+                            <span class="text-violet-800">Top Qualifications</span>
+                            <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
+                                {% for qualification in analysis_info.top_qualifications %}
+                                    <li>{{ qualification }}</li>
+                                {% endfor %}
+                            </ol>
+                        </li>
+
+                        <li>
+                            <span class="text-violet-800">Top Methodologies</span>
+                            <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
+                            {% for methodology in analysis_info.top_methodologies %}
+                                <li>{{ methodology }}</li>
+                            {% endfor %}
+                            </ol>
+                        </li>
+                    </ul>
+                </div>
+                <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-summary" role="tabpanel"
+                    aria-labelledby="summary-tab">
+                    <p class="font-semibold">The following issues have been identified within the summary of your CV</p>
+                    <ul class="space-y-3 list-disc p-4">
+                        {% for error in analysis_info.spelling_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    
+                </div>
+                <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-skills" role="tabpanel"
+                    aria-labelledby="skills-tab">
+                    <p class="mb-4 font-semibold">The following skills are not on your profile but have been identified as key skills for this type of role</p>
+                    <ul class="space-y-3 list-disc p-4">
+                        {% for skill in analysis_info.potential_skills %}
+                            <li>{{ skill }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
