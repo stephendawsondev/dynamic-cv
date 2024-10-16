@@ -259,7 +259,7 @@ class EditItem(LoginRequiredMixin, View):
                     'experience_form': EducationForm(instance=education_exp),
                     'checkbox': {
                         'action': 'studying',
-                        'disables': 'id_end_year,grade'
+                        'disables': 'id_end_year,id_grade'
                     },
                     'cancel_tab': 'education',
                     'bullet_points': request.user.education.all(),

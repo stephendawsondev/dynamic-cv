@@ -43,7 +43,7 @@
           aria-controls="projects" data-tabs-target="#tab-projects" href="{% url 'profile' %}?tab=projects">Projects</a>
       </li>
     </ul>
-    <form class="p-10 bg-gray-50 text-medium text-gray-500 rounded-lg w-full">
+    <form class="p-10 bg-gray-50 text-medium text-gray-500 rounded-lg w-full" id="edit-item-form">
       <h1 class="block text-violet-700 text-2xl font-bold mb-2">Edit {{ display_type }}</h1>
       <div class="lg:w-[50%]">
         {% for field in experience_form %}
@@ -68,80 +68,103 @@
         {% endif %}
         {% endfor %}
         {% if bullet_point_label %}
-
-        <!-- Bullet point list -->
-        <label for="item-bullet-text" class="block text-gray-700 text-sm font-bold mb-2">
-          {{ bullet_point_label }}
-        </label>
-        <ul id="item-bullet-list" class="item-list pl-6 mb-3">
+        <div class="hidden bullet-point-inputs" aria-hidden="true" id="bullet-inputs" name="responsibilities"
+          data-item-id="{{ experience_item.bullet_points.count }}">
           {% for bullet in experience_item.bullet_points.all %}
-          <li id="bullet-{{ bullet.id }}" class="skill-item list-disc">
-            <span class="flex justify-between">
-              <span>{{ bullet.bullet_point }}</span>
-              <button type="button" class="delete-bullet" data-bullet="{{ bullet.id }}"><span
-                  class="text-2xl">&times;</span></button>
-            </span>
-          </li>
+          <input type="hidden" name="bullet-inputs-{{ bullet.id }}" id="bullet-inputs-{{ bullet.id }}"
+            value="{{ bullet.bullet_point }}">
           {% endfor %}
-        </ul>
-        <div class="flex mb-6">
-          <div class="relative w-full">
-            <input type="text" id="new-responsibility-text" name="responsibility"
-              class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-              placeholder="Role/Responsibility" maxlength="150" required />
-            <button type="submit" id="submit-responsibility"
-              class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
-              Add</button>
-          </div>
         </div>
-
-        <!-- Skill list -->
-        <label for="item-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Applied Skills</label>
-        <ul id="item-skill-list" class="item-list pl-6 mb-3">
+        <div class="hidden bullet-point-inputs" aria-hidden="true" id="skill-inputs" name="skills"
+          data-item-id="{{ experience_item.applied_skills.count }}">
           {% for skill in experience_item.applied_skills.all %}
-          <li id="skill-{{ skill.name }}" class="skill-item list-disc">
-            <span class="flex justify-between">
-              <span>{{ skill.display_name }}</span>
-              <button type="button" class="delete-skill" data-bullet="{{ skill.name }}"><span
-                  class="text-2xl">&times;</span></button>
-            </span>
-          </li>
+          <input type="hidden" name="skill-inputs-{{ skill.id }}" id="skill-inputs-{{ skill.id }}"
+            value="{{ skill.name }}">
           {% endfor %}
-        </ul>
-        <div class="flex mb-6">
-          <div class="relative w-full">
-            <input type="text" id="work-skill-text" name="work-skill"
-              class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-              placeholder="Skill" maxlength="30" required />
-            <button type="submit" id="submit-work-skill"
-              class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
-              Add</button>
-          </div>
         </div>
+    </form>
 
-        {% endif %}
-        <a href="{% url 'profile' %}?tab={{ cancel_tab }}"
-          class="text-violet-800 rounded-lg py-2.5 px-3 border border-violet-800">Cancel</a>
-        <button type="submit" class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Save</button>
+    <!-- Bullet point list -->
+    <form data-main-input="bullet-inputs" class="add-item-form">
+      <label for="item-bullet-text" class="block text-gray-700 text-sm font-bold mb-2">
+        {{ bullet_point_label }}
+      </label>
+      <ul id="item-bullet-list" class="item-list pl-6 mb-3">
+        {% for bullet in experience_item.bullet_points.all %}
+        <li id="item-bullet-inputs-{{ bullet.id }}" class="list-item list-disc"
+          data-main-list="bullet-inputs-{{ bullet.id }}">
+          <span class="flex justify-between">
+            <span>{{ bullet.bullet_point }}</span>
+            <button type="button" class="delete-list-item" data-id="item-bullet-inputs-{{ bullet.id }}"><span
+                class="text-2xl">&times;</span></button>
+          </span>
+        </li>
+        {% endfor %}
+      </ul>
+      <div class="flex mb-6">
+        <div class="relative w-full">
+          <input type="text" id="new-responsibility-text" name="responsibility"
+            class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Role/Responsibility" maxlength="150" required />
+          <button type="submit" id="submit-responsibility"
+            class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            Add</button>
+        </div>
       </div>
     </form>
-    <!-- Makes the Flowbite tab styles work -->
-    <div class="hidden" aria-hidden="true">
-      <div id="tab-details" role="tabpanel"></div>
-      <div id="tab-summary" role="tabpanel"></div>
-      <div id="tab-skills" role="tabpanel"></div>
-      <div id="tab-work-experience" role="tabpanel"></div>
-      <div id="tab-education" role="tabpanel"></div>
-      <div id="tab-projects" role="tabpanel"></div>
-    </div>
+
+    <!-- Skill list -->
+    <form data-main-input="skill-inputs" class="add-item-form">
+      <label for="item-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Applied Skills</label>
+      <ul id="item-skill-list" class="item-list pl-6 mb-3">
+        {% for skill in experience_item.applied_skills.all %}
+        <li id="item-skill-inputs-{{ skill.id }}" class="list-item list-disc"
+          data-main-list="skill-inputs-{{ skill.id }}">
+          <span class="flex justify-between">
+            <span>{{ skill.display_name }}</span>
+            <button type="button" class="delete-list-item" data-id="item-skill-inputs-{{ skill.id }}"><span
+                class="text-2xl">&times;</span></button>
+          </span>
+        </li>
+        {% endfor %}
+      </ul>
+      <div class="flex mb-6">
+        <div class="relative w-full">
+          <input type="text" name="work-skill"
+            class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Skill" maxlength="30" required />
+          <button type="submit" id="submit-work-skill"
+            class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            Add</button>
+        </div>
+      </div>
+    </form>
+
+    {% endif %}
+    <a href="{% url 'profile' %}?tab={{ cancel_tab }}" type="button"
+      class="text-violet-800 rounded-lg py-2 px-3 border border-violet-800">Cancel</a>
+    <button type="submit" form="edit-item-form"
+      class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Save</button>
   </div>
+
+  <!-- Makes the Flowbite tab styles work -->
+  <div class="hidden" aria-hidden="true">
+    <div id="tab-details" role="tabpanel"></div>
+    <div id="tab-summary" role="tabpanel"></div>
+    <div id="tab-skills" role="tabpanel"></div>
+    <div id="tab-work-experience" role="tabpanel"></div>
+    <div id="tab-education" role="tabpanel"></div>
+    <div id="tab-projects" role="tabpanel"></div>
+  </div>
+</div>
 </div>
 
 {% endblock %}
 
 {% block extra_js %}
 {{ block.super }}
-
+<script src="{% static 'profiles/js/profiles.js' %}"></script>
+<script src="{% static 'profiles/js/skills.js' %}"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     // Making the tabs work like anchors
@@ -149,9 +172,12 @@
     for (let button of buttons) {
       button.addEventListener('click', function () {
         window.location = this.href;
-      })
+      });
+    }
+    const currentBulletItems = document.querySelectorAll('.list-item');
+    for (let item of currentBulletItems) {
+      enableRemoveButton(item);
     }
   });
 </script>
-
 {% endblock %}

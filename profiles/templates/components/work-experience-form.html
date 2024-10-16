@@ -40,8 +40,9 @@
       </div>
       <label for="id_current_work" class="ms-2 text-sm font-medium text-gray-900">I am currently working here</label>
     </div>
-    <div class="hidden bullet-point-inputs" id="work-responsibilities" name="responsibilities" data-item-id="0"></div>
-    <div class="hidden bullet-point-inputs" id="work-skills" name="skills" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" aria-hidden="true" id="work-responsibilities" name="bullet_points"
+      data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" aria-hidden="true" id="work-skills" name="skills" data-item-id="0"></div>
   </form>
   <div class="md:w-[50%]">
     <!-- Work responsibilities -->
@@ -64,7 +65,7 @@
       </div>
     </form>
     <!-- Work skills -->
-    <form data-main-input="work-skills" id="work-skill-form" class="add-item-form mb-6">
+    <form data-main-input="work-skills" id="bullet-point-form" class="add-item-form mb-6">
       {% csrf_token %}
       <label for="work-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Applied Skills:</label>
       <ul id="work-skill-list" class="item-list pl-6 mb-3"></ul>

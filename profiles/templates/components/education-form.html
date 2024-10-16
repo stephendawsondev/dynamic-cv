@@ -46,8 +46,10 @@
     <div class="md:w-[50%]">
       {{ education_form.grade|as_crispy_field }}
     </div>
-    <div class="hidden bullet-point-inputs" id="education-modules" name="modules" data-item-id="0"></div>
-    <div class="hidden bullet-point-inputs" id="education-skills" name="skills" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" aria-hidden="true" id="education-modules" name="modules" data-item-id="0">
+    </div>
+    <div class="hidden bullet-point-inputs" aria-hidden="true" id="education-skills" name="skills" data-item-id="0">
+    </div>
   </form>
   <div class="md:w-[50%]">
     <!-- Education Modules -->
