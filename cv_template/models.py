@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from django_ckeditor_5.fields import CKEditor5Field
+from colorfield.fields import ColorField
 from django.contrib.auth.models import User
 
 from profiles.models import (
@@ -40,6 +41,7 @@ class CVTemplate(models.Model):
     education = models.ManyToManyField(Education, related_name="cv_education")
     projects = models.ManyToManyField(
         Project, related_name="cv_projects", blank=True)
+    color = ColorField(default='#6495ed')
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
