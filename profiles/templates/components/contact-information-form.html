@@ -1,6 +1,6 @@
 <form hx-post="{% url 'contact-information' %}" hx-target="#detail">
   {% csrf_token %}
-  <div class="md:w-[50%]">
+  <div class="lg:w-[50%]">
     {{ contact_information_form|crispy }}
   </div>
 

@@ -7,7 +7,7 @@
   <label for="new-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Skills</label>
   <form method="post" id="skill-list-form">
     {% csrf_token %}
-    <ul id="skill-list" class="md:w-[50%] pl-6 mb-3">
+    <ul id="skill-list" class="lg:w-[50%] pl-6 mb-3">
       {% for skill in user.user_skills.all %}
       <li id="skill-{{ skill.name }}" class="skill-item list-disc">
         <span class="flex justify-between">
@@ -20,7 +20,7 @@
     </ul>
   </form>
   <!-- The inline form to add the skills -->
-  <form method="post" id="skill-form" class="md:w-[50%]">
+  <form method="post" id="skill-form" class="lg:w-[50%]">
     {% csrf_token %}
     <div class="flex">
       <div class="relative w-full">

@@ -1,5 +1,5 @@
 <div id="summary"></div>
-<form hx-post="{% url 'update-summary' %}" hx-target="#summary" id="summary-form">
+<form hx-post="{% url 'update-summary' %}" hx-target="#summary" id="summary-form" class="lg:w-[50%]">
     {% csrf_token %}
     {{ summary_form|crispy }}
     <!-- Add forms media to show ckeditor -->

@@ -297,7 +297,7 @@ class EditItem(LoginRequiredMixin, View):
             else:
                 context['display_type'] = 'Item'
 
-            return render(request, 'profiles/edit_experience_item.html', context)
+            return render(request, 'profiles/edit-experience-item.html', context)
         else:
             return redirect('profile')
 
