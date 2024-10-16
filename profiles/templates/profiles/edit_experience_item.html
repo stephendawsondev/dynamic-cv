@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'profiles/css/edit_item.css' %}" type="text/css">
+{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto md:mt-3">
+  <div class="md:flex">
+    <ul class="flex flex-col text-lg font-medium text-violet-800 w-60" id="default-styled-tab"
+      data-tabs-toggle="#default-styled-tab-content"
+      data-tabs-active-classes="text-black hover:text-purple-600 bg-lime-500" role="tablist">
+      <li class="w-full" role="presentation" id="first-tab">
+        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+          aria-controls="detail" data-tabs-target="#tab-details" href="{% url 'profile' %}?tab=details">Your
+          Details</a>
+      </li>
+      <li class="w-full" role="presentation">
+        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+          aria-controls="summary" data-tabs-target="#tab-summary" href="{% url 'profile' %}?tab=summary">Summary</a>
+      </li>
+      <li class="w-full" role="presentation">
+        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+          aria-controls="skills" data-tabs-target="#tab-skills" href="{% url 'profile' %}?tab=skills">Skills</a>
+      </li>
+      <li class="w-full" role="presentation">
+        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+          aria-controls="work-experience" data-tabs-target="#tab-work-experience"
+          href="{% url 'profile' %}?tab=work_experience">Work Experience</a>
+      </li>
+      <li class="w-full" role="presentation">
+        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+          aria-controls="education" data-tabs-target="#tab-education"
+          href="{% url 'profile' %}?tab=education">Education</a>
+      </li>
+      <li class="w-full" role="presentation">
+        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+          aria-controls="projects" data-tabs-target="#tab-projects" href="{% url 'profile' %}?tab=projects">Projects</a>
+      </li>
+    </ul>
+    <form class="p-10 bg-gray-50 text-medium text-gray-500 rounded-lg w-full">
+      <h1 class="block text-violet-700 text-2xl font-bold mb-2">Edit {{ display_type }}</h1>
+      <div class="lg:w-[50%]">
+        {% for field in experience_form %}
+        {% if 'Start' in field.label %}
+        <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3">
+          <div>{{ field|as_crispy_field }}</div>
+          {% elif 'End' in field.label %}
+          <div>{{ field|as_crispy_field }}</div>
+        </div>
+        <div class="flex mb-6">
+          <div class="flex items-center h-5">
+            <input id="id_experience_active" type="checkbox" data-disables="{{ checkbox.disables }}"
+              class="is-active-check w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300"
+              {% if not experience_form.end_date.value %}checked{% endif %} />
+          </div>
+          <label for="id_experience_active" class="ms-2 text-sm font-medium text-gray-900">
+            I am currently {{ checkbox.action }} here
+          </label>
+        </div>
+        {% else %}
+        {{ field|as_crispy_field }}
+        {% endif %}
+        {% endfor %}
+        {% if bullet_point_label %}
+
+        <!-- Bullet point list -->
+        <label for="item-bullet-text" class="block text-gray-700 text-sm font-bold mb-2">
+          {{ bullet_point_label }}
+        </label>
+        <ul id="item-bullet-list" class="item-list pl-6 mb-3">
+          {% for bullet in experience_item.bullet_points.all %}
+          <li id="bullet-{{ bullet.id }}" class="skill-item list-disc">
+            <span class="flex justify-between">
+              <span>{{ bullet.bullet_point }}</span>
+              <button type="button" class="delete-bullet" data-bullet="{{ bullet.id }}"><span
+                  class="text-2xl">&times;</span></button>
+            </span>
+          </li>
+          {% endfor %}
+        </ul>
+        <div class="flex mb-6">
+          <div class="relative w-full">
+            <input type="text" id="new-responsibility-text" name="responsibility"
+              class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+              placeholder="Role/Responsibility" maxlength="150" required />
+            <button type="submit" id="submit-responsibility"
+              class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+              Add</button>
+          </div>
+        </div>
+
+        <!-- Skill list -->
+        <label for="item-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Applied Skills</label>
+        <ul id="item-skill-list" class="item-list pl-6 mb-3">
+          {% for skill in experience_item.applied_skills.all %}
+          <li id="skill-{{ skill.name }}" class="skill-item list-disc">
+            <span class="flex justify-between">
+              <span>{{ skill.display_name }}</span>
+              <button type="button" class="delete-skill" data-bullet="{{ skill.name }}"><span
+                  class="text-2xl">&times;</span></button>
+            </span>
+          </li>
+          {% endfor %}
+        </ul>
+        <div class="flex mb-6">
+          <div class="relative w-full">
+            <input type="text" id="work-skill-text" name="work-skill"
+              class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+              placeholder="Skill" maxlength="30" required />
+            <button type="submit" id="submit-work-skill"
+              class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+              Add</button>
+          </div>
+        </div>
+
+        {% endif %}
+        <a href="{% url 'profile' %}?tab={{ cancel_tab }}"
+          class="text-violet-800 rounded-lg py-2.5 px-3 border border-violet-800">Cancel</a>
+        <button type="submit" class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Save</button>
+      </div>
+    </form>
+    <!-- Makes the Flowbite tab styles work -->
+    <div class="hidden" aria-hidden="true">
+      <div id="tab-details" role="tabpanel"></div>
+      <div id="tab-summary" role="tabpanel"></div>
+      <div id="tab-skills" role="tabpanel"></div>
+      <div id="tab-work-experience" role="tabpanel"></div>
+      <div id="tab-education" role="tabpanel"></div>
+      <div id="tab-projects" role="tabpanel"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Making the tabs work like anchors
+    const buttons = document.querySelectorAll('a[type="button"]');
+    for (let button of buttons) {
+      button.addEventListener('click', function () {
+        window.location = this.href;
+      })
+    }
+  });
+</script>
+
+{% endblock %}

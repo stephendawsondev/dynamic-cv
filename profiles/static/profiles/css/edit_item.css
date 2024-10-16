@@ -1,3 +1,4 @@
+/* Overrides Flowbites tab style changing */
 li.w-full>a.w-full {
   background-color: white;
   color: rgb(91 33 182 / var(--tw-border-opacity));

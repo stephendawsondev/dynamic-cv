@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
@@ -90,7 +90,7 @@ class CreateUpdateContactInformation(LoginRequiredMixin, View):
             return HttpResponse('<p class="error">Please provide valid contact information.</p>')
 
 
-class AddSkill(View):
+class AddSkill(LoginRequiredMixin, View):
 
     def post(self, request, skill):
         user = request.user
@@ -103,7 +103,7 @@ class AddSkill(View):
             return HttpResponse("Success")
 
 
-class RemoveSkill(View):
+class RemoveSkill(LoginRequiredMixin, View):
 
     def post(self, request, skill):
         user = request.user
@@ -116,7 +116,7 @@ class RemoveSkill(View):
             return HttpResponse("Fail")
 
 
-class AddWorkExperience(View):
+class AddWorkExperience(LoginRequiredMixin, View):
 
     def post(self, request):
         post_data = request.POST.copy()
@@ -163,7 +163,7 @@ class AddWorkExperience(View):
         return HttpResponse(json.dumps(post_data))
 
 
-class AddEducation(View):
+class AddEducation(LoginRequiredMixin, View):
 
     def post(self, request):
         post_data = request.POST.copy()
@@ -211,7 +211,7 @@ class AddEducation(View):
         return HttpResponse(json.dumps(post_data))
 
 
-class AddProject(View):
+class AddProject(LoginRequiredMixin, View):
 
     def post(self, request):
         post_data = request.POST.copy()
@@ -229,10 +229,58 @@ class AddProject(View):
         return HttpResponse(json.dumps(post_data))
 
 
-class EditItem(View):
+class EditItem(LoginRequiredMixin, View):
 
     def get(self, request, item_type, item_id):
         context = {
             'item_type': item_type,
+            'cancel_tab': item_type
         }
-        return render(request, 'profiles/edit_profile_item.html', context)
+        try:
+            if item_type == 'work':
+                context['display_type'] = 'Work Experience'
+                work_exp = request.user.work_experience.get(id=item_id)
+                context.update({
+                    'experience_item': work_exp,
+                    'experience_form': WorkExperienceForm(instance=work_exp),
+                    'checkbox': {
+                        'action': 'working',
+                        'disables': 'id_end_date'
+                    },
+                    'cancel_tab': 'work_experience',
+                    'bullet_points': request.user.work_experience.all(),
+                    'bullet_point_label': 'Duties/Responsibilities'
+                })
+            elif item_type == 'education':
+                context['display_type'] = 'Education'
+                education_exp = request.user.education.get(id=item_id)
+                context.update({
+                    'experience_item': education_exp,
+                    'experience_form': EducationForm(instance=education_exp),
+                    'checkbox': {
+                        'action': 'studying',
+                        'disables': 'id_end_year,grade'
+                    },
+                    'cancel_tab': 'education',
+                    'bullet_points': request.user.education.all(),
+                    'bullet_point_label': 'Modules Covered'
+                })
+            elif item_type == 'project':
+                context['display_type'] = 'Project'
+                project_exp = request.user.projects.get(id=item_id)
+                context['experience_item'] = project_exp
+                context['experience_form'] = ProjectForm(instance=project_exp)
+            else:
+                context['display_type'] = 'Item'
+        except (WorkExperience.DoesNotExist,
+                Education.DoesNotExist,
+                Project.DoesNotExist):
+            messages.error(request,
+                           f"That {context['display_type']} is not in \
+                            your profile")
+            return redirect('profile')
+        except Exception as e:
+            messages.error(request, f"An error occurred. {e}")
+            return redirect('profile')
+
+        return render(request, 'profiles/edit_experience_item.html', context)

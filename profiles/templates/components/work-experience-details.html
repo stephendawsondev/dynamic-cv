@@ -22,8 +22,10 @@
       <p class="block text-gray-700 text-sm font-bold mb-2">Company Name</p>
       <p class="work-exp-organization block text-gray-700 text-sm mb-2">{{ work_exp.organization }}</p>
 
+      {% if has_location %}
       <p class="block text-gray-700 text-sm font-bold mb-2">Location</p>
       <p class="work-exp-location block text-gray-700 text-sm mb-2">{{ work_exp.location }}</p>
+      {% endif %}
 
       <p class="block text-gray-700 text-sm font-bold mb-2">Job Title</p>
       <p class="work-exp-position block text-gray-700 text-sm mb-2">{{ work_exp.position }}</p>
