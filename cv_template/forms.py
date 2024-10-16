@@ -36,6 +36,7 @@ class CVTemplateForm(forms.ModelForm):
         model = CVTemplate
         fields = [
             "cv_name",
+            "color",
             "position_title",
             "use_default_summary",
             "summary",
@@ -47,6 +48,7 @@ class CVTemplateForm(forms.ModelForm):
 
         labels = {
             "cv_name": "CV Name",
+            "color": "Theme Color",
             "position_title": "Position Title",
             "summary": "Summary",
             "use_default_summary": "Use Default Summary",
