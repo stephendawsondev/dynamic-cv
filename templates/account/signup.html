@@ -4,7 +4,7 @@
 {% trans "Signup" %}
 {% endblock head_title %}
 {% block content %}
-<div class="container mx-auto mt-8">
+<div class="container mx-auto p-3 mt-8">
     <h1 class="text-3xl mb-6">Create Your Account</h1>
     <form method="post" action="{% url 'account_signup' %}">
         {% csrf_token %}
@@ -14,7 +14,7 @@
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-[50%] p-2.5"
                 placeholder="Email" required />
             {% for error in email_errors %}
-            <div class="text-sm text-red-800">{{ error }}</div>
+            <div class="text-sm mt-1 text-red-800">{{ error }}</div>
             {% endfor %}
         </div>
 
@@ -24,14 +24,8 @@
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-[50%] p-2.5"
                 placeholder="Password" autocomplete="new-password" required id="id_password1">
             {% for error in password1_errors %}
-            <div class="text-sm text-red-800">{{ error }}</div>
+            <div class="text-sm mt-1 text-red-800">{{ error }}</div>
             {% endfor %}
-            <ul class="space-y-1 text-gray-500 list-disc list-inside">
-                <li>Your password can't be too similar to your other personal information.</li>
-                <li>Your password must contain at least 8 characters.</li>
-                <li>Your password can't be a commonly used password.</li>
-                <li>Your password can't be entirely numeric.</li>
-            </ul>
         </div>
 
         <div class="mb-6">
@@ -40,7 +34,7 @@
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-[50%] p-2.5"
                 placeholder="Password (again)" autocomplete="new-password" required id="id_password2">
             {% for error in password2_errors %}
-            <div class="text-sm text-red-800">{{ error }}</div>
+            <div class="text-sm mt-1 text-red-800">{{ error }}</div>
             {% endfor %}
         </div>
         <p>Already have an account? <a href="{% url 'account_login' %}" aria-label="Go to the sign up page"
