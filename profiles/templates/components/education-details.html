@@ -56,11 +56,12 @@
       </ul>
       {% endif %}
     </div>
-    <div class="absolute top-4 right-4 flex text-gray-700">
-      <button class="w-6 h-6 mr-4">
+    <div class="absolute top-2 right-2 md:top-4 md:right-4 flex text-gray-700">
+      <a type="button" class="edit-item w-4 h-4 sm:w-6 sm:h-6 mr-4" href="{% url 'edit_item' 'education' item_id %}"
+        aria-label="Edit this item">
         <img src="{% static 'icons/pencil.svg' %}">
-      </button>
-      <button class="w-6 h-6">
+      </a>
+      <button class="w-4 h-4 sm:w-6 sm:h-6">
         <img src="{% static 'icons/bin.svg' %}">
       </button>
     </div>

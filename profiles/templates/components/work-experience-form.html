@@ -7,7 +7,9 @@
     {% for work_exp in work_experience_list %}
     {% with work_exp.bullet_points.all as generate_bullet_points %}
     {% with work_exp.applied_skills.all as generate_skills %}
+    {% with work_exp.id as item_id %}
     {% include 'components/work-experience-details.html' %}
+    {% endwith %}
     {% endwith %}
     {% endwith %}
     {% endfor %}

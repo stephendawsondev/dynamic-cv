@@ -1,6 +1,8 @@
 {% load static %}
 
-<div>
+<form>
+  {% csrf_token %}
+  <input type="hidden" name="item_id" value="{{ work_exp.id }}" class="edit-item-id">
   <h2 id="work-collapse-heading-{{ forloop.counter }}" class="work-collapse-heading 2xl:w-[50%]">
     <button type="button"
       class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-800 bg-gray-200 border border-gray-200{% if forloop.first %} rounded-t-xl{% endif %}{% if forloop.last %} rounded-b-xl{% else %} border-b-0{%endif%} gap-3"
@@ -49,13 +51,14 @@
       </ul>
       {% endif %}
     </div>
-    <div class="absolute top-4 right-4 flex text-gray-700">
-      <button class="w-6 h-6 mr-4">
+    <div class="absolute top-2 right-2 md:top-4 md:right-4 flex text-gray-700">
+      <a type="button" class="edit-item w-4 h-4 sm:w-6 sm:h-6 mr-4" href="{% url 'edit_item' 'work' item_id %}"
+        aria-label="Edit this item">
         <img src="{% static 'icons/pencil.svg' %}">
-      </button>
-      <button class="w-6 h-6">
+      </a>
+      <button class="w-4 h-4 sm:w-6 sm:h-6" aria-label="Delete this item">
         <img src="{% static 'icons/bin.svg' %}">
       </button>
     </div>
   </div>
-</div>
+</form>

@@ -24,6 +24,9 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
+        if self.request.GET and 'tab' in self.request.GET:
+            context['tab'] = self.request.GET['tab']
+
         contact_information, created = ContactInformation.objects.get_or_create(
             user=user)
         context['contact_information_form'] = ContactInformationForm(
@@ -224,3 +227,12 @@ class AddProject(View):
         )
         project.save()
         return HttpResponse(json.dumps(post_data))
+
+
+class EditItem(View):
+
+    def get(self, request, item_type, item_id):
+        context = {
+            'item_type': item_type,
+        }
+        return render(request, 'profiles/edit_profile_item.html', context)
