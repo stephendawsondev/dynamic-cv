@@ -197,8 +197,6 @@ class UpdateCV(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             except Summary.DoesNotExist:
                 summary = ""
             form.instance.summary = summary
-
-        messages.success(self.request, "CV updated successfully")
         return super(UpdateCV, self).form_valid(form)
 
     def get_form_kwargs(self):
