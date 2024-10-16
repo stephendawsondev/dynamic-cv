@@ -307,5 +307,63 @@ class EditItem(LoginRequiredMixin, View):
             form = ProjectForm(request.POST, instance=item)
         
         if form and form.is_valid():
-            form.save()
+            item = form.save()
+
+            # For projects, we can end the function here
+            if item_type == 'project':
+                return redirect('profile')
+
+            # Updating the bullet points
+            bullet_names = []
+            skill_names = []
+            
+            # Extract the bullet points from the form
+            for field, value in request.POST.items():
+                if 'bullet-inputs' in field:
+                    bullet_names.append(value)
+                elif 'skill-inputs' in field:
+                    skill_names.append(value)
+            
+            # Remove the old bullets that are not in the new list
+            for bullet in item.bullet_points.all():
+                if bullet.bullet_point in bullet_names:
+                    bullet_names.remove(bullet.bullet_point)
+                else:
+                    item.bullet_points.remove(bullet)
+                    if bullet.related_experience.count() == 0:
+                        bullet.delete()
+                    else:
+                        bullet.save()
+            for skill in item.applied_skills.all():
+                skill_name_f = skill.name.replace('-', ' ')
+                if skill_name_f in skill_names:
+                    skill_names.remove(skill_name_f)
+                else:
+                    item.getattr(item_type).remove(skill)
+                    # We don't need to delete skills without references
+                    # as they can be accessed through the skills tab
+                    skill.save()
+            
+            # Adding new bullets
+            for new_bullet in bullet_names:
+                bullet_class = None
+                if item_type == 'work':
+                    bullet_class = WorkExperienceBullets
+                elif item_type == 'education':
+                    bullet_class = EducationBullets
+                bullet_obj, created = bullet_class.objects.get_or_create(
+                    user=request.user,
+                    bullet_point=new_bullet
+                )
+                bullet_obj.save()
+                item.bullet_points.add(bullet_obj)
+            for new_skill in skill_names:
+                skill_obj, created = Skill.objects.get_or_create(
+                    user=request.user,
+                    name=new_skill
+                )
+                skill_obj.save()
+                item.applied_skills.add(skill_obj)
+            item.save()
+            
         return redirect('profile')
