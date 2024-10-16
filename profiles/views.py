@@ -161,6 +161,7 @@ class AddWorkExperience(LoginRequiredMixin, View):
                 continue
             list_item.save()
         work_experience.save()
+        post_data['item_id'] = work_experience.id
         return HttpResponse(json.dumps(post_data))
 
 
@@ -209,6 +210,7 @@ class AddEducation(LoginRequiredMixin, View):
                 continue
             list_item.save()
         education.save()
+        post_data['item_id'] = education.id
         return HttpResponse(json.dumps(post_data))
 
 
@@ -227,6 +229,7 @@ class AddProject(LoginRequiredMixin, View):
             deployed_url=post_data['deployed_url']
         )
         project.save()
+        post_data['item_id'] = project.id
         return HttpResponse(json.dumps(post_data))
 
 
@@ -236,7 +239,7 @@ def find_experience(request, item_type, item_id):
             return request.user.work_experience.get(id=item_id)
         elif item_type == 'education':
             return request.user.education.get(id=item_id)
-        elif item_type == 'education':
+        elif item_type == 'project':
             return request.user.projects.get(id=item_id)
         else:
             messages.error(request, "Item not found")
@@ -368,4 +371,25 @@ class EditItem(LoginRequiredMixin, View):
                 item.applied_skills.add(skill_obj)
             item.save()
             
+        return redirect('profile')
+
+
+class DeleteItem(LoginRequiredMixin, View):
+
+    def post(self, request, item_type, item_id):
+        item = find_experience(request, item_type, item_id)
+        item_display = item_type.capitalize()
+        if not item:
+            return redirect('profile')
+        if item_type != 'project':
+            # Clearing any bullet points not attached to an object
+            for bullet in item.bullet_points.all():
+                item.bullet_points.remove(bullet)
+                if bullet.related_experience.count() == 0:
+                    bullet.delete()
+                else:
+                    bullet.save()
+        item.delete()
+        messages.success(request,
+                         f"{item_display} item deleted successfully")
         return redirect('profile')

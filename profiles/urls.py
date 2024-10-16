@@ -31,4 +31,9 @@ urlpatterns = [
       views.EditItem.as_view(),
       name="edit_item",
     ),
+    path(
+      "delete-item/<str:item_type>/<int:item_id>/",
+      views.DeleteItem.as_view(),
+      name="delete_item",
+    ),
 ]

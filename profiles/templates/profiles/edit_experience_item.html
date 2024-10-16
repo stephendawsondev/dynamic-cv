@@ -60,7 +60,7 @@
           <div class="flex items-center h-5">
             <input id="id_experience_active" type="checkbox" data-disables="{{ checkbox.disables }}"
               class="is-active-check w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300"
-              {% if not experience_form.end_date.value %}checked{% endif %} />
+              {% if not experience_form.end_date.value and not experience_form.end_year.value %}checked{% endif %} />
           </div>
           <label for="id_experience_active" class="ms-2 text-sm font-medium text-gray-900">
             I am currently {{ checkbox.action }} here
