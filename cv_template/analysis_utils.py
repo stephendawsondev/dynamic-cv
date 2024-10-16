@@ -61,7 +61,7 @@ class CVAnalyzer:
                 continue
             correction = spell.correction(mistake)
 
-            results.append(f"Error: {mistake}, Suggestion: {correction}")
+            results.append(f"Error: {mistake} - Suggestion: {correction}")
         return results
 
     def get_match_on_top_skills(self, position_skills: dict) -> tuple:
