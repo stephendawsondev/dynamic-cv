@@ -4,7 +4,7 @@
 {% block extra_css %}
 <style>
   .emphasis-color {
-    color: #6495ed;
+    color: {{cv.color}};
   }
 
   h1 {
@@ -200,7 +200,7 @@
       </ul>
       {% if cv.summary %}
       <p class="summary">
-        {{ cv.summary }}
+        {{ cv.summary|safe }}
       </p>
       {% endif %}
     </section>

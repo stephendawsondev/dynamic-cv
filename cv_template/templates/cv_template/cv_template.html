@@ -92,15 +92,15 @@
     {{ form|crispy }}
     {{ form.media }}
     {% with request.resolver_match.url_name as url_name %}
-      {% if url_name == 'cv_template' %}
-      <button type="submit"
-        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-lime-500 rounded-lg">Create
-        CV</button>
-      {% else %}
-      <button type="submit"
-        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-lime-500 rounded-lg">Update
-        CV</button>
-      {% endif %}
+    {% if url_name == 'cv_template' %}
+    <button type="submit"
+      class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-lime-500 rounded-lg">Create
+      CV</button>
+    {% else %}
+    <button type="submit"
+      class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-lime-500 rounded-lg">Update
+      CV</button>
+    {% endif %}
     {% endwith %}
   </form>
   <div class="cv-preview-container hidden lg:block lg:w-1/2 lg:pl-4 ">
@@ -267,6 +267,21 @@
       });
     }
 
+    const accentColorInput = document.getElementById('id_color');
+
+    function updateAccentColor() {
+      const color = accentColorInput.value;
+      const previewH2s = document.querySelectorAll('.cv-preview h2');
+      const previewH3s = document.querySelectorAll('.cv-preview h3');
+
+      previewH2s.forEach(h2 => h2.style.color = color);
+      previewH3s.forEach(h3 => {
+        h3.style.color = color;
+      });
+    }
+
+    accentColorInput.addEventListener('input', updateAccentColor);
+
     function updatePreview() {
       const positionInput = document.getElementById('id_position_title');
       if (positionInput) {
@@ -274,6 +289,7 @@
       }
 
       updateSummaryPreview();
+      updateAccentColor();
 
       const educationPreview = document.getElementById('preview-education');
       educationPreview.innerHTML = '';

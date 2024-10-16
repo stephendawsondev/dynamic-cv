@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'djrichtextfield',
     'crispy_forms',
     'crispy_tailwind',
+    'colorfield',
 
     # Apps
     'utility_app',
