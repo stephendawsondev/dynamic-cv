@@ -159,3 +159,20 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Hobby(models.Model):
+    """
+    Interests/Hobbies model
+    """
+    user = models.ForeignKey(
+        User, related_name="hobbies", on_delete=models.CASCADE)
+    val = models.CharField(max_length=150)
+
+
+class AdditionalInformation(models.Model):
+    """
+    Interests/Hobbies model
+    """
+    user = models.ForeignKey(
+        User, related_name="extra_info", on_delete=models.CASCADE)
+    val = models.CharField(max_length=150)

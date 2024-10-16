@@ -1,0 +1,33 @@
+<div id="other">
+    <h1 class="block text-violet-700 text-2xl font-bold mb-2">Interests/Hobbies</h1>
+    <p class="block text-gray-700 text-sm mb-4">Enter what you do in your free time</p>
+    <form method="post" id="hobby-form" class="lg:w-[50%] mb-10">
+    {% csrf_token %}
+    <div class="flex">
+        <div class="relative w-full">
+        <input type="text" id="new-hobby-text"
+            class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Interest/Hobby" maxlength="150" required />
+        <button type="submit" id="submit-hobby"
+            class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            Add</button>
+        </div>
+    </div>
+    </form>
+    
+    <h1 class="block text-violet-700 text-2xl font-bold mb-2">Additional Information</h1>
+    <p class="block text-gray-700 text-sm mb-4">Enter any other relevant information (Like achievements, volunteer work etc.)</p>
+    <form method="post" id="extra-info-form" class="lg:w-[50%]">
+    {% csrf_token %}
+    <div class="flex">
+        <div class="relative w-full">
+        <input type="text" id="new-extra-info-text"
+            class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Other Information" maxlength="150" required />
+        <button type="submit" id="submit-extra-info"
+            class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            Add</button>
+        </div>
+    </div>
+    </form>
+</div>
