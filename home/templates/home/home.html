@@ -5,8 +5,8 @@
 <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
 {% endblock %}
 {% block content %}
-<section class="container mx-auto overflow-y-hidden p-3 pt-5 pb-5 relative max-h-[350px] md:max-h-[750px]">
-  <h1 class="text-4xl md:text-7xl w-4/5 md:w-2/5 py-3 md:py-20 mx-auto text-center">Dynamic CVs made <span
+<section class="container mx-auto overflow-y-hidden p-3 pt-5 pb-5 relative max-h-[450px] md:max-h-[750px]">
+  <h1 class="text-3xl md:text-7xl w-4/5 md:w-2/5 py-3 md:py-15 mx-auto text-center">Dynamic CVs made <span
       class="original-text">fast</span>
     <em class="text-violet-800 italic replacement-text" data-text="easy"></em>
   </h1>
@@ -14,10 +14,9 @@
     <h1 class="text-3xl text-center font-bold mb-2">Jane Smith CV</h1>
     <h2 class="text-lg mb-4 text-center"><span class="original-text">Frontend</span> <em
         class="text-violet-800 replacement-text" data-text="Full-stack"></em> Developer</h2>
-    <div class="text-sm text-center mb-4 social-links">
-      <a href="https://github.com/janecodes" class="hover:underline">github.com/janecodes</a> •
-      <a href="https://stackportfol.io/user/jane-smith" class="hover:underline">stackportfol.io/user/jane-smith</a> •
-      <a href="https://linkedin.com/in/jane-smith" class="hover:underline">linkedin.com/in/jane-smith</a>
+    <div class="text-xs text-center mb-4 social-links">
+      <span>github.com/janecodes</span> •
+      <span>linkedin.com/in/jane-smith</a>
     </div>
     <p class="mb-4">
       <span class="original-text">Frontend</span> <em class="text-violet-800 replacement-text"
@@ -50,7 +49,7 @@
   </div>
 </section>
 <section id="the-problem"
-  class="relative w-100 text-zinc-50 bg-gradient-to-r from-violet-800 to-violet-700 py-20 md:py-32 homepage-section">
+  class="relative w-100 text-zinc-50 bg-gradient-to-r from-violet-800 to-violet-500 py-20 md:py-32 homepage-section">
   <div class="absolute top-0 left-0 w-full overflow-hidden" style="transform: rotate(180deg);">
     <svg class="relative block w-full h-16" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -110,7 +109,7 @@
     </div>
   </div>
 </section>
-<section class="relative bg-gradient-to-r from-violet-800 to-violet-700 py-20 md:py-32">
+<section class="relative bg-gradient-to-r from-violet-800 to-violet-500 py-20 md:py-32">
   <div class="absolute top-0 left-0 w-full overflow-hidden" style="transform: rotate(180deg);">
     <svg class="relative block w-full h-16" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -126,7 +125,7 @@
       <p class="font-light text-zinc-50 md:mb-16 sm:text-xl">Here's the team behind Dynamic CV.</p>
     </div>
     <div class="grid gap-8 mb-6 lg:mb-16 md:grid-cols-2">
-      <div class="items-center bg-violet-300 rounded-lg shadow sm:flex">
+      <div class="items-center bg-zinc-50 rounded-lg shadow sm:flex">
         <img class="w-full md:w-1/2 rounded-lg sm:rounded-none sm:rounded-l-lg" src="{% static 'images/daisy.webp' %}"
           alt="Daisy Avatar">
         <div class="p-5 text-violet-800">
@@ -137,19 +136,19 @@
           <p class="mt-3 mb-4 font-light"></p>
           <ul class="flex align-center space-x-4 sm:mt-0">
             <li>
-              <a href="https://www.linkedin.com/in/daisy-mcgirr/" class="text-violet-800 hover:text-lime-700">
+              <a href="https://www.linkedin.com/in/daisy-mcgirr/" class="text-blue-700 hover:text-lime-700">
                 {% include 'includes/linkedin.svg' %}
               </a>
             </li>
             <li>
-              <a href="https://github.com/Dee-McG" class="text-violet-800 hover:text-lime-700">
+              <a href="https://github.com/Dee-McG" class="text-black hover:text-lime-700">
                 {% include 'includes/github.svg' %}
               </a>
             </li>
           </ul>
         </div>
       </div>
-      <div class="items-center md:flex bg-violet-300 rounded-lg shadow sm:flex">
+      <div class="items-center md:flex bg-zinc-50 rounded-lg shadow sm:flex">
         <img class="w-full md:w-1/2 rounded-lg sm:rounded-none sm:rounded-l-lg" src="{% static 'images/shane.webp' %}"
           alt="Shane Avatar">
         <div class="p-5 text-violet-800">
@@ -160,19 +159,19 @@
           <p class="mt-3 mb-4 font-light"></p>
           <ul class="flex align-center space-x-4 sm:mt-0">
             <li>
-              <a href="https://www.linkedin.com/in/shane-byrne-00b8b3272" class="text-violet-800 hover:text-lime-700">
+              <a href="https://www.linkedin.com/in/shane-byrne-00b8b3272" class="text-blue-700 hover:text-lime-700">
                 {% include 'includes/linkedin.svg' %}
               </a>
             </li>
             <li>
-              <a href="https://github.com/ShaneByrne0963" class="text-violet-800 hover:text-lime-700">
+              <a href="https://github.com/ShaneByrne0963" class="text-black hover:text-lime-700">
                 {% include 'includes/github.svg' %}
               </a>
             </li>
           </ul>
         </div>
       </div>
-      <div class="items-center bg-violet-300 rounded-lg shadow sm:flex">
+      <div class="items-center bg-zinc-50 rounded-lg shadow sm:flex">
         <img class="w-full md:w-1/2 rounded-lg sm:rounded-none sm:rounded-l-lg" src="{% static 'images/stephen.webp' %}"
           alt="Stephen Avatar">
         <div class="p-5 text-violet-800">
@@ -183,19 +182,19 @@
           <p class="mt-3 mb-4 font-light"></p>
           <ul class="flex align-center space-x-4 sm:mt-0">
             <li>
-              <a href="https://www.linkedin.com/in/sdstephendawson/" class="text-violet-800 hover:text-lime-700">
+              <a href="https://www.linkedin.com/in/sdstephendawson/" class="text-blue-700 hover:text-lime-700">
                 {% include 'includes/linkedin.svg' %}
               </a>
             </li>
             <li>
-              <a href="https://github.com/stephendawsondev" class="text-violet-800 hover:text-lime-700">
+              <a href="https://github.com/stephendawsondev" class="text-black hover:text-lime-700">
                 {% include 'includes/github.svg' %}
               </a>
             </li>
           </ul>
         </div>
       </div>
-      <div class="items-center bg-violet-300 rounded-lg shadow sm:flex">
+      <div class="items-center bg-zinc-50 rounded-lg shadow sm:flex">
         <img class="w-full md:w-1/2 rounded-lg sm:rounded-none sm:rounded-l-lg" src="{% static 'images/joao.webp' %}"
           alt="Joao Avatar">
         <div class="p-5 text-violet-800">
@@ -206,12 +205,12 @@
           <p class="mt-3 mb-4 font-light"></p>
           <ul class="flex align-center space-x-4 sm:mt-0">
             <li>
-              <a href="https://www.linkedin.com/in/jpgenari/" class="text-violet-800 hover:text-lime-700">
+              <a href="https://www.linkedin.com/in/jpgenari/" class="text-blue-700 hover:text-lime-700">
                 {% include 'includes/linkedin.svg' %}
               </a>
             </li>
             <li>
-              <a href="https://github.com/jpgenari" class="text-violet-800 hover:text-lime-700">
+              <a href="https://github.com/jpgenari" class="text-black hover:text-lime-700">
                 {% include 'includes/github.svg' %}
               </a>
             </li>

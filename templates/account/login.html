@@ -6,7 +6,7 @@
 {% endblock head_title %}
 {% block content %}
 
-<div class="container mx-auto mt-8">
+<div class="container mx-auto p-3 mt-8">
     <h1 class="text-3xl mb-6">Log In to Your Account</h1>
     <form method="post" action="{% url 'account_login' %}">
         {% csrf_token %}
@@ -16,7 +16,7 @@
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-[50%] p-2.5"
                 placeholder="Email" required />
             {% for error in email_errors %}
-            <div class="text-sm text-red-800">{{ error }}</div>
+            <div class="text-sm mt-1 text-red-800">{{ error }}</div>
             {% endfor %}
         </div>
         <div class="mb-4">
@@ -25,7 +25,7 @@
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-[50%] p-2.5"
                 placeholder="Password" required />
             {% for error in password_errors %}
-            <div class="text-sm text-red-800">{{ error }}</div>
+            <div class="text-sm mt-1 text-red-800">{{ error }}</div>
             {% endfor %}
         </div>
         <div class="flex items-start mb-6">

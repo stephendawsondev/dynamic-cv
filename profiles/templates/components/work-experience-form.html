@@ -7,7 +7,11 @@
     {% for work_exp in work_experience_list %}
     {% with work_exp.bullet_points.all as generate_bullet_points %}
     {% with work_exp.applied_skills.all as generate_skills %}
+    {% with work_exp.id as item_id %}
+    {% with work_exp.location as has_location %}
     {% include 'components/work-experience-details.html' %}
+    {% endwith %}
+    {% endwith %}
     {% endwith %}
     {% endwith %}
     {% endfor %}
@@ -36,11 +40,11 @@
         <input id="id_current_work" type="checkbox" data-disables="id_end_date"
           class="is-active-check w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300" />
       </div>
-      <label for="id_current_work" class="ms-2 text-sm font-medium text-gray-900">I am currently working in this
-        role</label>
+      <label for="id_current_work" class="ms-2 text-sm font-medium text-gray-900">I am currently working here</label>
     </div>
-    <div class="hidden bullet-point-inputs" id="work-responsibilities" name="responsibilities" data-item-id="0"></div>
-    <div class="hidden bullet-point-inputs" id="work-skills" name="skills" data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" aria-hidden="true" id="work-responsibilities" name="bullet_points"
+      data-item-id="0"></div>
+    <div class="hidden bullet-point-inputs" aria-hidden="true" id="work-skills" name="skills" data-item-id="0"></div>
   </form>
   <div class="md:w-[50%]">
     <!-- Work responsibilities -->
@@ -55,7 +59,7 @@
         <div class="relative w-full">
           <input type="text" id="new-responsibility-text" name="responsibility"
             class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-            placeholder="Role/Responsibility" maxlength="150" required />
+            placeholder="Duty/Responsibility" maxlength="150" required />
           <button type="submit" id="submit-responsibility"
             class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
             Add</button>
@@ -63,7 +67,7 @@
       </div>
     </form>
     <!-- Work skills -->
-    <form data-main-input="work-skills" id="work-skill-form" class="add-item-form mb-6">
+    <form data-main-input="work-skills" id="bullet-point-form" class="add-item-form mb-6">
       {% csrf_token %}
       <label for="work-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Applied Skills:</label>
       <ul id="work-skill-list" class="item-list pl-6 mb-3"></ul>
