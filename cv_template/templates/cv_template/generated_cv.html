@@ -137,6 +137,11 @@
     {% comment %} Don't add anything here - these are automatically created with
     the below JS {% endcomment %}
   </div>
+  {% if cv.position_title %}
+  <div class="back-button">
+    <a href="{% url 'analyze_cv' cv.id %}">Analyze CV</a>
+  </div>
+  {% endif %}
   <button id="generate-pdf">
     Download as PDF
   </button>
