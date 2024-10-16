@@ -18,7 +18,8 @@ class CVTemplate(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, related_name="cv_user", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, related_name="cv_user", on_delete=models.CASCADE)
     cv_name = models.CharField(
         unique=True, max_length=100, default="default", null=False, blank=False
     )
@@ -37,7 +38,8 @@ class CVTemplate(models.Model):
         WorkExperience, related_name="cv_work_experience"
     )
     education = models.ManyToManyField(Education, related_name="cv_education")
-    projects = models.ManyToManyField(Project, related_name="cv_projects", blank=True)
+    projects = models.ManyToManyField(
+        Project, related_name="cv_projects", blank=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
@@ -52,8 +54,10 @@ class CVAnalysis(models.Model):
     """
     CV Analysis model
     """
-    user = models.ForeignKey(User, related_name="cv_analysis_user", on_delete=models.CASCADE)
-    cv = models.ForeignKey(CVTemplate, related_name="cv_analysis_cv", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, related_name="cv_analysis_user", on_delete=models.CASCADE)
+    cv = models.ForeignKey(
+        CVTemplate, related_name="cv_analysis_cv", on_delete=models.CASCADE)
     potential_skills = models.JSONField(default=list, blank=True)
     spelling_errors = models.JSONField(default=list, blank=True)
     top_tech_skills = models.JSONField(default=list, blank=False)

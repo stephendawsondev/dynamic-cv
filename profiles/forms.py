@@ -1,7 +1,7 @@
 from django import forms
 from django_ckeditor_5.widgets import CKEditor5Widget
 from .models import Summary, ContactInformation, WorkExperience, \
-     Education, Project
+    Education, Project
 
 
 class SummaryForm(forms.ModelForm):
@@ -72,6 +72,7 @@ class WorkExperienceForm(forms.ModelForm):
             'end_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
+
 class EducationForm(forms.ModelForm):
     """
     Form to add education
@@ -108,6 +109,7 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = [
             "name",
+            "description",
             "repository_url",
             "deployed_url"
         ]
@@ -115,4 +117,9 @@ class ProjectForm(forms.ModelForm):
             "name": "Project Name",
             "repository_url": "Repository URL",
             "deployed_url": "Deployed URL"
+        }
+
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 2, 'cols': 15, 'placeholder': 'Max 160 characters...'}),
+
         }

@@ -25,12 +25,46 @@ class CreateCV(LoginRequiredMixin, CreateView):
     template_name = "cv_template/cv_template.html"
 
     def get_form_kwargs(self):
-        """Passes the request object to the form class.
-        This is necessary to only display members that belong to a given user"""
-
         kwargs = super(CreateCV, self).get_form_kwargs()
         kwargs["request"] = self.request
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            contact_info = ContactInformation.objects.get(
+                user=self.request.user)
+            context.update({
+                'first_name': contact_info.first_name,
+                'last_name': contact_info.last_name,
+                'github_url': contact_info.github,
+                'linkedin_url': contact_info.linkedin,
+                'phone_number': contact_info.phone_number,
+                'email': contact_info.email,
+                'city': contact_info.city,
+                'country': contact_info.country,
+            })
+        except ContactInformation.DoesNotExist:
+            context.update({
+                'first_name': None,
+                'last_name': None,
+                'github_url': None,
+                'linkedin_url': None,
+                'phone_number': None,
+                'email': None,
+                'city': None,
+                'country': None,
+            })
+
+        try:
+            default_summary = Summary.objects.get(
+                user=self.request.user).summary
+        except Summary.DoesNotExist:
+            default_summary = ""
+
+        context['default_summary'] = default_summary
+
+        return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -43,7 +77,8 @@ class CreateCV(LoginRequiredMixin, CreateView):
             form.instance.summary = summary
 
         try:
-            contact_information = ContactInformation.objects.get(user=self.request.user)
+            contact_information = ContactInformation.objects.get(
+                user=self.request.user)
         except ContactInformation.DoesNotExist:
             contact_information = None
         form.instance.contact_information = contact_information
