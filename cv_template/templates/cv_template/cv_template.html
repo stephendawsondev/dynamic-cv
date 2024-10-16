@@ -164,6 +164,15 @@
 {% block extra_js %}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+
+    // Hide the summary input if "Use default summary" is checked
+    const summaryCheckbox = document.querySelector('#id_use_default_summary');
+    const summaryInput = document.querySelector('#div_id_summary');
+    if (summaryCheckbox.checked) {
+      summaryInput.style.display = 'none';
+    }
+
+    // Create and insert the disabled text area
     const form = document.querySelector('#skill-form');
     const previewButton = document.querySelector('#preview-button');
     const previewContainer = document.querySelector('.cv-preview-container');
