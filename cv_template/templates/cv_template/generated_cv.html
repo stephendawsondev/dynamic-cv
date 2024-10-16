@@ -190,7 +190,7 @@
         {% if cv.contact_information.email %}
         <li class="email">
           <a href="mailto:{{ cv.contact_information.email }}">
-            stephendawson@protonmail.com
+            {{ cv.contact_information.email }}
           </a>
         </li>
         {% endif %}
