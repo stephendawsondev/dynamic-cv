@@ -345,7 +345,7 @@ class EditItem(LoginRequiredMixin, View):
                 if skill_name_f in skill_names:
                     skill_names.remove(skill_name_f)
                 else:
-                    item.getattr(item_type).remove(skill)
+                    item.applied_skills.remove(skill)
                     # We don't need to delete skills without references
                     # as they can be accessed through the skills tab
                     skill.save()
