@@ -14,32 +14,32 @@
   <div class="md:flex">
     <ul class="flex flex-col text-lg font-medium text-violet-800 w-60" id="default-styled-tab"
       data-tabs-toggle="#default-styled-tab-content"
-      data-tabs-active-classes="text-black hover:text-purple-600 bg-lime-500" role="tablist">
+      data-tabs-active-classes="text-black hover:text-purple-600" role="tablist">
       <li class="w-full" role="presentation" id="first-tab">
-        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+        <a class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 text-center" type="button" role="tab"
           aria-controls="detail" data-tabs-target="#tab-details" href="{% url 'profile' %}?tab=details">Your
           Details</a>
       </li>
       <li class="w-full" role="presentation">
-        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+        <a class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 text-center" type="button" role="tab"
           aria-controls="summary" data-tabs-target="#tab-summary" href="{% url 'profile' %}?tab=summary">Summary</a>
       </li>
       <li class="w-full" role="presentation">
-        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+        <a class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 text-center" type="button" role="tab"
           aria-controls="skills" data-tabs-target="#tab-skills" href="{% url 'profile' %}?tab=skills">Skills</a>
       </li>
       <li class="w-full" role="presentation">
-        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+        <a class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 text-center active" type="button" role="tab"
           aria-controls="work-experience" data-tabs-target="#tab-work-experience"
           href="{% url 'profile' %}?tab=work_experience">Work Experience</a>
       </li>
       <li class="w-full" role="presentation">
-        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+        <a class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 text-center" type="button" role="tab"
           aria-controls="education" data-tabs-target="#tab-education"
           href="{% url 'profile' %}?tab=education">Education</a>
       </li>
       <li class="w-full" role="presentation">
-        <a class="w-full py-2 text-violet-800 border-2 border-violet-800 text-center" type="button" role="tab"
+        <a class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 text-center" type="button" role="tab"
           aria-controls="projects" data-tabs-target="#tab-projects" href="{% url 'profile' %}?tab=projects">Projects</a>
       </li>
     </ul>
