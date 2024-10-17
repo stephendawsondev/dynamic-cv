@@ -62,56 +62,55 @@
   {% comment %} Footer {% endcomment %}
   <footer class="bg-white mt-auto">
     <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
-        <div class="mb-6 md:mb-0">
-          <div class="text-white">LOGO</div>
+      <div class="grid md:grid-cols-3 gap-8 sm:gap-6">
+        <a href="#" class="text-violet-800 flex items-center"><img src="{% static 'images/logo.webp' %}"
+            alt="Dynamic CV - Tailored Resumes, Better Opportunities"></a>
+        <div>
+          <h2 class="mb-6 text-sm font-semibold text-violet-900 uppercase">Quicklinks</h2>
+          <ul class="text-violet-500 font-medium">
+            <li class="mb-4">
+              <a href="/contact" class="hover:underline">Contact us</a>
+            </li>
+            <li>
+              <a href="{% url 'privacy_policy' %}" class="hover:underline">Legal</a>
+            </li>
+          </ul>
         </div>
-        <div class="grid md:grid-cols-3 gap-8 sm:gap-6">
-          <div class="text-violet-800 flex items-center"><img src="{% static 'images/logo.webp' %}" alt="Dynamic CV - Tailored Resumes, Better Opportunities"></div>
-          <div>
-            <h2 class="mb-6 text-sm font-semibold text-violet-900 uppercase">Quicklinks</h2>
-            <ul class="text-violet-500 font-medium">
-              <li class="mb-4">
-                <a href="/contact" class="hover:underline">Contact us</a>
-              </li>
-              <li>
-                <a href="{% url 'privacy_policy' %}" class="hover:underline">Legal</a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h2 class="mb-6 text-sm font-semibold text-violet-900 uppercase">Subscribe</h2>
-            <form method="POST" hx-post="{% url 'subscribe_newsletter' %}" hx-target="#subscription-feedback">
-              {% csrf_token %}
-              <div class="items-center mx-auto mb-3 space-y-4 max-w-screen-sm sm:flex sm:space-y-0">
-                <div class="relative w-full">
-                  <label for="email" class="hidden mb-2 text-sm font-medium text-violet-900">Email address</label>
-                  <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                    <svg class="w-5 h-5 text-violet-800" fill="currentColor" viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                    </svg>
-                  </div>
-                  <input
-                  name="email" class="block p-3 pl-10 w-full text-sm text-violet-900 bg-zinc-50 rounded-lg border border-violet-800 sm:rounded-none sm:rounded-l-lg focus:ring-violet-500 focus:border-violet-500"
-                    placeholder="Enter your email" type="email" id="email" required="">
+        <div>
+          <h2 class="mb-6 text-sm font-semibold text-violet-900 uppercase">Subscribe</h2>
+          <form method="POST" hx-post="{% url 'subscribe_newsletter' %}" hx-target="#subscription-feedback">
+            {% csrf_token %}
+            <div class="items-center mx-auto mb-3 space-y-4 max-w-screen-sm sm:flex sm:space-y-0">
+              <div class="relative w-full">
+                <label for="email" class="hidden mb-2 text-sm font-medium text-violet-900">Email address</label>
+                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                  <svg class="w-5 h-5 text-violet-800" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                  </svg>
                 </div>
-                <div>
-                  <button type="submit"
-                    class="py-3 px-5 w-full text-sm font-medium text-center text-zinc-50 rounded-lg border cursor-pointer bg-violet-800 border-violet-800 sm:rounded-none sm:rounded-r-lg hover:bg-violet-900 focus:ring-4 focus:ring-violet-300">Subscribe</button>
-                </div>
+                <input name="email"
+                  class="block p-3 pl-10 w-full text-sm text-violet-900 bg-zinc-50 rounded-lg border border-violet-800 sm:rounded-none sm:rounded-l-lg focus:ring-violet-500 focus:border-violet-500"
+                  placeholder="Enter your email" type="email" id="email" required="">
               </div>
-            </form>
+              <div>
+                <button type="submit"
+                  class="py-3 px-5 w-full text-sm font-medium text-center text-zinc-50 rounded-lg border cursor-pointer bg-violet-800 border-violet-800 sm:rounded-none sm:rounded-r-lg hover:bg-violet-900 focus:ring-4 focus:ring-violet-300">Subscribe</button>
+              </div>
+            </div>
+          </form>
           <div id="subscription-feedback"></div>
-          </div>
         </div>
+      </div>
       <hr class="my-6 border-violet-200 sm:mx-auto lg:my-8" />
       <div class="sm:flex sm:items-center sm:justify-between">
         <span class="text-sm text-violet-500 sm:text-center">© {% now 'Y' %} Dynamic CV</a>. All Rights
           Reserved.
         </span>
         <div class="flex mt-4 sm:justify-center sm:mt-0">
-          <a href="#" class="text-violet-500 hover:text-violet-900 ms-5">
+          <a href="https://github.com/stephendawsondev/elevate-hackathon-2024"
+            class="text-violet-500 hover:text-violet-900 ms-5" target="_blank">
             <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
               viewBox="0 0 20 20">
               <path fill-rule="evenodd"
