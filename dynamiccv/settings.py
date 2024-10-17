@@ -196,10 +196,10 @@ STATIC_URL = '/static/'
 
 CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 
-
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+if os.path.isfile('env.py'):
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 
