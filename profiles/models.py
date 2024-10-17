@@ -168,6 +168,9 @@ class Hobby(models.Model):
         User, related_name="hobbies", on_delete=models.CASCADE)
     val = models.CharField(max_length=150)
 
+    def __str__(self):
+        return self.val
+
 
 class AdditionalInformation(models.Model):
     """
@@ -176,3 +179,6 @@ class AdditionalInformation(models.Model):
     user = models.ForeignKey(
         User, related_name="extra_info", on_delete=models.CASCADE)
     val = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.val

@@ -116,12 +116,16 @@ function deleteBulletItem(bulletId, bulletType) {
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  let skillForm = document.getElementById('skill-form');
-  if (skillForm) {
-  
-    let skillSet = document.getElementsByClassName('skill-item');
-    for (let skill of skillSet) {
-      addBulletDeleteEvent(skill, 'skill');
+  let bulletForms = ['skill', 'hobby', 'extra-info'];
+
+  for (let bullet of bulletForms) {
+    let formElement = document.getElementById(bullet + '-form');
+    if (formElement) {
+    
+      let bulletSet = document.getElementsByClassName(bullet + '-item');
+      for (let item of bulletSet) {
+        addBulletDeleteEvent(item, bullet);
+      }
     }
   }
 });
