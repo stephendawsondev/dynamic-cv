@@ -39,9 +39,11 @@ class CVTemplate(models.Model):
     )
     skills = models.ManyToManyField(Skill, related_name="cv_skills")
     work_experience = models.ManyToManyField(
-        WorkExperience, related_name="cv_work_experience"
+        WorkExperience, related_name="cv_work_experience",
+        blank=True
     )
-    education = models.ManyToManyField(Education, related_name="cv_education")
+    education = models.ManyToManyField(Education, related_name="cv_education",
+                                       blank=True)
     projects = models.ManyToManyField(Project, related_name="cv_projects",
                                       blank=True)
     hobbies = models.ManyToManyField(Hobby, related_name="cv_hobbies",
@@ -75,6 +77,7 @@ class CVAnalysis(models.Model):
     top_tech_comp_skills = models.JSONField(default=list, blank=False)
     top_qualifications = models.JSONField(default=list, blank=False)
     top_methodologies = models.JSONField(default=list, blank=False)
+    suggested_roles = models.JSONField(default=list, blank=True, null=True)
     match_per = models.IntegerField()
     created_at = models.DateTimeField(auto_now=True)
 

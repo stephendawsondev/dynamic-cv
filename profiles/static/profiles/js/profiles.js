@@ -116,6 +116,37 @@ window.addEventListener('DOMContentLoaded', () => {
       this.setCustomValidity(skillTextValidity);
     });
   }
+
+  function validateDates(startElement, endElement) {
+    startElement.setCustomValidity('');
+    let checkboxInput = document.getElementById('id_experience_active');
+    if (!checkboxInput) {
+      if (startElement.id.includes('date')) {
+        checkboxInput = document.getElementById('id_current_work');
+      }
+      else {
+        checkboxInput = document.getElementById('id_current_education');
+      }
+    }
+    if (!checkboxInput.checked && endElement.value) {
+      let startDateValues = startElement.value.split('-');
+      let endDateValues = endElement.value.split('-');
+      let isInvalidDate = true;
+      for (let i in startDateValues) {
+        if (parseInt(startDateValues[i]) < parseInt(endDateValues[i])) {
+          isInvalidDate = false;
+          break;
+        }
+        else if (parseInt(startDateValues[i]) > parseInt(endDateValues[i])) {
+          isInvalidDate = true;
+          break;
+        }
+      }
+      if (isInvalidDate) {
+        startElement.setCustomValidity('Start date cannot be after end date');
+      }
+    }
+  }
   
   const experienceActiveChecks = document.getElementsByClassName('is-active-check');
   for (let checkbox of experienceActiveChecks) {
@@ -127,5 +158,54 @@ window.addEventListener('DOMContentLoaded', () => {
   const addItemForms = document.getElementsByClassName('add-item-form');
   for (let itemForm of addItemForms) {
     itemForm.addEventListener('submit', addListItem);
+  }
+
+  // Making sure the start date is less than the end date
+  let startDates = [
+    document.getElementById('id_start_date'),
+    document.getElementById('id_start_year')
+  ];
+  let endDates = [
+    document.getElementById('id_end_date'),
+    document.getElementById('id_end_year')
+  ];
+  for (let i in startDates) {
+    let startElement = startDates[i];
+    let endElement = endDates[i];
+    if (startElement) {
+      startElement.addEventListener('input', function() {
+        validateDates(startElement, endElement);
+      });
+      endElement.addEventListener('input', function() {
+        validateDates(startElement, endElement);
+      });
+    }
+  }
+  // Validating the dates when the checkbox is clicked
+  let checkboxes = [
+    document.getElementById('id_experience_active'),
+    document.getElementById('id_current_work'),
+    document.getElementById('id_current_education'),
+  ];
+  for (let checkbox of checkboxes) {
+    if (checkbox) {
+      checkbox.addEventListener('click', function() {
+        let startDates = [
+          document.getElementById('id_start_date'),
+          document.getElementById('id_start_year')
+        ];
+        if (checkbox.id === 'id_current_work') {
+          startDates.splice(1, 1);
+        }
+        else if (checkbox.id === 'id_current_edication') {
+          startDates.splice(0, 1);
+        }
+        for (let startDate of startDates) {
+          if (startDate) {
+            startDate.dispatchEvent(new Event('input'));
+          }
+        }
+      });
+    }
   }
 });

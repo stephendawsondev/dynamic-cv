@@ -285,13 +285,27 @@
     {% endfor %}
   </section>
 
-  <section class="cv-section additional-information">
-    <h3 class="emphasis-color">Additional Information/Interests</h3>
+  {% if cv.hobbies %}
+  <section class="cv-section hobbies">
+    <h3 class="emphasis-color">Interests/Hobbies</h3>
     <ul>
-      <li>Listen to the Syntax podcast to stay up-to-date on tech.</li>
-      <li>Working proficiency in French and Spanish.</li>
+      {% for info in cv.hobbies.all %}
+      <li>{{ info.val }}</li>
+      {% endfor %}
     </ul>
   </section>
+  {% endif %}
+
+  {% if cv.extra_info %}
+  <section class="cv-section additional-information">
+    <h3 class="emphasis-color">Additional Information</h3>
+    <ul>
+      {% for info in cv.extra_info.all %}
+      <li>{{ info.val }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
 </div>
 {% endblock %}
 
