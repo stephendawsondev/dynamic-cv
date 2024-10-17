@@ -45,6 +45,7 @@ exclusion_list = [
     "svelte",
     "nextjs",
     "nuxtjs",
+    "nodejs",
     "gatsby",
     "emberjs",
     "backbonejs",
@@ -301,5 +302,9 @@ exclusion_list = [
     "lz77",
     "lz78",
     "cross-borwser",
-    "tech"
+    "tech",
+    "detail-oriented",
+    "back-end",
+    "front-end",
+    "user-friendly"
 ]
