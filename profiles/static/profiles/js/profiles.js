@@ -133,7 +133,6 @@ window.addEventListener('DOMContentLoaded', () => {
       let endDateValues = endElement.value.split('-');
       let isInvalidDate = true;
       for (let i in startDateValues) {
-        console.log(parseInt(startDateValues[i]), parseInt(endDateValues[i]));
         if (parseInt(startDateValues[i]) < parseInt(endDateValues[i])) {
           isInvalidDate = false;
           break;
@@ -143,7 +142,6 @@ window.addEventListener('DOMContentLoaded', () => {
           break;
         }
       }
-      console.log(isInvalidDate);
       if (isInvalidDate) {
         startElement.setCustomValidity('Start date cannot be after end date');
       }
