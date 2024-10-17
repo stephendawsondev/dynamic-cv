@@ -194,9 +194,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STORAGES = {
-    "default": {
-        "BACKEND": 'cloudinary_storage.storage.MediaCloudinaryStorage',
-    },
     "staticfiles": {
         "BACKEND": 'cloudinary_storage.storage.StaticHashedCloudinaryStorage',
     },
