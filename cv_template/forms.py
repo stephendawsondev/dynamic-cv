@@ -2,7 +2,8 @@ from django import forms
 from django_ckeditor_5.widgets import CKEditor5Widget
 from .models import CVTemplate
 
-from profiles.models import Skill, WorkExperience, Education, Project
+from profiles.models import Skill, WorkExperience, \
+     Education, Project, Hobby, AdditionalInformation
 
 
 class CustomMMCF(forms.ModelMultipleChoiceField):
@@ -30,7 +31,15 @@ class CVTemplateForm(forms.ModelForm):
         self.fields["projects"].queryset = Project.objects.filter(
             user=self.request.user
         )
+        self.fields["hobbies"].queryset = Hobby.objects.filter(
+            user=self.request.user
+        )
+        self.fields["extra_info"].queryset = AdditionalInformation.objects.filter(
+            user=self.request.user
+        )
         self.fields["projects"].required = False
+        self.fields["hobbies"].required = False
+        self.fields["extra_info"].required = False
 
     class Meta:
         model = CVTemplate
@@ -44,6 +53,8 @@ class CVTemplateForm(forms.ModelForm):
             "work_experience",
             "projects",
             "skills",
+            "hobbies",
+            "extra_info",
         ]
 
         labels = {
@@ -56,16 +67,20 @@ class CVTemplateForm(forms.ModelForm):
             "work_experience": "Relevant Work Experience",
             "education": "Relevant Education",
             "projects": "Associated Projects",
+            "hobbies": "Interests/Hobbies",
+            "extra_info": "Additional Information",
         }
 
         widgets = {
             "summary": CKEditor5Widget(
                 attrs={"class": "django_ckeditor_5"}, config_name="default"
             )
-        }
+        } 
 
     skills = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
     work_experience = CustomMMCF(
         queryset=None, widget=forms.CheckboxSelectMultiple)
     education = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
     projects = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
+    hobbies = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)
+    extra_info = CustomMMCF(queryset=None, widget=forms.CheckboxSelectMultiple)

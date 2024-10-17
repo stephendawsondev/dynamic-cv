@@ -25,13 +25,13 @@
   <form hx-post="{% url 'add_work_experience' %}" hx-target="#work-input-data" id="work-experience-form"
     hx-on::after-request="this.reset()" onreset="addExperienceHtml('work')">
     {% csrf_token %}
-    <div class="md:w-[50%]">
+    <div class="lg:w-[50%]">
       {{ work_experience_form.organization|as_crispy_field }}
       {{ work_experience_form.location|as_crispy_field }}
       {{ work_experience_form.position|as_crispy_field }}
     </div>
     <p class="block text-gray-700 text-sm font-bold mb-2">Dates Worked<span class="asteriskField">*</span></p>
-    <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3 md:w-[50%]">
+    <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3 lg:w-[50%]">
       {{ work_experience_form.start_date|as_crispy_field }}
       {{ work_experience_form.end_date|as_crispy_field }}
     </div>
@@ -46,7 +46,7 @@
       data-item-id="0"></div>
     <div class="hidden bullet-point-inputs" aria-hidden="true" id="work-skills" name="skills" data-item-id="0"></div>
   </form>
-  <div class="md:w-[50%]">
+  <div class="lg:w-[50%]">
     <!-- Work responsibilities -->
     <form data-main-input="work-responsibilities" id="responsibility-form" class="add-item-form mb-6">
       {% csrf_token %}

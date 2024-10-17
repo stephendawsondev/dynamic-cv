@@ -1,7 +1,7 @@
 <h1 class="block text-violet-700 text-2xl font-bold mb-2">Contact Information</h1>
 <form hx-post="{% url 'contact-information' %}" hx-target="#detail">
   {% csrf_token %}
-  <div class="md:w-[50%]">
+  <div class="lg:w-[50%]">
     {{ contact_information_form|crispy }}
   </div>
 
