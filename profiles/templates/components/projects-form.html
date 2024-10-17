@@ -5,10 +5,12 @@
   <h1 class="block text-violet-700 text-2xl font-bold mb-2">Projects</h1>
   <div id="projects-list" data-accordion="collapse" class="my-4">
     {% for project_exp in project_list %}
+    {% with project_exp.description as has_description %}
     {% with project_exp.repository_url as has_repo_url %}
     {% with project_exp.deployed_url as has_deployed_url %}
     {% with project_exp.id as item_id %}
     {% include 'components/project-details.html' %}
+    {% endwith %}
     {% endwith %}
     {% endwith %}
     {% endwith %}
