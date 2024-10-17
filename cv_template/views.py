@@ -19,6 +19,12 @@ class CvList(ListView):
     template_name = "cv_template/cv_list.html"
     context_object_name = "cv_list"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cv_list'] = CVTemplate.objects.filter(user=self.request.user)
+
+        return context
+
 
 class CreateCV(LoginRequiredMixin, CreateView):
     model = CVTemplate
