@@ -31,7 +31,7 @@ urlpatterns = [
     path('profile/', include('profiles.urls')),
     path('contact/', include('contact_us.urls')),
     path('privacy/', include('privacy.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler403 = 'dynamiccv.views.handler403'
 handler404 = 'dynamiccv.views.handler404'

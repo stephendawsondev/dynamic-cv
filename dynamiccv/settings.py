@@ -193,8 +193,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
-
 STORAGES = {
     "default": {
         "BACKEND": 'cloudinary_storage.storage.MediaCloudinaryStorage',
