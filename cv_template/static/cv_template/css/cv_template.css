@@ -2,11 +2,8 @@
   margin: 2rem 0;
 }
 
-[id^="div_id_"] input,
-div.ck.ck-editor__main,
-div.ck.ck-sticky-panel,
-input[type="checkbox"] {
-  border: 1px solid #5b21b6;
+#id_color {
+  border-color: rgb(209 213 219);
 }
 
 #id_cv_name,
@@ -34,7 +31,6 @@ input[type="checkbox"] {
   align-items: center;
   padding: 1rem;
   margin-bottom: 10px;
-  border: 1px solid #5b21b6;
 }
 
 input[type="checkbox"]:checked {

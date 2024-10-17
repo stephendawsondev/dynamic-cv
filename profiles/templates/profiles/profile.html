@@ -7,38 +7,38 @@
 
 <div class="container mx-auto md:mt-3">
     <div class="md:flex">
-        <ul class="flex flex-col text-lg font-medium text-violet-800 mt-3 md:mt-0 md:w-60" id="default-styled-tab"
+        <ul class="flex flex-col text-lg font-medium mt-3 md:mt-0 md:w-60" id="default-styled-tab"
             data-tabs-toggle="#default-styled-tab-content"
             data-tabs-active-classes="text-black hover:text-purple-600 bg-lime-500" role="tablist">
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800 active" id="detail-styled-tab"
+                <button class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 active" id="detail-styled-tab"
                     data-tabs-target="#styled-detail" type="button" role="tab" aria-controls="detail"
                     aria-selected="{% if tab == 'details' %}true{% else %}false{% endif %}">Your
                     Details</button>
             </li>
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="summary-styled-tab"
+                <button class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1" id="summary-styled-tab"
                     data-tabs-target="#styled-summary" type="button" role="tab" aria-controls="summary"
                     aria-selected="{% if tab == 'summary' %}true{% else %}false{% endif %}">Summary</button>
             </li>
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="skills-styled-tab"
+                <button class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1" id="skills-styled-tab"
                     data-tabs-target="#styled-skills" type="button" role="tab" aria-controls="skills"
                     aria-selected="{% if tab == 'skills' %}true{% else %}false{% endif %}">Skills</button>
             </li>
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="work-experience-styled-tab"
+                <button class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1" id="work-experience-styled-tab"
                     data-tabs-target="#styled-work-experience" type="button" role="tab" aria-controls="work-experience"
                     aria-selected="{% if tab == 'work_experience' %}true{% else %}false{% endif %}">Work
                     Experience</button>
             </li>
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="education-styled-tab"
+                <button class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1" id="education-styled-tab"
                     data-tabs-target="#styled-education" type="button" role="tab" aria-controls="education"
                     aria-selected="{% if tab == 'education' %}true{% else %}false{% endif %}">Education</button>
             </li>
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 border-2 border-violet-800" id="projects-styled-tab"
+                <button class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1" id="projects-styled-tab"
                     data-tabs-target="#styled-projects" type="button" role="tab" aria-controls="projects"
                     aria-selected="{% if tab == 'projects' %}true{% else %}false{% endif %}">Projects</button>
             </li>

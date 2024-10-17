@@ -1,3 +1,4 @@
+<h1 class="block text-violet-700 text-2xl font-bold mb-2">Contact Information</h1>
 <form hx-post="{% url 'contact-information' %}" hx-target="#detail">
   {% csrf_token %}
   <div class="lg:w-[50%]">
@@ -5,6 +6,6 @@
   </div>
 
   <input type="submit" value="Save"
-    class="text-white bg-violet-800 hover:bg-lime-500 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+    class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">
 </form>
 <div id="detail"></div>

@@ -91,26 +91,27 @@ class CreateUpdateContactInformation(LoginRequiredMixin, View):
             return HttpResponse('<p class="error">Please provide valid contact information.</p>')
 
 
-class AddSkill(LoginRequiredMixin, View):
+class AddBulletItem(LoginRequiredMixin, View):
 
-    def post(self, request, skill):
+    def post(self, request, bullet_type):
+        bullet_val = request.POST['val']
         user = request.user
         try:
-            skill = user.user_skills.get(name=skill)
+            user.user_skills.get(name=bullet_val)
             return HttpResponse("Fail")
         except Skill.DoesNotExist:
-            user.user_skills.create(name=skill)
-            user.save()
-            return HttpResponse("Success")
+            bullet_obj = user.user_skills.create(name=bullet_val)
+            bullet_obj.save()
+            return HttpResponse(bullet_obj.id)
 
 
-class RemoveSkill(LoginRequiredMixin, View):
+class RemoveBulletItem(LoginRequiredMixin, View):
 
-    def post(self, request, skill):
+    def post(self, request, bullet_type, bullet_id):
         user = request.user
         try:
-            skill = user.user_skills.get(name=skill)
-            skill.delete()
+            bullet_obj = user.user_skills.get(id=bullet_id)
+            bullet_obj.delete()
             user.save()
             return HttpResponse("Success")
         except Exception as e:
