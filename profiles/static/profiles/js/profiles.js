@@ -131,13 +131,19 @@ window.addEventListener('DOMContentLoaded', () => {
     if (!checkboxInput.checked && endElement.value) {
       let startDateValues = startElement.value.split('-');
       let endDateValues = endElement.value.split('-');
-      let isInvalidDate = true;
+      let isInvalidDate = false;
       for (let i in startDateValues) {
+        console.log(parseInt(startDateValues[i]), parseInt(endDateValues[i]));
         if (parseInt(startDateValues[i]) < parseInt(endDateValues[i])) {
           isInvalidDate = false;
           break;
         }
+        else if (parseInt(startDateValues[i]) > parseInt(endDateValues[i])) {
+          isInvalidDate = true;
+          break;
+        }
       }
+      console.log(isInvalidDate);
       if (isInvalidDate) {
         startElement.setCustomValidity('Start date cannot be after end date');
       }
