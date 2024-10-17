@@ -68,6 +68,7 @@ class CVAnalysis(models.Model):
     top_tech_comp_skills = models.JSONField(default=list, blank=False)
     top_qualifications = models.JSONField(default=list, blank=False)
     top_methodologies = models.JSONField(default=list, blank=False)
+    suggested_roles = models.JSONField(default=list, blank=True, null=True)
     match_per = models.IntegerField()
     created_at = models.DateTimeField(auto_now=True)
 
