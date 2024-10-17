@@ -80,6 +80,14 @@ function addListItem(event) {
 
 
 window.addEventListener('DOMContentLoaded', () => {
+  // Removes any custom validity every time the input changes
+  const addItemInputs = document.getElementsByClassName('add-item-input');
+  for (let itemInput of addItemInputs) {
+    itemInput.addEventListener('input', function() {
+      this.setCustomValidity("");
+    });
+  }
+  
   const experienceActiveChecks = document.getElementsByClassName('is-active-check');
   for (let checkbox of experienceActiveChecks) {
     checkbox.addEventListener('click', checkActiveExperience);

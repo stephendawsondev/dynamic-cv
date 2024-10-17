@@ -134,6 +134,12 @@ function addExperienceHtml(experienceType) {
   for (let [key, value] of Object.entries(labelKeys)) {
     labelFormat = labelFormat.replace(key, itemExperienceData[value]);
   }
+
+  // Adds the item id to the edit and delete buttons
+  let editButton = collapseBodyElement.querySelector('.edit-item');
+  editButton.setAttribute('href', editButton.getAttribute('href').replace('/0/', `/${itemExperienceData.item_id}/`));
+  let deleteButton = collapseBodyElement.querySelector('.delete-exp-item');
+  deleteButton.setAttribute('data-href', deleteButton.getAttribute('data-href').replace('/0/', `/${itemExperienceData.item_id}/`));
   
   // Filling out the new information into the new set of elements
   for (let [field, className] of Object.entries(propertyObject.fields)) {
@@ -346,15 +352,19 @@ function updateAccordionIcons(accordionParentId) {
   }
 }
 
+const deleteModalElement = document.querySelector('#modal-delete-item');
+const deleteModal = new Modal(deleteModalElement);
+/**
+ * Triggers the confirm deletion modal to appear, and fills it with the
+ * appropriate information
+ */
+function triggerDeleteItem() {
+  document.querySelector('#delete-item-form').setAttribute('action', this.getAttribute('data-href'));
+  deleteModal.show();
+}
+
 
 window.addEventListener('DOMContentLoaded', () => {
-  // Removes any custom validity every time the input changes
-  const addItemInputs = document.getElementsByClassName('add-item-input');
-  for (let itemInput of addItemInputs) {
-    itemInput.addEventListener('input', function() {
-      this.setCustomValidity("");
-    });
-  }
 
   // Forcing dependent elements that are not required by default to be required
   const dependentIds = ['id_end_date', 'id_end_year', 'id_grade'];
@@ -372,4 +382,10 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
   }, 700);
+
+  // Adding functionality to the delete icons
+  let deleteIcons = document.querySelectorAll('.delete-exp-item');
+  for (let icon of deleteIcons) {
+    icon.addEventListener('click', triggerDeleteItem);
+  }
 });

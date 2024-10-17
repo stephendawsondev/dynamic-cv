@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 from django_ckeditor_5.fields import CKEditor5Field
 from colorfield.fields import ColorField
+from django.core.validators import MinLengthValidator
 from django.contrib.auth.models import User
 
 from profiles.models import (
@@ -75,3 +76,17 @@ class CVAnalysis(models.Model):
 
     def __str__(self):
         return f"{self.user}"
+
+
+class BestPracticeCV(models.Model):
+    """
+    Best Practice CV model
+    """
+    summary_length = models.CharField(max_length=1000, validators=[MinLengthValidator(250)])
+    lower_bound = models.IntegerField()
+    upper_bound = models.IntegerField()
+    description = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return f"{self.summary_length}"
+

@@ -3,7 +3,7 @@
 <div>
   <h2 id="project-collapse-heading-{{ forloop.counter }}" class="project-collapse-heading 2xl:w-[50%]">
     <button type="button"
-      class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-800 bg-gray-200 border border-gray-200{% if forloop.first %} rounded-t-xl{% endif %}{% if forloop.last %} rounded-b-xl{% else %} border-b-0{%endif%} focus:ring-4 focus:bg-gray-200 focus:ring-gray-200 gap-3"
+      class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-800 bg-gray-200 border border-gray-200{% if forloop.first %} rounded-t-xl{% endif %}{% if forloop.last %} rounded-b-xl{% else %} border-b-0{%endif%} focus:ring-0 gap-3"
       data-accordion-target="#project-collapse-{{ forloop.counter }}" aria-expanded="false"
       aria-controls="project-collapse-{{ forloop.counter }}">
       <span class="collapse-label">{{ project_exp.name }}</span>
@@ -38,7 +38,7 @@
         aria-label="Edit this item">
         <img src="{% static 'icons/pencil.svg' %}">
       </a>
-      <button class="w-4 h-4 sm:w-6 sm:h-6">
+      <button class="delete-exp-item w-4 h-4 sm:w-6 sm:h-6" aria-label="Delete this item" data-href="{% url 'delete_item' 'project' item_id %}?tab=projects">
         <img src="{% static 'icons/bin.svg' %}">
       </button>
     </div>
