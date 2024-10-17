@@ -131,7 +131,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (!checkboxInput.checked && endElement.value) {
       let startDateValues = startElement.value.split('-');
       let endDateValues = endElement.value.split('-');
-      let isInvalidDate = false;
+      let isInvalidDate = true;
       for (let i in startDateValues) {
         console.log(parseInt(startDateValues[i]), parseInt(endDateValues[i]));
         if (parseInt(startDateValues[i]) < parseInt(endDateValues[i])) {
