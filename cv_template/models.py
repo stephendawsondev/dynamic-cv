@@ -39,9 +39,11 @@ class CVTemplate(models.Model):
     )
     skills = models.ManyToManyField(Skill, related_name="cv_skills")
     work_experience = models.ManyToManyField(
-        WorkExperience, related_name="cv_work_experience"
+        WorkExperience, related_name="cv_work_experience",
+        blank=True
     )
-    education = models.ManyToManyField(Education, related_name="cv_education")
+    education = models.ManyToManyField(Education, related_name="cv_education",
+                                       blank=True)
     projects = models.ManyToManyField(Project, related_name="cv_projects",
                                       blank=True)
     hobbies = models.ManyToManyField(Hobby, related_name="cv_hobbies",
