@@ -134,8 +134,9 @@ class CVAnalyzerView(LoginRequiredMixin, View):
             summary_errors = cv.check_spelling_errors()
             match_per, missing_skills = cv.get_match_on_top_skills(position_top_skills)
             potential_skills = cv.get_potential_missing_skills(missing_skills)
+            suggested_roles = cv.get_suggested_roles()
             analysis = self._create_cv_analysis_obj(
-                saved_cv, position_top_skills, summary_errors, match_per, potential_skills
+                saved_cv, position_top_skills, summary_errors, match_per, potential_skills, suggested_roles
             )
         except json.JSONDecodeError as e:
             messages.error(self.request, "An error occurred while analyzing the CV. Please try again later.")
@@ -149,6 +150,7 @@ class CVAnalyzerView(LoginRequiredMixin, View):
         summary_errors: list,
         match_per: int,
         potential_skills: list,
+        suggested_roles: list,
     ):
         # Check if an analysis already exists for the given CV
         analysis, created = CVAnalysis.objects.update_or_create(
@@ -162,6 +164,7 @@ class CVAnalyzerView(LoginRequiredMixin, View):
                 "top_tech_comp_skills": position_top_skills.get("tech_competencies", []),
                 "top_qualifications": position_top_skills.get("qualifications", []),
                 "top_methodologies": position_top_skills.get("methodologies", []),
+                "suggested_roles": suggested_roles,
                 "match_per": match_per,
             },
         )

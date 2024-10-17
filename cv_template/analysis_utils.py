@@ -48,7 +48,24 @@ class CVAnalyzer:
         json_resp = json.loads(response.content)
         return json_resp
 
-    def check_spelling_errors(self) -> dict:
+    def get_suggested_roles(self) -> list:
+        skills = self.cv.skills.all().values_list("name", flat=True)
+        experience_skills = self.cv.work_experience.all().values_list("applied_skills", flat=True)
+        school_skills = self.cv.education.all().values_list("applied_skills", flat=True)
+        prompt_text = f"""
+            Using the following skills {skills}, {experience_skills}, {school_skills}. Please suggest tech roles that might skills would be a good match for, 
+            doesn't have to be a developer, could be scrum master Ux Designer ect. Provide 5 roles
+            Provide the following details in list format.:
+            [
+                "UX Designer: Due to the skills on your profile: skill_1, skill_2 ect., explaination of why the match",
+                "Backend Developer: Due to the skills on your profile: skill_1, skill_2 ect., explaination of why the match",
+            ]
+        """
+        response = self.chat.invoke(prompt_text)
+        json_resp = json.loads(response.content)
+        return json_resp
+
+    def check_spelling_errors(self) -> list:
         """
         Checks the summary for spelling errors and returns potential mistakes and suggestions
         """
