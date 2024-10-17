@@ -1,6 +1,7 @@
 from langchain_openai import ChatOpenAI
 from spellchecker import SpellChecker
 import json
+import re
 
 from .data.exclusion_list import exclusion_list
 
@@ -74,12 +75,14 @@ class CVAnalyzer:
         soup = BeautifulSoup(self.cv.summary, "html.parser")
         plain_text_summary = soup.get_text()
 
+        plain_text_summary = re.sub(r"[.,\(\)\[\]]", "", plain_text_summary)
+
         words = plain_text_summary.split()
         mistakes = spell.unknown(words)
 
         results = []
         for mistake in mistakes:
-            if mistake.strip(".,").lower() in exclusion_list:
+            if mistake.replace(" ", "").lower() in exclusion_list:
                 continue
             correction = spell.correction(mistake)
 
