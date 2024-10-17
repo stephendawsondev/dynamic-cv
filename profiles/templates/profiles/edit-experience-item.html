@@ -89,9 +89,11 @@
             value="{{ skill.name }}">
           {% endfor %}
         </div>
+        {% endif %}
     </form>
 
     <!-- Bullet point list -->
+     {% if experience_item.bullet_points %}
     <form data-main-input="bullet-inputs" class="add-item-form">
       <label for="item-bullet-text" class="block text-gray-700 text-sm font-bold mb-2">
         {{ bullet_point_label }}
@@ -119,7 +121,9 @@
         </div>
       </div>
     </form>
+    {% endif %}
 
+    {% if experience_item.applied_skills %}
     <!-- Skill list -->
     <form data-main-input="skill-inputs" class="add-item-form">
       <label for="item-skill-text" class="block text-gray-700 text-sm font-bold mb-2">Applied Skills</label>
@@ -146,7 +150,6 @@
         </div>
       </div>
     </form>
-
     {% endif %}
     <a href="{% url 'profile' %}?tab={{ cancel_tab }}" type="button"
       class="text-violet-800 rounded-lg py-2 px-3 border border-violet-800">Cancel</a>

@@ -19,16 +19,21 @@
       <p class="block text-gray-700 text-sm font-bold mb-2">Project Name</p>
       <p class="project-exp-name block text-gray-700 text-sm mb-2">{{ project_exp.name }}</p>
 
+      {% if has_description %}
+      <p class="block text-gray-700 text-sm font-bold mb-2">Description</p>
+      <p class="project-exp-repo block text-gray-700 text-sm mb-2">{{ project_exp.description }}</p>
+      {% endif %}
+
       {% if has_repo_url %}
       <p class="block text-gray-700 text-sm font-bold mb-2">Repository URL</p>
-      <a class="project-exp-repo block text-gray-700 text-sm mb-2" href="{{ project_exp.repository_url }}"
+      <a class="project-exp-repo break-all block text-cyan-500 text-sm mb-2" href="{{ project_exp.repository_url }}"
         aria-label="Go to the repository URL for {{ project_exp.name }}" target="_blank" rel="noopener">
         {{ project_exp.repository_url }}</a>
       {% endif %}
 
       {% if has_deployed_url %}
       <p class="block text-gray-700 text-sm font-bold mb-2">Deployed URL</p>
-      <a class="project-exp-deploy block text-gray-700 text-sm mb-2" href="{{ project_exp.deployed_url }}"
+      <a class="project-exp-deploy break-all block text-cyan-500 text-sm mb-2" href="{{ project_exp.deployed_url }}"
         aria-label="Go to the deployed URL for {{ project_exp.name }}" target="_blank" rel="noopener">
         {{ project_exp.deployed_url }}</a>
       {% endif %}
