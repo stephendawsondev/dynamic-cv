@@ -329,7 +329,7 @@ class EditItem(LoginRequiredMixin, View):
             form = WorkExperienceForm(request.POST, instance=item)
         elif item_type == 'education':
             form = EducationForm(request.POST, instance=item)
-        elif item_type == 'projects':
+        elif item_type == 'project':
             form = ProjectForm(request.POST, instance=item)
 
         if form and form.is_valid():
@@ -337,6 +337,7 @@ class EditItem(LoginRequiredMixin, View):
 
             # For projects, we can end the function here
             if item_type == 'project':
+                item.save()
                 return redirect('profile')
 
             # Updating the bullet points
