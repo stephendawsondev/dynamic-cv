@@ -89,7 +89,9 @@
 <div class="container mx-auto p-3 lg:flex lg:flex-row">
   <form method="post" id="skill-form" class="w-full lg:w-1/2 lg:pr-4">
     {% csrf_token %}
-    {{ form|crispy }}
+    {% for form_field in form %}
+    {{ form_field|as_crispy_field }}
+    {% endfor %}
     {{ form.media }}
     {% with request.resolver_match.url_name as url_name %}
     {% if url_name == 'cv_template' %}
