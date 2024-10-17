@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'profiles',
     'contact_us',
     'privacy',
+    'newsletter'
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'tailwind'
