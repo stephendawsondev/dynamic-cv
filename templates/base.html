@@ -80,7 +80,8 @@
           </div>
           <div>
             <h2 class="mb-6 text-sm font-semibold text-violet-900 uppercase">Subscribe</h2>
-            <form action="#">
+            <form method="POST" hx-post="{% url 'subscribe_newsletter' %}" hx-target="#subscription-feedback">
+              {% csrf_token %}
               <div class="items-center mx-auto mb-3 space-y-4 max-w-screen-sm sm:flex sm:space-y-0">
                 <div class="relative w-full">
                   <label for="email" class="hidden mb-2 text-sm font-medium text-violet-900">Email address</label>
@@ -92,7 +93,7 @@
                     </svg>
                   </div>
                   <input
-                    class="block p-3 pl-10 w-full text-sm text-violet-900 bg-zinc-50 rounded-lg border border-violet-800 sm:rounded-none sm:rounded-l-lg focus:ring-violet-500 focus:border-violet-500"
+                  name="email" class="block p-3 pl-10 w-full text-sm text-violet-900 bg-zinc-50 rounded-lg border border-violet-800 sm:rounded-none sm:rounded-l-lg focus:ring-violet-500 focus:border-violet-500"
                     placeholder="Enter your email" type="email" id="email" required="">
                 </div>
                 <div>
@@ -100,8 +101,8 @@
                     class="py-3 px-5 w-full text-sm font-medium text-center text-zinc-50 rounded-lg border cursor-pointer bg-violet-800 border-violet-800 sm:rounded-none sm:rounded-r-lg hover:bg-violet-900 focus:ring-4 focus:ring-violet-300">Subscribe</button>
                 </div>
               </div>
-
             </form>
+          <div id="subscription-feedback"></div>
           </div>
         </div>
       <hr class="my-6 border-violet-200 sm:mx-auto lg:my-8" />
@@ -131,6 +132,13 @@
     document.body.addEventListener('htmx:configRequest', (event) => {
       event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
     })
+  </script>
+  <script>
+    document.body.addEventListener('htmx:afterRequest', function(evt) {
+      if (evt.detail.target.id === 'subscription-feedback') {
+        document.getElementById('email').value = '';  // Clear the email field after submission
+      }
+    });
   </script>
 
   {% block extra_js %}
