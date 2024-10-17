@@ -159,9 +159,13 @@
         <h3>Technical Skill Set</h3>
         <ul id="preview-skills"></ul>
       </section>
-      <section class="additional-information">
-        <h3>Additional Information/Interests</h3>
-        <ul id="preview-additional-info"></ul>
+      <section class="hobbies">
+        <h3>Interests/Hobbies</h3>
+        <ul id="preview-hobbies"></ul>
+      </section>
+      <section class="extra-info">
+        <h3>Additional Information</h3>
+        <ul id="preview-extra-info"></ul>
       </section>
     </div>
   </div>
@@ -254,7 +258,7 @@
     const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
     useDefaultSummaryInput.addEventListener('change', updateSummaryPreview);
 
-    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="education"], input[type="checkbox"][name^="work_experience"], input[type="checkbox"][name^="skills"], input[type="checkbox"][name^="projects"]');
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="education"], input[type="checkbox"][name^="work_experience"], input[type="checkbox"][name^="skills"], input[type="checkbox"][name^="projects"][name^="extra_info"][name^="hobbies"]');
     checkboxes.forEach(checkbox => {
       checkbox.addEventListener('change', updatePreview);
     });
@@ -331,6 +335,31 @@
         `;
           workExperiencePreview.appendChild(div);
         }
+      });
+
+      // Hobbies Preview
+      const hobbiesPreview = document.getElementById('preview-hobbies');
+      hobbiesPreview.innerHTML = '';
+      const hobbiesCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="hobbies"]:checked');
+      hobbiesCheckboxes.forEach(checkbox => {
+        const hobbyInfo = checkbox.parentElement.textContent.trim();
+        const li = document.createElement('li');
+        li.textContent = hobbyInfo;
+        hobbiesPreview.appendChild(li);
+      });
+
+      // Extra Info Preview
+      const extraInfoPreview = document.getElementById('preview-extra-info');
+      extraInfoPreview.innerHTML = '';
+      const extraInfoCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="extra_info"]:checked');
+      extraInfoCheckboxes.forEach(checkbox => {
+        const extraInfo = checkbox.parentElement.textContent.trim();
+        const div = document.createElement('div');
+        div.className = 'extra-info-item';
+        div.innerHTML = `
+        <li>${extraInfo}</li>
+  `;
+        extraInfoPreview.appendChild(div);
       });
 
       const projectsPreview = document.getElementById('preview-projects').getElementsByTagName('tbody')[0];
