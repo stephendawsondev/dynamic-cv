@@ -39,7 +39,9 @@ input[type="checkbox"]:checked {
 }
 
 /* Add CSS Grid styling */
-#div_id_skills .mb-3 {
+#div_id_skills .mb-3,
+#div_id_hobbies .mb-3,
+#div_id_extra_info .mb-3 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
