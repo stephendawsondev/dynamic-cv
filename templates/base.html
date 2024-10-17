@@ -134,9 +134,9 @@
     })
   </script>
   <script>
-    document.body.addEventListener('htmx:afterRequest', function(evt) {
-      if (evt.detail.target.id === 'subscription-feedback') {
-        document.getElementById('email').value = '';  // Clear the email field after submission
+    document.body.addEventListener('htmx:afterRequest', (event) => {
+      if (event.detail.target.id === 'subscription-feedback') {
+        document.getElementById('email').value = '';
       }
     });
   </script>
