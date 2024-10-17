@@ -9,9 +9,11 @@ urlpatterns = [
         name="contact-information",
     ),
     path("update-summary/", views.UpdateSummary.as_view(), name="update-summary"),
-    path("add-skill/<slug:skill>/", views.AddSkill.as_view(), name="add_skill"),
+    path("add-bullet-item/<str:bullet_type>/", views.AddBulletItem.as_view(),
+         name="add_bullet_item"),
     path(
-        "remove-skill/<slug:skill>/", views.RemoveSkill.as_view(), name="remove_skill"
+        "remove-<str:bullet_type>/<int:bullet_id>/", views.RemoveBulletItem.as_view(),
+        name="remove_bullet_item"
     ),
     path(
         "add-work-experience/",

@@ -11,6 +11,8 @@ from profiles.models import (
     WorkExperience,
     Education,
     Project,
+    Hobby,
+    AdditionalInformation
 )
 
 
@@ -40,8 +42,13 @@ class CVTemplate(models.Model):
         WorkExperience, related_name="cv_work_experience"
     )
     education = models.ManyToManyField(Education, related_name="cv_education")
-    projects = models.ManyToManyField(
-        Project, related_name="cv_projects", blank=True)
+    projects = models.ManyToManyField(Project, related_name="cv_projects",
+                                      blank=True)
+    hobbies = models.ManyToManyField(Hobby, related_name="cv_hobbies",
+                                     blank=True)
+    extra_info = models.ManyToManyField(AdditionalInformation,
+                                        related_name="cv_extra_info",
+                                        blank=True)
     color = ColorField(default="#6495ED")
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)

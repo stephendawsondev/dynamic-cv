@@ -27,13 +27,13 @@
   <form hx-post="{% url 'add_education' %}" hx-target="#education-input-data" id="education-form"
     hx-on::after-request="this.reset()" onreset="addExperienceHtml('education')">
     {% csrf_token %}
-    <div class="md:w-[50%]">
+    <div class="lg:w-[50%]">
       {{ education_form.school_name|as_crispy_field }}
       {{ education_form.location|as_crispy_field }}
       {{ education_form.degree|as_crispy_field }}
     </div>
     <p class="block text-gray-700 text-sm font-bold mb-2">Years Attended<span class="asteriskField">*</span></p>
-    <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3 md:w-[50%]">
+    <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3 lg:w-[50%]">
       {{ education_form.start_year|as_crispy_field }}
       {{ education_form.end_year|as_crispy_field }}
     </div>
@@ -45,7 +45,7 @@
       <label for="id_current_education" class="ms-2 text-sm font-medium text-gray-900">I am currently
         studying here</label>
     </div>
-    <div class="md:w-[50%]">
+    <div class="lg:w-[50%]">
       {{ education_form.grade|as_crispy_field }}
     </div>
     <div class="hidden bullet-point-inputs" aria-hidden="true" id="education-modules" name="modules" data-item-id="0">
@@ -53,7 +53,7 @@
     <div class="hidden bullet-point-inputs" aria-hidden="true" id="education-skills" name="skills" data-item-id="0">
     </div>
   </form>
-  <div class="md:w-[50%]">
+  <div class="lg:w-[50%]">
     <!-- Education Modules -->
     <form data-main-input="education-modules" id="module-form" class="add-item-form mb-6">
       {% csrf_token %}
