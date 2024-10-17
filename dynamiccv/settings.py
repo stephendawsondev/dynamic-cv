@@ -196,7 +196,6 @@ STATIC_URL = '/static/'
 
 CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
