@@ -1,0 +1,4 @@
+
+li.w-full>a.w-full:hover {
+  border-color: rgb(209 213 219 / var(--tw-border-opacity));
+}
