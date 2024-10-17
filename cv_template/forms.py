@@ -37,6 +37,8 @@ class CVTemplateForm(forms.ModelForm):
         self.fields["extra_info"].queryset = AdditionalInformation.objects.filter(
             user=self.request.user
         )
+        self.fields["work_experience"].required = False
+        self.fields["education"].required = False
         self.fields["projects"].required = False
         self.fields["hobbies"].required = False
         self.fields["extra_info"].required = False
