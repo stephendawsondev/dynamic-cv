@@ -9,7 +9,7 @@ urlpatterns = [
         name="contact-information",
     ),
     path("update-summary/", views.UpdateSummary.as_view(), name="update-summary"),
-    path("add-<str:bullet_type>/", views.AddBulletItem.as_view(),
+    path("add-bullet-item/<str:bullet_type>/", views.AddBulletItem.as_view(),
          name="add_bullet_item"),
     path(
         "remove-<str:bullet_type>/<int:bullet_id>/", views.RemoveBulletItem.as_view(),

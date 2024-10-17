@@ -20,7 +20,7 @@
     </ul>
   </form>
   <!-- The inline form to add the skills -->
-  <form hx-post="/profile/add-skill/" hx-target="#skill-data" hx-on::after-request="processRequest('skill')" id="skill-form" class="lg:w-[50%]">
+  <form hx-post="/profile/add-bullet-item/skill/" hx-target="#skill-data" hx-on::after-request="processRequest('skill')" id="skill-form" class="lg:w-[50%]">
     {% csrf_token %}
     <div id="skill-data" class="hidden" aria-hidden="true"></div>
     <div class="flex">
