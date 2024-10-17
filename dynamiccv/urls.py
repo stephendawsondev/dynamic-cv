@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from .views import handler403, handler404, handler500
 
 urlpatterns = [
@@ -29,7 +31,7 @@ urlpatterns = [
     path('profile/', include('profiles.urls')),
     path('contact/', include('contact_us.urls')),
     path('privacy/', include('privacy.urls')),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 handler403 = 'dynamiccv.views.handler403'
 handler404 = 'dynamiccv.views.handler404'
