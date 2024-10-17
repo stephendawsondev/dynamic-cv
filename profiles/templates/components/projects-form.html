@@ -23,7 +23,7 @@
   <form hx-post="{% url 'add_project' %}" hx-target="#project-input-data" id="project-form"
     hx-on::after-request="this.reset()" onreset="addExperienceHtml('project')">
     {% csrf_token %}
-    <div class="md:w-[50%]">
+    <div class="lg:w-[50%]">
       {{ project_form|crispy }}
     </div>
     <button type="submit" class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add

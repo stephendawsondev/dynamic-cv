@@ -87,6 +87,35 @@ window.addEventListener('DOMContentLoaded', () => {
       this.setCustomValidity("");
     });
   }
+
+  // Form validation for the skill input
+  let noSpecCharInputs = document.getElementsByClassName('no-special-chars');
+  for (let charInput of noSpecCharInputs) {
+    charInput.addEventListener('input', function () {
+      let skillTextValidity = '';
+      let skillValue = this.value;
+  
+      // No special characters
+      let hasSpecialCharacters = false;
+  
+      // The character ^ seems to mess with the regex here, so remove it before the evaluation
+      let skillTextChars = skillValue.replace('^', '');
+      if (skillTextChars !== skillValue) {
+        hasSpecialCharacters = true;
+      }
+      else {
+        skillTextChars = skillValue.replace(/([a-zA-z0-9 ]+)/g, '');
+        if (skillTextChars.length > 0) {
+          hasSpecialCharacters = true;
+        }
+      }
+      if (hasSpecialCharacters) {
+        skillTextValidity = "Skill cannot contain special characters";
+      }
+  
+      this.setCustomValidity(skillTextValidity);
+    });
+  }
   
   const experienceActiveChecks = document.getElementsByClassName('is-active-check');
   for (let checkbox of experienceActiveChecks) {

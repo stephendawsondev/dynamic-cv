@@ -33,42 +33,69 @@ function findCsrfToken(elementId) {
   return csrfToken;
 }
 
-function addSkill(skill) {
-  let skillList = document.getElementById('skill-list');
-  let skillItemHtml = `
-  <li id="skill-${skill}" class="skill-item list-disc">
+
+/**
+ * Processes the POST response for adding bullet points
+ * @param {String} bulletType The type of bullet point being evaluated
+ */
+function processRequest(bulletType) {
+  let formElement = document.querySelector(`#${bulletType}-form`);
+  let bulletDataEl = formElement.querySelector(`#${bulletType}-data`);
+  let bulletData = bulletDataEl.innerText;
+  bulletDataEl.innerText = '';
+
+  if (bulletData === 'Fail') {
+    let bulletTextInput = formElement.querySelector('input[name="val"]');
+    bulletTextInput.setCustomValidity('Cannot enter the same value more than once');
+    formElement.querySelector(`#submit-${bulletType}`).click();
+  }
+  else {
+    addBulletPoint(bulletType, bulletData);
+  }
+}
+
+
+function addBulletPoint(bulletType, bulletId) {
+  let formElement = document.querySelector(`#${bulletType}-form`);
+  let bulletList = document.getElementById(bulletType + '-list');
+  let bulletTextInput = formElement.querySelector('input[name="val"]');
+  let bulletVal = bulletTextInput.value;
+  bulletTextInput.value = "";
+  let bulletItemHtml = `
+  <li id="${bulletType}-${bulletId}" class="${bulletType}-item list-disc">
     <span class="flex flex justify-between">
-      <span>${skill.replace('-', ' ')}</span>
-      <button type="button" class="delete-skill" data-skill="${skill}"><span
+      <span>${bulletVal}</span>
+      <button type="button" class="delete-${bulletType}" data-${bulletType}="${bulletId}"><span
           class="text-2xl">&times;</span></button>
     </span>
   `;
   // Interpret the above HTML as DOM objects
-  let skillItem = new DOMParser().parseFromString(skillItemHtml, 'text/html').getElementsByClassName('skill-item')[0];
-  skillList.appendChild(skillItem);
-  setTimeout(addSkillDeleteEvent, 1, skillItem);
+  let bulletItem = new DOMParser().parseFromString(bulletItemHtml, 'text/html').getElementsByClassName(bulletType + '-item')[0];
+  bulletList.appendChild(bulletItem);
+  setTimeout(addBulletDeleteEvent, 1, bulletItem, bulletType);
 }
 
 
 /**
  * Adds the event listener to the object's close button
- * @param {Element} skillItem The element of the skill list item
+ * @param {Element} bulletItem The element of the bullet list item
  */
-function addSkillDeleteEvent(skillItem) {
-  skillItem.getElementsByClassName('delete-skill')[0].addEventListener('click', function() {
-    deleteSkill(this.getAttribute('data-skill'));
+function addBulletDeleteEvent(bulletItem, bulletType) {
+  bulletItem.getElementsByClassName('delete-' + bulletType)[0].addEventListener('click', function() {
+    deleteBulletItem(this.getAttribute('data-' + bulletType), bulletType);
   });
 }
 
 
 /**
- * Removes a skill from the database
- * @param {String} skill The skill to be removed
+ * Removes a bullet item from the database
+ * @param {String} bulletItem The bullet item to be removed
+ * @param {String} bulletType The type of bullet to be deleted
  */
-function deleteSkill(skill) {
-  let csrfToken = findCsrfToken('skill-list-form');
+function deleteBulletItem(bulletId, bulletType) {
+  let csrfToken = findCsrfToken(bulletType + '-list-form');
   // Sends the AJAX to add the skill to the server
-  fetch(`/profile/remove-skill/${skill}/`, {
+  fetch(`/profile/remove-${bulletType}/${bulletId}/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -79,7 +106,7 @@ function deleteSkill(skill) {
     .then((response) => response.text())
     .then((response) => {
       if (response === 'Success') {
-        document.getElementById(`skill-${skill}`).remove();
+        document.getElementById(`${bulletType}-${bulletId}`).remove();
       }
     })
     .catch((error) => {
@@ -89,89 +116,16 @@ function deleteSkill(skill) {
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  let skillForm = document.getElementById('skill-form');
-  if (skillForm) {
-    // Adds the skill
-    skillForm.addEventListener('submit', function (event) {
-      event.preventDefault();
-      let submitButton = document.getElementById('submit-skill');
-      let skillInput = document.getElementById('new-skill-text');
-      let skillText = skillInput.value.trim();
-      let skillTextSlug = skillText.replace(' ', '-');
-      submitButton.disabled = true;
-      skillInput.disabled = true;
-  
-      // Finds the csrf token
-      let csrfToken = '';
-      let formElements = this.getElementsByTagName('input');
-      for (let element of formElements) {
-        if (element.name === 'csrfmiddlewaretoken') {
-          csrfToken = element.value;
-        }
+  let bulletForms = ['skill', 'hobby', 'extra-info'];
+
+  for (let bullet of bulletForms) {
+    let formElement = document.getElementById(bullet + '-form');
+    if (formElement) {
+    
+      let bulletSet = document.getElementsByClassName(bullet + '-item');
+      for (let item of bulletSet) {
+        addBulletDeleteEvent(item, bullet);
       }
-  
-      // Sends the AJAX to add the skill to the server
-      fetch(`/profile/add-skill/${skillTextSlug}/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken
-        },
-        body: JSON.stringify({})
-      })
-        .then((response) => {
-          // Enabling the buttons when the server gives a response
-          submitButton.disabled = false;
-          skillInput.disabled = false;
-          return response.text();
-        })
-        .then((response) => {
-          if (response === 'Success') {
-            skillInput.value = "";
-            // Create the new skill on the front end
-            addSkill(skillTextSlug);
-          }
-          else {
-            // Showing the validation message in the form of the input validation feedback
-            skillInput.setCustomValidity('Cannot enter the same skill more than once');
-            setTimeout(() => { submitButton.click(); }, 1);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    });
-  
-    // Form validation for the skill input
-    document.getElementById('new-skill-text').addEventListener('input', function () {
-      let skillTextValidity = '';
-      let skillValue = this.value;
-  
-      // No special characters
-      let hasSpecialCharacters = false;
-  
-      // The character ^ seems to mess with the regex here, so remove it before the evaluation
-      let skillTextChars = skillValue.replace('^', '');
-      if (skillTextChars !== skillValue) {
-        hasSpecialCharacters = true;
-      }
-      else {
-        skillTextChars = skillValue.replace(/([a-zA-z0-9 ]+)/g, '');
-        if (skillTextChars.length > 0) {
-          hasSpecialCharacters = true;
-        }
-      }
-      if (hasSpecialCharacters) {
-        skillTextValidity = "Skill cannot contain special characters";
-      }
-  
-      this.setCustomValidity(skillTextValidity);
-    });
-  
-  
-    let skillSet = document.getElementsByClassName('skill-item');
-    for (let skill of skillSet) {
-      addSkillDeleteEvent(skill);
     }
   }
 });

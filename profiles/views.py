@@ -9,7 +9,8 @@ from .forms import SummaryForm, ContactInformationForm, \
     WorkExperienceForm, EducationForm, ProjectForm
 from .models import Summary, ContactInformation, Skill, \
     WorkExperience, WorkExperienceBullets, \
-    Education, EducationBullets, Project
+    Education, EducationBullets, Project, \
+    Hobby, AdditionalInformation
 
 import json
 
@@ -91,26 +92,46 @@ class CreateUpdateContactInformation(LoginRequiredMixin, View):
             return HttpResponse('<p class="error">Please provide valid contact information.</p>')
 
 
-class AddSkill(LoginRequiredMixin, View):
+class AddBulletItem(LoginRequiredMixin, View):
 
-    def post(self, request, skill):
+    def post(self, request, bullet_type):
+        bullet_val = request.POST['val']
         user = request.user
         try:
-            skill = user.user_skills.get(name=skill)
+            if bullet_type == 'skill':
+                user.user_skills.get(name=bullet_val)
+            elif bullet_type == 'hobby':
+                user.hobbies.get(val=bullet_val)
+            elif bullet_type == 'extra-info':
+                user.extra_info.get(val=bullet_val)
+            user.user_skills.get(name=bullet_val)
             return HttpResponse("Fail")
-        except Skill.DoesNotExist:
-            user.user_skills.create(name=skill)
-            user.save()
-            return HttpResponse("Success")
+        except (Skill.DoesNotExist,
+                Hobby.DoesNotExist,
+                AdditionalInformation.DoesNotExist):
+            bullet_obj = None
+            if bullet_type == 'skill':
+                bullet_obj = user.user_skills.create(name=bullet_val)
+            elif bullet_type == 'hobby':
+                bullet_obj = user.hobbies.create(val=bullet_val)
+            elif bullet_type == 'extra-info':
+                bullet_obj = user.extra_info.create(val=bullet_val)
+            bullet_obj.save()
+            return HttpResponse(bullet_obj.id)
 
 
-class RemoveSkill(LoginRequiredMixin, View):
+class RemoveBulletItem(LoginRequiredMixin, View):
 
-    def post(self, request, skill):
+    def post(self, request, bullet_type, bullet_id):
         user = request.user
         try:
-            skill = user.user_skills.get(name=skill)
-            skill.delete()
+            if bullet_type == 'skill':
+                bullet_obj = user.user_skills.get(id=bullet_id)
+            elif bullet_type == 'hobby':
+                bullet_obj = user.hobbies.get(id=bullet_id)
+            elif bullet_type == 'extra-info':
+                bullet_obj = user.extra_info.get(id=bullet_id)
+            bullet_obj.delete()
             user.save()
             return HttpResponse("Success")
         except Exception as e:
@@ -297,7 +318,7 @@ class EditItem(LoginRequiredMixin, View):
             else:
                 context['display_type'] = 'Item'
 
-            return render(request, 'profiles/edit_experience_item.html', context)
+            return render(request, 'profiles/edit-experience-item.html', context)
         else:
             return redirect('profile')
 
