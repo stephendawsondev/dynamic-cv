@@ -123,7 +123,8 @@ function getAutocompleteList(inputElement) {
 function updateAutocompleteList(inputElement) {
   // Deleting the old autocomplete list, if one exists
   let oldAutocomplete = inputElement.parentNode.getElementsByClassName('autocomplete-list');
-  while (oldAutocomplete.length > 0) {
+  if (oldAutocomplete.length > 0) {
+    window.removeEventListener('keydown', navigateAutocomplete);
     oldAutocomplete[0].remove();
   }
   // Generating the list of autocomplete items
@@ -140,20 +141,77 @@ function updateAutocompleteList(inputElement) {
     element.addEventListener('mouseleave', function() {
       this.setAttribute('data-hover', false);
     });
+    window.addEventListener('keydown', navigateAutocomplete);
 
     for (let autocompleteItem of autocompleteItems) {
       let itemElement = document.createElement('li');
-      itemElement.className = 'w-full px-4 py-2 border-b border-gray-200 cursor-pointer bg-white hover:bg-gray-100';
+      itemElement.className = 'w-full px-4 py-2 border-b border-gray-200 cursor-pointer bg-white data-[selected="true"]:bg-gray-100';
       itemElement.innerText = autocompleteItem;
+      itemElement.setAttribute('data-hover', false);
+      itemElement.setAttribute('data-selected', false);
+
       itemElement.addEventListener('click', function() {
         inputElement.value = this.innerText;
         inputElement.parentNode.getElementsByClassName('add-item-submit')[0].click();
+        window.removeEventListener('keydown', navigateAutocomplete);
         this.parentNode.remove();
+      });
+      // Updating the selected class if the item is hovered over
+      itemElement.addEventListener('mouseenter', function() {
+        [...this.parentNode.children].map(item => {
+          item.setAttribute('data-hover', false);
+          item.setAttribute('data-selected', false);
+        });
+        this.setAttribute('data-hover', true);
+        this.setAttribute('data-selected', true);
+      });
+      itemElement.addEventListener('mouseleave', function() {
+        this.setAttribute('data-hover', false);
       });
       element.appendChild(itemElement);
     }
 
     inputElement.parentNode.appendChild(element);
+  }
+}
+
+
+function navigateAutocomplete(event) {
+  // Scrolling up and down the autocomplete list using the up and down arrow keys
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    // Only scroll using the up and down keys if the user is not hovering over an item
+    const autocompleteElement = document.getElementsByClassName('autocomplete-list')[0];
+    let hoveredItems = [...autocompleteElement.children].filter((item) => item.getAttribute('data-hover') === "true");
+    if (hoveredItems.length === 0) {
+      event.preventDefault();
+      let children = autocompleteElement.children;
+
+      // Finds the index of the current selected 
+      let foundIndex = -1;
+      for (let i = 0; i < children.length; i++) {
+        if (children[i].getAttribute('data-selected') === 'true') {
+          children[i].setAttribute('data-selected', false);
+          foundIndex = i;
+          break;
+        }
+      }
+      // Down arrow key
+      if (event.key === 'ArrowDown') {
+        if (foundIndex + 1 < children.length) {
+          foundIndex++;
+        }
+      }
+      // Up arrow key
+      else {
+        if (foundIndex> -1) {
+          foundIndex--;
+        }
+      }
+      console.log(foundIndex);
+      if (foundIndex >= 0) {
+        children[foundIndex].setAttribute('data-selected', true);
+      }
+    }
   }
 }
 
@@ -269,6 +327,7 @@ window.addEventListener('DOMContentLoaded', () => {
       let element = item.parentNode.getElementsByClassName('autocomplete-list')[0];
       if (element && element.getAttribute('data-hover') === 'false') {
         element.remove();
+        window.removeEventListener('keydown', navigateAutocomplete);
       }
     });
   });
