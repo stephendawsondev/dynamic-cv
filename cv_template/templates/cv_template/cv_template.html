@@ -91,7 +91,7 @@
     {% csrf_token %}
     {% for form_field in form %}
     {{ form_field|as_crispy_field }}
-    {% if form_field.label == 'Skills' and not user.skills.all %}
+    {% if form_field.label == 'Skills' and not user.user_skills.all %}
     <p class="text-xs text-gray-600">You must have skills on your profile to create your CV</p>
     {% elif form_field.label == 'Work experience' and not user.work_experience.all %}
     <p class="text-xs text-gray-600">You do not have any work experience in your profile</p>
