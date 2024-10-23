@@ -124,8 +124,7 @@ function updateAutocompleteList(inputElement) {
   // Deleting the old autocomplete list, if one exists
   let oldAutocomplete = inputElement.parentNode.getElementsByClassName('autocomplete-list');
   if (oldAutocomplete.length > 0) {
-    window.removeEventListener('keydown', navigateAutocomplete);
-    oldAutocomplete[0].remove();
+    deleteAutocompleteList();
   }
   // Generating the list of autocomplete items
   const autocompleteItems = getAutocompleteList(inputElement);
@@ -153,8 +152,7 @@ function updateAutocompleteList(inputElement) {
       itemElement.addEventListener('click', function() {
         inputElement.value = this.innerText;
         inputElement.parentNode.getElementsByClassName('add-item-submit')[0].click();
-        window.removeEventListener('keydown', navigateAutocomplete);
-        this.parentNode.remove();
+        deleteAutocompleteList();
       });
       // Updating the selected class if the item is hovered over
       itemElement.addEventListener('mouseenter', function() {
@@ -187,13 +185,9 @@ function navigateAutocomplete(event) {
       let children = autocompleteElement.children;
 
       // Finds the index of the current selected 
-      let foundIndex = -1;
-      for (let i = 0; i < children.length; i++) {
-        if (children[i].getAttribute('data-selected') === 'true') {
-          children[i].setAttribute('data-selected', false);
-          foundIndex = i;
-          break;
-        }
+      let foundIndex = findSelectedAutocompleteItem();
+      if (foundIndex >= 0) {
+        children[foundIndex].setAttribute('data-selected', false);
       }
       // Down arrow key
       if (event.key === 'ArrowDown') {
@@ -207,12 +201,54 @@ function navigateAutocomplete(event) {
           foundIndex--;
         }
       }
-      console.log(foundIndex);
       if (foundIndex >= 0) {
         children[foundIndex].setAttribute('data-selected', true);
       }
     }
   }
+  else if (event.key === 'Enter' || event.key === 'Tab') {
+    const autocompleteElement = document.getElementsByClassName('autocomplete-list')[0];
+    const selectedIndex = findSelectedAutocompleteItem();
+
+    if (selectedIndex >= 0) {
+      const selectedText = autocompleteElement.children[selectedIndex].innerText;
+      autocompleteElement.parentElement.getElementsByClassName('add-item-input')[0].value = selectedText;
+      if (event.key === 'Tab') {
+        event.preventDefault();
+      }
+      deleteAutocompleteList();
+    }
+  }
+}
+
+
+/**
+ * Removes an autocomplete list, and unbinds the keydown event from the window
+ */
+function deleteAutocompleteList() {
+  let autocompleteList = document.getElementsByClassName('autocomplete-list');
+  if (autocompleteList.length > 0) {
+    window.removeEventListener('keydown', navigateAutocomplete);
+    autocompleteList[0].remove();
+  }
+}
+
+
+/**
+ * Finds the position of the selected autocomplete item
+ * @returns {Number} The index of the selected item in the autocomplete list (or -1 if none is found)
+ */
+function findSelectedAutocompleteItem() {
+  const autocompleteElement = document.getElementsByClassName('autocomplete-list')[0];
+  const children = autocompleteElement.children; 
+  let itemIndex = -1;
+  for (let i = 0; i < children.length; i++) {
+    if (children[i].getAttribute('data-selected') === 'true') {
+      itemIndex = i;
+      break;
+    }
+  }
+  return itemIndex;
 }
 
 
@@ -326,8 +362,7 @@ window.addEventListener('DOMContentLoaded', () => {
     item.addEventListener('focusout', () => {
       let element = item.parentNode.getElementsByClassName('autocomplete-list')[0];
       if (element && element.getAttribute('data-hover') === 'false') {
-        element.remove();
-        window.removeEventListener('keydown', navigateAutocomplete);
+        deleteAutocompleteList();
       }
     });
   });
