@@ -185,7 +185,7 @@ function updateAutocompletePosition() {
     const inputElement = autocompleteElement.parentNode.getElementsByClassName('add-item-input')[0];
     const inputBounds = inputElement.getBoundingClientRect();
     const listHeight = autocompleteElement.offsetHeight;
-    if (inputBounds.y > window.innerHeight - listHeight - 32) {
+    if (inputBounds.y > window.innerHeight - listHeight - inputElement.offsetHeight - 32) {
       autocompleteElement.classList.add('bottom-[100%]');
     }
   }
