@@ -202,7 +202,28 @@ function navigateAutocomplete(event) {
         }
       }
       if (foundIndex >= 0) {
-        children[foundIndex].setAttribute('data-selected', true);
+        let newSelectedItem = children[foundIndex];
+        newSelectedItem.setAttribute('data-selected', true);
+        // Moving the scrollbar if the selected item is outside of the visible window
+        let listBounds = autocompleteElement.getBoundingClientRect();
+        let itemBounds = newSelectedItem.getBoundingClientRect();
+        console.clear();
+        console.log("Scroll Bottom:");
+        console.log(autocompleteElement.scrollBottom);
+        console.log("");
+        console.log("Item bounds:");
+        console.log(itemBounds);
+        console.log("");
+        console.log("List bounds:");
+        console.log(listBounds);
+        let listHeight = autocompleteElement.offsetHeight;
+        let itemHeight = newSelectedItem.offsetHeight;
+        if (itemHeight * foundIndex < autocompleteElement.scrollTop) {
+          autocompleteElement.scrollTo(0, itemHeight * foundIndex);
+        }
+        else if (newSelectedItem.offsetHeight * (foundIndex + 1) > autocompleteElement.scrollTop + listHeight) {
+          autocompleteElement.scrollTo(0, (itemHeight * (foundIndex + 1)) - listHeight);
+        }
       }
     }
   }
