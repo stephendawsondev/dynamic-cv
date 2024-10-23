@@ -58,8 +58,8 @@
       <div class="flex">
         <div class="relative w-full">
           <input type="text" id="new-responsibility-text" name="responsibility"
-            class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-            placeholder="Duty/Responsibility" maxlength="150" required />
+            class="add-item-input autocomplete work bullet block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Duty/Responsibility" maxlength="150" autocomplete="off" required />
           <button type="submit" id="submit-responsibility"
             class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
             Add</button>
@@ -75,8 +75,8 @@
       <div class="flex">
         <div class="relative w-full">
           <input type="text" id="work-skill-text" name="work-skill"
-            class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-            placeholder="Skill" maxlength="30" required />
+            class="add-item-input autocomplete work skill block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Skill" maxlength="30" autocomplete="off" required />
           <button type="submit" id="submit-work-skill"
             class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
             Add</button>
@@ -86,4 +86,11 @@
   </div>
   <button type="submit" form="work-experience-form"
     class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add Work Experience</button>
+
+  <!-- Autocomplete bullet points -->
+  <div id="autocomplete-list-bullet-work" class="hidden" aria-hidden="true">
+    {% for bullet in user.work_bullets.all %}
+    <div>{{ bullet.bullet_point }}</div>
+    {% endfor %}
+  </div>
 </div>

@@ -79,41 +79,218 @@ function addListItem(event) {
 }
 
 
+/**
+ * Returns a list of bullet points saved in the user's profile
+ * @param {Element} inputElement The input element requesting the autocomplete
+ * @returns {Array} A list of bullet point names
+ */
+function getAutocompleteList(inputElement) {
+  let autocompleteList = [];
+  let fullListId = "autocomplete-list-";
+  const inputClass = inputElement.className;
+  if (inputClass.includes('skill')) {
+    fullListId += "skill";
+  }
+  else {
+    fullListId += "bullet-";
+    if (inputClass.includes('work')) {
+      fullListId += 'work';
+    }
+    else {
+      fullListId += 'education';
+    }
+  }
+  const fullListElement = document.getElementById(fullListId);
+  let autocompleteBullets = [...fullListElement.children].map(item => item.innerText);
+
+  // If there is a value in the input, only show autocomplete items that contain that input
+  if (inputElement.value) {
+    autocompleteBullets = autocompleteBullets.filter(item => item.toLowerCase().includes(inputElement.value.toLowerCase()));
+  }
+
+  // Only showing the autocomplete items if they are not already in the list
+  let usedBullets = [...inputElement.closest('form').querySelector('.item-list').children].map(item => item.children[0].children[0].innerText);
+  
+  for (let bullet of autocompleteBullets) {
+    if (!usedBullets.includes(bullet)) {
+      autocompleteList.push(bullet);
+    }
+  }
+  return autocompleteList;
+}
+
+
+function updateAutocompleteList(inputElement) {
+  // Deleting the old autocomplete list, if one exists
+  let oldAutocomplete = inputElement.parentNode.getElementsByClassName('autocomplete-list');
+  if (oldAutocomplete.length > 0) {
+    deleteAutocompleteList();
+  }
+  // Generating the list of autocomplete items
+  const autocompleteItems = getAutocompleteList(inputElement);
+
+  if (autocompleteItems.length > 0) {
+    let element = document.createElement("ul");
+    element.className = "autocomplete-list w-full z-40 absolute max-h-64 overflow-y-auto text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg";
+    element.setAttribute('data-hover', false);
+
+    element.addEventListener('mouseenter', function() {
+      this.setAttribute('data-hover', true);
+    });
+    element.addEventListener('mouseleave', function() {
+      this.setAttribute('data-hover', false);
+    });
+    window.addEventListener('keydown', navigateAutocomplete);
+
+    for (let autocompleteItem of autocompleteItems) {
+      let itemElement = document.createElement('li');
+      itemElement.className = 'w-full px-4 py-2 border-b border-gray-200 cursor-pointer bg-white data-[selected="true"]:bg-gray-100';
+      itemElement.innerText = autocompleteItem;
+      itemElement.setAttribute('data-hover', false);
+      itemElement.setAttribute('data-selected', false);
+
+      itemElement.addEventListener('click', function() {
+        inputElement.value = this.innerText;
+        inputElement.parentNode.getElementsByClassName('add-item-submit')[0].click();
+        deleteAutocompleteList();
+      });
+      // Updating the selected class if the item is hovered over
+      itemElement.addEventListener('mouseenter', function() {
+        [...this.parentNode.children].map(item => {
+          item.setAttribute('data-hover', false);
+          item.setAttribute('data-selected', false);
+        });
+        this.setAttribute('data-hover', true);
+        this.setAttribute('data-selected', true);
+      });
+      itemElement.addEventListener('mouseleave', function() {
+        this.setAttribute('data-hover', false);
+      });
+      element.appendChild(itemElement);
+    }
+    inputElement.parentNode.appendChild(element);
+    window.addEventListener('scroll', updateAutocompletePosition);
+    updateAutocompletePosition();
+  }
+}
+
+
+/**
+ * Moves the autocomplete list above the input if there is no room below
+ */
+function updateAutocompletePosition() {
+  const autocompleteElement = document.getElementsByClassName('autocomplete-list')[0];
+  if (autocompleteElement) {
+    autocompleteElement.classList.remove('bottom-[100%]');
+    const inputElement = autocompleteElement.parentNode.getElementsByClassName('add-item-input')[0];
+    const inputBounds = inputElement.getBoundingClientRect();
+    const listHeight = autocompleteElement.offsetHeight;
+    if (inputBounds.y > window.innerHeight - listHeight - inputElement.offsetHeight - 32) {
+      autocompleteElement.classList.add('bottom-[100%]');
+    }
+  }
+}
+
+
+/**
+ * Handles the keyboard shortcuts for navigating the autocomplete list
+ * @param {Event} event The JavaScript keydown event
+ */
+function navigateAutocomplete(event) {
+  // Scrolling up and down the autocomplete list using the up and down arrow keys
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    // Only scroll using the up and down keys if the user is not hovering over an item
+    const autocompleteElement = document.getElementsByClassName('autocomplete-list')[0];
+    let hoveredItems = [...autocompleteElement.children].filter((item) => item.getAttribute('data-hover') === "true");
+    if (hoveredItems.length === 0) {
+      event.preventDefault();
+      let children = autocompleteElement.children;
+
+      // Finds the index of the current selected 
+      let foundIndex = findSelectedAutocompleteItem();
+      if (foundIndex >= 0) {
+        children[foundIndex].setAttribute('data-selected', false);
+      }
+      // Down arrow key
+      if (event.key === 'ArrowDown') {
+        if (foundIndex + 1 < children.length) {
+          foundIndex++;
+        }
+      }
+      // Up arrow key
+      else {
+        if (foundIndex> -1) {
+          foundIndex--;
+        }
+      }
+      if (foundIndex >= 0) {
+        let newSelectedItem = children[foundIndex];
+        newSelectedItem.setAttribute('data-selected', true);
+        // Moving the scrollbar if the selected item is outside of the visible window
+        let listHeight = autocompleteElement.offsetHeight;
+        let itemHeight = newSelectedItem.offsetHeight;
+        if (itemHeight * foundIndex < autocompleteElement.scrollTop) {
+          autocompleteElement.scrollTo(0, itemHeight * foundIndex);
+        }
+        else if (newSelectedItem.offsetHeight * (foundIndex + 1) > autocompleteElement.scrollTop + listHeight) {
+          autocompleteElement.scrollTo(0, (itemHeight * (foundIndex + 1)) - listHeight);
+        }
+      }
+    }
+  }
+  else if (event.key === 'Enter' || event.key === 'Tab') {
+    const autocompleteElement = document.getElementsByClassName('autocomplete-list')[0];
+    const selectedIndex = findSelectedAutocompleteItem();
+
+    if (selectedIndex >= 0) {
+      const selectedText = autocompleteElement.children[selectedIndex].innerText;
+      autocompleteElement.parentElement.getElementsByClassName('add-item-input')[0].value = selectedText;
+      if (event.key === 'Tab') {
+        event.preventDefault();
+      }
+      deleteAutocompleteList();
+    }
+  }
+}
+
+
+/**
+ * Removes an autocomplete list, and unbinds the keydown event from the window
+ */
+function deleteAutocompleteList() {
+  let autocompleteList = document.getElementsByClassName('autocomplete-list');
+  if (autocompleteList.length > 0) {
+    window.removeEventListener('keydown', navigateAutocomplete);
+    window.removeEventListener('scroll', updateAutocompletePosition);
+    autocompleteList[0].remove();
+  }
+}
+
+
+/**
+ * Finds the position of the selected autocomplete item
+ * @returns {Number} The index of the selected item in the autocomplete list (or -1 if none is found)
+ */
+function findSelectedAutocompleteItem() {
+  const autocompleteElement = document.getElementsByClassName('autocomplete-list')[0];
+  const children = autocompleteElement.children; 
+  let itemIndex = -1;
+  for (let i = 0; i < children.length; i++) {
+    if (children[i].getAttribute('data-selected') === 'true') {
+      itemIndex = i;
+      break;
+    }
+  }
+  return itemIndex;
+}
+
+
 window.addEventListener('DOMContentLoaded', () => {
   // Removes any custom validity every time the input changes
   const addItemInputs = document.getElementsByClassName('add-item-input');
   for (let itemInput of addItemInputs) {
     itemInput.addEventListener('input', function() {
       this.setCustomValidity("");
-    });
-  }
-
-  // Form validation for the skill input
-  let noSpecCharInputs = document.getElementsByClassName('no-special-chars');
-  for (let charInput of noSpecCharInputs) {
-    charInput.addEventListener('input', function () {
-      let skillTextValidity = '';
-      let skillValue = this.value;
-  
-      // No special characters
-      let hasSpecialCharacters = false;
-  
-      // The character ^ seems to mess with the regex here, so remove it before the evaluation
-      let skillTextChars = skillValue.replace('^', '');
-      if (skillTextChars !== skillValue) {
-        hasSpecialCharacters = true;
-      }
-      else {
-        skillTextChars = skillValue.replace(/([a-zA-z0-9 ]+)/g, '');
-        if (skillTextChars.length > 0) {
-          hasSpecialCharacters = true;
-        }
-      }
-      if (hasSpecialCharacters) {
-        skillTextValidity = "Skill cannot contain special characters";
-      }
-  
-      this.setCustomValidity(skillTextValidity);
     });
   }
 
@@ -208,4 +385,18 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
   }
+
+  // Add custom autocomplete to work experience and education bullet points
+  document.querySelectorAll('.autocomplete').forEach((item) => {
+    // Add the autocomplete element when the input is focused on and updated
+    item.addEventListener('focus', () => updateAutocompleteList(item));
+    item.addEventListener('input', () => updateAutocompleteList(item));
+    // Add the autocomplete element when the input is focused on
+    item.addEventListener('focusout', () => {
+      let element = item.parentNode.getElementsByClassName('autocomplete-list')[0];
+      if (element && element.getAttribute('data-hover') === 'false') {
+        deleteAutocompleteList();
+      }
+    });
+  });
 });
