@@ -121,5 +121,4 @@ class ProjectForm(forms.ModelForm):
 
         widgets = {
             'description': forms.Textarea(attrs={'rows': 2, 'cols': 15, 'placeholder': 'Max 160 characters...'}),
-
         }

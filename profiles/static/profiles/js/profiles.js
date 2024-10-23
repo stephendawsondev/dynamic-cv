@@ -79,6 +79,35 @@ function addListItem(event) {
 }
 
 
+/**
+ * Returns a list of bullet points saved in the user's profile
+ * @param {Element} inputElement The input element requesting the autocomplete
+ * @returns {Array} A list of bullet point names
+ */
+function getAutocompleteList(inputElement) {
+  let autocompleteList = [];
+  let fullListId = "autocomplete-list-";
+  const inputClass = inputElement.className;
+  if (inputClass.includes('skill')) {
+    fullListId += "skill";
+  }
+  else {
+    fullListId += "bullet-";
+    if (inputClass.includes('work')) {
+      fullListId += 'work';
+    }
+    else {
+      fullListId += 'education';
+    }
+  }
+  const fullListElement = document.getElementById(fullListId);
+  for (let element of fullListElement.children) {
+    autocompleteList.push(element.innerText);
+  }
+  return autocompleteList;
+}
+
+
 window.addEventListener('DOMContentLoaded', () => {
   // Removes any custom validity every time the input changes
   const addItemInputs = document.getElementsByClassName('add-item-input');
@@ -208,4 +237,47 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
   }
+
+  // Add custom autocomplete to work experience and education bullet points
+  document.querySelectorAll('.autocomplete').forEach((item) => {
+    // Add the autocomplete element when the input is focused on
+    item.addEventListener('focus', () => {
+      // Generating the list of autocomplete items
+      const autocompleteItems = getAutocompleteList(item);
+
+      if (autocompleteItems.length > 0) {
+        let element = document.createElement("ul");
+        element.className = "autocomplete-list w-full z-40 absolute max-h-64 overflow-y-auto text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg";
+        element.setAttribute('data-hover', false);
+
+        element.addEventListener('mouseenter', function() {
+          this.setAttribute('data-hover', true);
+        });
+        element.addEventListener('mouseleave', function() {
+          this.setAttribute('data-hover', false);
+        });
+
+        for (let autocompleteItem of autocompleteItems) {
+          let itemElement = document.createElement('li');
+          itemElement.className = 'w-full px-4 py-2 border-b border-gray-200 cursor-pointer bg-white hover:bg-gray-100';
+          itemElement.innerText = autocompleteItem;
+          itemElement.addEventListener('click', function() {
+            item.value = this.innerText;
+            item.parentNode.getElementsByClassName('add-item-submit')[0].click();
+            this.parentNode.remove();
+          });
+          element.appendChild(itemElement);
+        }
+  
+        item.parentNode.appendChild(element);
+      }
+    });
+    // Add the autocomplete element when the input is focused on
+    item.addEventListener('focusout', () => {
+      let element = item.parentNode.getElementsByClassName('autocomplete-list')[0];
+      if (element && element.getAttribute('data-hover') === 'false') {
+        element.remove();
+      }
+    });
+  });
 });
