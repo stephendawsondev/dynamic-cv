@@ -168,12 +168,34 @@ function updateAutocompleteList(inputElement) {
       });
       element.appendChild(itemElement);
     }
-
     inputElement.parentNode.appendChild(element);
+    window.addEventListener('scroll', updateAutocompletePosition);
+    updateAutocompletePosition();
   }
 }
 
 
+/**
+ * Moves the autocomplete list above the input if there is no room below
+ */
+function updateAutocompletePosition() {
+  const autocompleteElement = document.getElementsByClassName('autocomplete-list')[0];
+  if (autocompleteElement) {
+    autocompleteElement.classList.remove('bottom-[100%]');
+    const inputElement = autocompleteElement.parentNode.getElementsByClassName('add-item-input')[0];
+    const inputBounds = inputElement.getBoundingClientRect();
+    const listHeight = autocompleteElement.offsetHeight;
+    if (inputBounds.y > window.innerHeight - listHeight - 32) {
+      autocompleteElement.classList.add('bottom-[100%]');
+    }
+  }
+}
+
+
+/**
+ * Handles the keyboard shortcuts for navigating the autocomplete list
+ * @param {Event} event The JavaScript keydown event
+ */
 function navigateAutocomplete(event) {
   // Scrolling up and down the autocomplete list using the up and down arrow keys
   if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -239,6 +261,7 @@ function deleteAutocompleteList() {
   let autocompleteList = document.getElementsByClassName('autocomplete-list');
   if (autocompleteList.length > 0) {
     window.removeEventListener('keydown', navigateAutocomplete);
+    window.removeEventListener('scroll', updateAutocompletePosition);
     autocompleteList[0].remove();
   }
 }
