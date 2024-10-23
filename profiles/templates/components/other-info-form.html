@@ -1,63 +1,66 @@
 <div id="other">
-    <h1 class="block text-violet-700 text-2xl font-bold mb-2">Interests/Hobbies</h1>
-    <p class="block text-gray-700 text-sm mb-4">Enter what you do in your free time</p>
-    <form method="post" id="hobby-list-form">
-        {% csrf_token %}
-        <ul id="hobby-list" class="lg:w-[50%] pl-6 mb-3">
-          {% for hobby in user.hobbies.all %}
-          <li id="hobby-{{ hobby.id }}" class="hobby-item list-disc">
-            <span class="flex justify-between">
-              <span>{{ hobby.val }}</span>
-              <button type="button" class="delete-hobby" data-hobby="{{ hobby.id }}"><span
-                  class="text-2xl">&times;</span></button>
-            </span>
-          </li>
-          {% endfor %}
-        </ul>
-      </form>
-    <form hx-post="/profile/add-bullet-item/hobby/" hx-target="#hobby-data" hx-on::after-request="processRequest('hobby')" id="hobby-form" class="lg:w-[50%] mb-9">
+  <h1 class="block text-violet-700 text-2xl font-bold mb-2">Interests/Hobbies</h1>
+  <p class="block text-gray-700 text-sm mb-4">Enter what you do in your free time</p>
+  <form method="post" id="hobby-list-form">
+    {% csrf_token %}
+    <ul id="hobby-list" class="lg:w-[50%] pl-6 mb-3">
+      {% for hobby in user.hobbies.all %}
+      <li id="hobby-{{ hobby.id }}" class="hobby-item list-disc">
+        <span class="flex justify-between">
+          <span>{{ hobby.val }}</span>
+          <button type="button" class="delete-hobby" data-hobby="{{ hobby.id }}"><span
+              class="text-2xl">&times;</span></button>
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </form>
+  <form hx-post="/profile/add-bullet-item/hobby/" hx-target="#hobby-data" hx-on::after-request="processRequest('hobby')"
+    id="hobby-form" class="lg:w-[50%] mb-9">
     {% csrf_token %}
     <div id="hobby-data" class="hidden" aria-hidden="true"></div>
-        <div class="flex">
-            <div class="relative w-full">
-            <input type="text" id="new-hobby-text" name="val"
-                class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-                placeholder="Interest/Hobby" maxlength="30" required />
-            <button type="submit" id="submit-hobby"
-                class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
-                Add</button>
-            </div>
-        </div>
-    </form>
-    
-    <h1 class="block text-violet-700 text-2xl font-bold mb-2">Additional Information</h1>
-    <p class="block text-gray-700 text-sm mb-4">Enter any other relevant information (Like achievements, volunteer work etc.)</p>
-    <form method="post" id="extra-info-list-form">
-        {% csrf_token %}
-        <ul id="extra-info-list" class="lg:w-[50%] pl-6 mb-3">
-          {% for info in user.extra_info.all %}
-          <li id="extra-info-{{ info.id }}" class="extra-info-item list-disc">
-            <span class="flex justify-between">
-              <span>{{ info.val }}</span>
-              <button type="button" class="delete-extra-info" data-extra-info="{{ info.id }}"><span
-                  class="text-2xl">&times;</span></button>
-            </span>
-          </li>
-          {% endfor %}
-        </ul>
-      </form>
-    <form hx-post="/profile/add-bullet-item/extra-info/" hx-target="#extra-info-data" hx-on::after-request="processRequest('extra-info')" id="extra-info-form" class="lg:w-[50%]">
+    <div class="flex">
+      <div class="relative w-full">
+        <input type="text" id="new-hobby-text" name="val"
+          class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+          placeholder="Interest/Hobby" maxlength="150" required />
+        <button type="submit" id="submit-hobby"
+          class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+          Add</button>
+      </div>
+    </div>
+  </form>
+
+  <h1 class="block text-violet-700 text-2xl font-bold mb-2">Additional Information</h1>
+  <p class="block text-gray-700 text-sm mb-4">Enter any other relevant information (Like achievements, volunteer work
+    etc.)</p>
+  <form method="post" id="extra-info-list-form">
+    {% csrf_token %}
+    <ul id="extra-info-list" class="lg:w-[50%] pl-6 mb-3">
+      {% for info in user.extra_info.all %}
+      <li id="extra-info-{{ info.id }}" class="extra-info-item list-disc">
+        <span class="flex justify-between">
+          <span>{{ info.val }}</span>
+          <button type="button" class="delete-extra-info" data-extra-info="{{ info.id }}"><span
+              class="text-2xl">&times;</span></button>
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </form>
+  <form hx-post="/profile/add-bullet-item/extra-info/" hx-target="#extra-info-data"
+    hx-on::after-request="processRequest('extra-info')" id="extra-info-form" class="lg:w-[50%]">
     {% csrf_token %}
     <div id="extra-info-data" class="hidden" aria-hidden="true"></div>
-        <div class="flex">
-            <div class="relative w-full">
-            <input type="text" id="new-extra-info-text" name="val"
-                class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-                placeholder="Additional Information" maxlength="30" required />
-            <button type="submit" id="submit-extra-info"
-                class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
-                Add</button>
-            </div>
-        </div>
-    </form>
+    <div class="flex">
+      <div class="relative w-full">
+        <input type="text" id="new-extra-info-text" name="val"
+          class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+          placeholder="Additional Information" maxlength="150" required />
+        <button type="submit" id="submit-extra-info"
+          class="absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+          Add</button>
+      </div>
+    </div>
+  </form>
 </div>
