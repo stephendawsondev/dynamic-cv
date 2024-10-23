@@ -101,9 +101,14 @@ function getAutocompleteList(inputElement) {
     }
   }
   const fullListElement = document.getElementById(fullListId);
+  let autocompleteBullets = [...fullListElement.children].map(item => item.innerText);
+
+  // If there is a value in the input, only show autocomplete items that contain that input
+  if (inputElement.value) {
+    autocompleteBullets = autocompleteBullets.filter(item => item.toLowerCase().includes(inputElement.value.toLowerCase()));
+  }
 
   // Only showing the autocomplete items if they are not already in the list
-  let autocompleteBullets = [...fullListElement.children].map(item => item.innerText);
   let usedBullets = [...inputElement.closest('form').querySelector('.item-list').children].map(item => item.children[0].children[0].innerText);
   
   for (let bullet of autocompleteBullets) {
@@ -115,41 +120,50 @@ function getAutocompleteList(inputElement) {
 }
 
 
+function updateAutocompleteList(inputElement) {
+  // Deleting the old autocomplete list, if one exists
+  let oldAutocomplete = inputElement.parentNode.getElementsByClassName('autocomplete-list');
+  while (oldAutocomplete.length > 0) {
+    oldAutocomplete[0].remove();
+  }
+  // Generating the list of autocomplete items
+  const autocompleteItems = getAutocompleteList(inputElement);
+
+  if (autocompleteItems.length > 0) {
+    let element = document.createElement("ul");
+    element.className = "autocomplete-list w-full z-40 absolute max-h-64 overflow-y-auto text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg";
+    element.setAttribute('data-hover', false);
+
+    element.addEventListener('mouseenter', function() {
+      this.setAttribute('data-hover', true);
+    });
+    element.addEventListener('mouseleave', function() {
+      this.setAttribute('data-hover', false);
+    });
+
+    for (let autocompleteItem of autocompleteItems) {
+      let itemElement = document.createElement('li');
+      itemElement.className = 'w-full px-4 py-2 border-b border-gray-200 cursor-pointer bg-white hover:bg-gray-100';
+      itemElement.innerText = autocompleteItem;
+      itemElement.addEventListener('click', function() {
+        inputElement.value = this.innerText;
+        inputElement.parentNode.getElementsByClassName('add-item-submit')[0].click();
+        this.parentNode.remove();
+      });
+      element.appendChild(itemElement);
+    }
+
+    inputElement.parentNode.appendChild(element);
+  }
+}
+
+
 window.addEventListener('DOMContentLoaded', () => {
   // Removes any custom validity every time the input changes
   const addItemInputs = document.getElementsByClassName('add-item-input');
   for (let itemInput of addItemInputs) {
     itemInput.addEventListener('input', function() {
       this.setCustomValidity("");
-    });
-  }
-
-  // Form validation for the skill input
-  let noSpecCharInputs = document.getElementsByClassName('no-special-chars');
-  for (let charInput of noSpecCharInputs) {
-    charInput.addEventListener('input', function () {
-      let skillTextValidity = '';
-      let skillValue = this.value;
-  
-      // No special characters
-      let hasSpecialCharacters = false;
-  
-      // The character ^ seems to mess with the regex here, so remove it before the evaluation
-      let skillTextChars = skillValue.replace('^', '');
-      if (skillTextChars !== skillValue) {
-        hasSpecialCharacters = true;
-      }
-      else {
-        skillTextChars = skillValue.replace(/([a-zA-z0-9 ]+)/g, '');
-        if (skillTextChars.length > 0) {
-          hasSpecialCharacters = true;
-        }
-      }
-      if (hasSpecialCharacters) {
-        skillTextValidity = "Skill cannot contain special characters";
-      }
-  
-      this.setCustomValidity(skillTextValidity);
     });
   }
 
@@ -247,38 +261,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Add custom autocomplete to work experience and education bullet points
   document.querySelectorAll('.autocomplete').forEach((item) => {
-    // Add the autocomplete element when the input is focused on
-    item.addEventListener('focus', () => {
-      // Generating the list of autocomplete items
-      const autocompleteItems = getAutocompleteList(item);
-
-      if (autocompleteItems.length > 0) {
-        let element = document.createElement("ul");
-        element.className = "autocomplete-list w-full z-40 absolute max-h-64 overflow-y-auto text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg";
-        element.setAttribute('data-hover', false);
-
-        element.addEventListener('mouseenter', function() {
-          this.setAttribute('data-hover', true);
-        });
-        element.addEventListener('mouseleave', function() {
-          this.setAttribute('data-hover', false);
-        });
-
-        for (let autocompleteItem of autocompleteItems) {
-          let itemElement = document.createElement('li');
-          itemElement.className = 'w-full px-4 py-2 border-b border-gray-200 cursor-pointer bg-white hover:bg-gray-100';
-          itemElement.innerText = autocompleteItem;
-          itemElement.addEventListener('click', function() {
-            item.value = this.innerText;
-            item.parentNode.getElementsByClassName('add-item-submit')[0].click();
-            this.parentNode.remove();
-          });
-          element.appendChild(itemElement);
-        }
-  
-        item.parentNode.appendChild(element);
-      }
-    });
+    // Add the autocomplete element when the input is focused on and updated
+    item.addEventListener('focus', () => updateAutocompleteList(item));
+    item.addEventListener('input', () => updateAutocompleteList(item));
     // Add the autocomplete element when the input is focused on
     item.addEventListener('focusout', () => {
       let element = item.parentNode.getElementsByClassName('autocomplete-list')[0];
