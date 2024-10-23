@@ -101,8 +101,15 @@ function getAutocompleteList(inputElement) {
     }
   }
   const fullListElement = document.getElementById(fullListId);
-  for (let element of fullListElement.children) {
-    autocompleteList.push(element.innerText);
+
+  // Only showing the autocomplete items if they are not already in the list
+  let autocompleteBullets = [...fullListElement.children].map(item => item.innerText);
+  let usedBullets = [...inputElement.closest('form').querySelector('.item-list').children].map(item => item.children[0].children[0].innerText);
+  
+  for (let bullet of autocompleteBullets) {
+    if (!usedBullets.includes(bullet)) {
+      autocompleteList.push(bullet);
+    }
   }
   return autocompleteList;
 }
