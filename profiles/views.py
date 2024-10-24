@@ -143,6 +143,8 @@ class AddWorkExperience(LoginRequiredMixin, View):
     def post(self, request):
         post_data = request.POST.copy()
         work_form = WorkExperienceForm(request.POST)
+        added_bullets = []
+        added_skills = []
         user = request.user
         if not work_form.is_valid():
             return HttpResponse("Form is invalid")
@@ -165,24 +167,32 @@ class AddWorkExperience(LoginRequiredMixin, View):
             list_item = None
             if 'work-responsibilities' in key:
                 list_item, created = WorkExperienceBullets.objects.get_or_create(
-                    user_id=user.id,
+                    user=user,
                     bullet_point=value
                 )
                 work_experience.bullet_points.add(list_item)
+                if created:
+                    added_bullets.append(value)
             elif 'work-skills' in key:
                 list_item, created = Skill.objects.get_or_create(
-                    user_id=user.id,
-                    name=value.replace(' ', '-')
+                    user=user,
+                    name=value
                 )
-                if len(user.user_skills.filter(name=value)) == 0:
+                if created:
                     user.user_skills.add(list_item)
                     user.save()
+                    list_item.save()
+                    added_skills.append({'id': list_item.id, 'value': value})
                 work_experience.applied_skills.add(list_item)
             else:
                 continue
             list_item.save()
         work_experience.save()
         post_data['item_id'] = work_experience.id
+        if added_bullets:
+            post_data['added_bullets'] = added_bullets
+        if added_skills:
+            post_data['added_skills'] = added_skills
         return HttpResponse(json.dumps(post_data))
 
 
@@ -191,6 +201,8 @@ class AddEducation(LoginRequiredMixin, View):
     def post(self, request):
         post_data = request.POST.copy()
         education_form = EducationForm(request.POST)
+        added_bullets = []
+        added_skills = []
         user = request.user
         if not education_form.is_valid():
             return HttpResponse("Form is invalid")
@@ -214,24 +226,32 @@ class AddEducation(LoginRequiredMixin, View):
             list_item = None
             if 'education-modules' in key:
                 list_item, created = EducationBullets.objects.get_or_create(
-                    user_id=user.id,
+                    user=user,
                     bullet_point=value
                 )
                 education.bullet_points.add(list_item)
+                if created:
+                    added_bullets.append(value)
             elif 'education-skills' in key:
                 list_item, created = Skill.objects.get_or_create(
-                    user_id=user.id,
-                    name=value.replace(' ', '-')
+                    user=user,
+                    name=value
                 )
-                if len(user.user_skills.filter(name=value)) == 0:
+                if created:
                     user.user_skills.add(list_item)
                     user.save()
+                    list_item.save()
+                    added_skills.append({'id': list_item.id, 'value': value})
                 education.applied_skills.add(list_item)
             else:
                 continue
             list_item.save()
         education.save()
         post_data['item_id'] = education.id
+        if added_bullets:
+            post_data['added_bullets'] = added_bullets
+        if added_skills:
+            post_data['added_skills'] = added_skills
         return HttpResponse(json.dumps(post_data))
 
 

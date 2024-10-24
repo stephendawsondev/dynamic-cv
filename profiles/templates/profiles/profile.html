@@ -11,9 +11,9 @@
             data-tabs-toggle="#default-styled-tab-content"
             data-tabs-active-classes="text-black hover:text-purple-600 bg-lime-500" role="tablist">
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 active" id="detail-styled-tab"
-                    data-tabs-target="#styled-detail" type="button" role="tab" aria-controls="detail"
-                    aria-selected="{% if tab == 'details' %}true{% else %}false{% endif %}">Your
+                <button class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 active"
+                    id="detail-styled-tab" data-tabs-target="#styled-detail" type="button" role="tab"
+                    aria-controls="detail" aria-selected="{% if tab == 'details' %}true{% else %}false{% endif %}">Your
                     Details</button>
             </li>
             <li class="w-full" role="presentation">
@@ -27,8 +27,9 @@
                     aria-selected="{% if tab == 'skills' %}true{% else %}false{% endif %}">Skills</button>
             </li>
             <li class="w-full" role="presentation">
-                <button class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1" id="work-experience-styled-tab"
-                    data-tabs-target="#styled-work-experience" type="button" role="tab" aria-controls="work-experience"
+                <button class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1"
+                    id="work-experience-styled-tab" data-tabs-target="#styled-work-experience" type="button" role="tab"
+                    aria-controls="work-experience"
                     aria-selected="{% if tab == 'work_experience' %}true{% else %}false{% endif %}">Work
                     Experience</button>
             </li>
@@ -73,12 +74,18 @@
                 aria-labelledby="educations-tab">
                 {% include 'components/projects-form.html' %}
             </div>
-            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-other" role="tabpanel"
-                aria-labelledby="other-tab">
+            <div class="hidden p-4 rounded-lg bg-gray-50" id="styled-other" role="tabpanel" aria-labelledby="other-tab">
                 {% include 'components/other-info-form.html' %}
             </div>
         </div>
     </div>
+</div>
+
+<!-- Autocomplete skills -->
+<div id="autocomplete-list-skill" class="hidden" aria-hidden="true">
+    {% for skill in user.user_skills.all %}
+    <div>{{ skill.name }}</div>
+    {% endfor %}
 </div>
 
 <!-- Item delete modal -->

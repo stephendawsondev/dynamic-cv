@@ -52,8 +52,8 @@ class CVTemplate(models.Model):
                                         related_name="cv_extra_info",
                                         blank=True)
     color = ColorField(default="#6495ED")
-    created_at = models.DateTimeField(auto_now=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-updated_at"]
