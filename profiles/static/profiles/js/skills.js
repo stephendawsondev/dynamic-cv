@@ -55,11 +55,13 @@ function processRequest(bulletType) {
 }
 
 
-function addBulletPoint(bulletType, bulletId) {
+function addBulletPoint(bulletType, bulletId, bulletVal=null) {
   let formElement = document.querySelector(`#${bulletType}-form`);
   let bulletList = document.getElementById(bulletType + '-list');
-  let bulletTextInput = formElement.querySelector('input[name="val"]');
-  let bulletVal = bulletTextInput.value;
+  const bulletTextInput = formElement.querySelector('input[name="val"]');
+  if (!bulletVal) {
+    bulletVal = bulletTextInput.value;
+  }
   bulletTextInput.value = "";
   let bulletItemHtml = `
   <li id="${bulletType}-${bulletId}" class="${bulletType}-item list-disc">
@@ -122,6 +124,32 @@ function deleteBulletItem(bulletId, bulletType) {
             if (child.innerText === skillName) {
               child.remove();
               break;
+            }
+          }
+          // Removing the skill from any experience that contains that item
+          const experienceDisplays = [...document.getElementsByClassName('work-collapse-body'), ...document.getElementsByClassName('education-collapse-body')];
+          for (let displayItem of experienceDisplays) {
+            let skillListName = '';
+            if (displayItem.id.includes('work')) {
+              skillListName = 'work';
+            }
+            else if (displayItem.id.includes('education')) {
+              skillListName = 'education';
+            }
+            skillListName += '-skill-list';
+            const skillList = displayItem.getElementsByClassName(skillListName)[0];
+            if (skillList) {
+              let skillItems = skillList.children;
+              for (let item of skillItems) {
+                if (item.innerText === skillName) {
+                  item.remove();
+                  break;
+                }
+              }
+              // Removing the row if there are no skills left
+              if (skillList.children.length === 0) {
+                deleteItemListRow(skillList);
+              }
             }
           }
         }
