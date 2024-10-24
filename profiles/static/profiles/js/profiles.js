@@ -391,7 +391,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // Add the autocomplete element when the input is focused on and updated
     item.addEventListener('focus', () => updateAutocompleteList(item));
     item.addEventListener('input', () => updateAutocompleteList(item));
-    // Add the autocomplete element when the input is focused on
+    // Remove the autocomplete element if the user clicks on something outside of these inputs
     item.addEventListener('focusout', () => {
       let element = item.parentNode.getElementsByClassName('autocomplete-list')[0];
       if (element && element.getAttribute('data-hover') === 'false') {

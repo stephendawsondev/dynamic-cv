@@ -55,11 +55,13 @@ function processRequest(bulletType) {
 }
 
 
-function addBulletPoint(bulletType, bulletId) {
+function addBulletPoint(bulletType, bulletId, bulletVal=null) {
   let formElement = document.querySelector(`#${bulletType}-form`);
   let bulletList = document.getElementById(bulletType + '-list');
-  let bulletTextInput = formElement.querySelector('input[name="val"]');
-  let bulletVal = bulletTextInput.value;
+  const bulletTextInput = formElement.querySelector('input[name="val"]');
+  if (!bulletVal) {
+    bulletVal = bulletTextInput.value;
+  }
   bulletTextInput.value = "";
   let bulletItemHtml = `
   <li id="${bulletType}-${bulletId}" class="${bulletType}-item list-disc">

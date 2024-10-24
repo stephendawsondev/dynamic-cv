@@ -85,6 +85,15 @@ function addExperienceHtml(experienceType) {
   let elements = convertHtmlToDOM(propertyObject.html);
   let itemListElement = elements[0];
 
+  // Update the bullet points and skills autocomplete lists
+  if ('added_bullets' in itemExperienceData) {
+    const autocompleteElement = document.getElementById(`autocomplete-list-bullet-${experienceType}`);
+    updateBulletPoints(autocompleteElement, itemExperienceData.added_bullets);
+  }
+  if ('added_skills' in itemExperienceData) {
+    updateSkills(itemExperienceData.added_skills);
+  }
+
   let collapseHeading = `${experienceType}-collapse-heading`;
   let collapseHeadingElement = itemListElement.getElementsByClassName(collapseHeading)[0];
   let collapseBody = `${experienceType}-collapse-body`;
@@ -221,6 +230,30 @@ function addExperienceHtml(experienceType) {
   }
   // Resetting the accordion
   setAccordion(appendTarget, experienceType);
+}
+
+
+/**
+ * Adds a set of bullets to an autocomplete element
+ * @param {Element} element The autocomplete element
+ * @param {String[]} data The list of values to add to the elements
+ */
+function updateBulletPoints(element, data) {
+  for (item of data) {
+    let itemElement = document.createElement('div');
+    itemElement.innerText = item;
+    element.appendChild(itemElement);
+  }
+}
+
+/**
+ * Adds a set of bullets to the skill autocomplete element and updates the skills tab
+ * @param {String[]} data The list of values to add to the elements
+ */
+function updateSkills(data) {
+  for (item of data) {
+    addBulletPoint('skill', item.id, item.value);
+  }
 }
 
 
