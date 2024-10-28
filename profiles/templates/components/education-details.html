@@ -63,7 +63,8 @@
         aria-label="Edit this item">
         <img src="{% static 'icons/pencil.svg' %}">
       </a>
-      <button class="delete-exp-item w-4 h-4 sm:w-6 sm:h-6" aria-label="Delete this item" data-href="{% url 'delete_item' 'education' item_id %}?tab=education">
+      <button class="delete-exp-item w-4 h-4 sm:w-6 sm:h-6" aria-label="Delete this item"
+        data-href="{% url 'delete_item' 'education' item_id %}?tab=education">
         <img src="{% static 'icons/bin.svg' %}">
       </button>
     </div>

@@ -365,12 +365,23 @@ function deleteItemListRow(deleteElement) {
  */
 function updateAccordionIcons(accordionParentId) {
   let accordionParent = document.getElementById(accordionParentId);
+  let experienceType = '';
+
+  // Getting the experience type
+  if (accordionParent.id.includes('work')) {
+    experienceType = 'work';
+  } else if (accordionParent.id.includes('education')) {
+    experienceType = 'education';
+  } else {
+    experienceType = 'project';
+  }
+
   let children = accordionParent.children;
   for (let i = 0; i < children.length; i++) {
     let child = children[i];
     let heading = child.getElementsByTagName('h2')[0];
     // Remove FlowBites default color settings when the accordion is clicked
-    heading.className = 'work-collapse-heading 2xl:w-[50%]';
+    heading.className = experienceType + '-collapse-heading 2xl:w-[50%]';
     let isActive = (heading.getAttribute('aria-expanded') == 'true');
     let button = heading.getElementsByTagName('button')[0];
     button.classList.remove('rounded-b-xl');
