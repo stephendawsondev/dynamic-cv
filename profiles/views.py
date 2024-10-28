@@ -318,7 +318,7 @@ class EditItem(LoginRequiredMixin, View):
                         'disables': 'id_end_date'
                     },
                     'cancel_tab': 'work_experience',
-                    'bullet_points': request.user.work_experience.all(),
+                    'bullet_points': request.user.work_bullets.all(),
                     'bullet_point_label': 'Duties/Responsibilities'
                 })
             elif item_type == 'education':
@@ -331,7 +331,7 @@ class EditItem(LoginRequiredMixin, View):
                         'disables': 'id_end_year,id_grade'
                     },
                     'cancel_tab': 'education',
-                    'bullet_points': request.user.education.all(),
+                    'bullet_points': request.user.education_bullets.all(),
                     'bullet_point_label': 'Modules Covered'
                 })
             elif item_type == 'project':
