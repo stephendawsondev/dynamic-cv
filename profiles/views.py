@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from .templatetags.profiletags import order_work_by_end_date
 
 from .forms import SummaryForm, ContactInformationForm, \
     WorkExperienceForm, EducationForm, ProjectForm
@@ -39,7 +40,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context['summary'] = Summary.objects.get(user=user).summary
 
         context['work_experience_form'] = WorkExperienceForm()
-        context['work_experience_list'] = user.work_experience.all()
+        context['work_experience_list'] = order_work_by_end_date(user)
 
         context['education_form'] = EducationForm()
         context['education_list'] = user.education.all()
