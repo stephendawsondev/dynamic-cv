@@ -385,9 +385,8 @@ class EditItem(LoginRequiredMixin, View):
                     else:
                         bullet.save()
             for skill in item.applied_skills.all():
-                skill_name_f = skill.name.replace('-', ' ')
-                if skill_name_f in skill_names:
-                    skill_names.remove(skill_name_f)
+                if skill.name in skill_names:
+                    skill_names.remove(skill.name)
                 else:
                     item.applied_skills.remove(skill)
                     # We don't need to delete skills without references
