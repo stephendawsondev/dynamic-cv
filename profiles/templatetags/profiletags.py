@@ -30,8 +30,8 @@ def order_education_by_end_date(user):
   education_exp = Education.objects.filter(user=user)
 
   # Experience which has no end date will be put first, and sorted by the start date
-  current_exp = education_exp.filter(end_date=None).order_by('-start_year')
-  past_exp = education_exp.exclude(end_date=None).order_by('-end_year')
+  current_exp = education_exp.filter(end_year=None).order_by('-start_year')
+  past_exp = education_exp.exclude(end_year=None).order_by('-end_year')
 
   ordered_exp = list(chain(current_exp, past_exp))
   return ordered_exp
