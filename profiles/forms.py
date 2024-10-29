@@ -110,15 +110,21 @@ class ProjectForm(forms.ModelForm):
         fields = [
             "name",
             "description",
+            "start_date",
+            "end_date",
             "repository_url",
             "deployed_url"
         ]
         labels = {
             "name": "Project Name",
+            "start_date": "From",
+            "end_date": "To",
             "repository_url": "Repository URL",
             "deployed_url": "Deployed URL"
         }
 
         widgets = {
             'description': forms.Textarea(attrs={'rows': 2, 'cols': 15, 'placeholder': 'Max 160 characters...'}),
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
         }

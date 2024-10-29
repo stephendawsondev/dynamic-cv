@@ -24,6 +24,12 @@
       <p class="project-exp-description block text-gray-700 text-sm mb-2">{{ project_exp.description }}</p>
       {% endif %}
 
+      <p class="block text-gray-700 text-sm font-bold mb-2">Time Worked On</p>
+      <p class="project-exp-date block text-gray-700 text-sm mb-2">
+        {{ project_exp.start_date }} - {% if project_exp.end_date %}{{ project_exp.end_date }}{% else %}Present
+        {% endif %}
+      </p>
+
       {% if has_repo_url %}
       <p class="block text-gray-700 text-sm font-bold mb-2">Repository URL</p>
       <a class="project-exp-repo break-all block text-cyan-500 text-sm mb-2" href="{{ project_exp.repository_url }}"
@@ -43,7 +49,8 @@
         aria-label="Edit this item">
         <img src="{% static 'icons/pencil.svg' %}">
       </a>
-      <button class="delete-exp-item w-4 h-4 sm:w-6 sm:h-6" aria-label="Delete this item" data-href="{% url 'delete_item' 'project' item_id %}?tab=projects">
+      <button class="delete-exp-item w-4 h-4 sm:w-6 sm:h-6" aria-label="Delete this item"
+        data-href="{% url 'delete_item' 'project' item_id %}?tab=projects">
         <img src="{% static 'icons/bin.svg' %}">
       </button>
     </div>

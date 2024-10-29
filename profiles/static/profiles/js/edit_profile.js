@@ -59,12 +59,13 @@ const experienceProperties = {
     fields: {
       name: 'project-exp-name',
       description: 'project-exp-description',
+      date: 'project-exp-date',
       repository_url: 'project-exp-repo',
       deployed_url: 'project-exp-deploy',
     },
     optionalFields: ['description', 'repository_url', 'deployed_url'],
     accordionLabel: {
-      format: '0',
+      format: '0, %',
       keys: {
         '0': 'name'
       }

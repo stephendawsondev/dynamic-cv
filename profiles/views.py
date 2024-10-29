@@ -1,11 +1,10 @@
 from django.views.generic import TemplateView, View
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from .templatetags.profiletags import order_work_by_end_date, \
-                                      order_education_by_end_date
+from .templatetags.profiletags import order_by_end_date, \
+                                      order_by_end_year
 from django.db.models import Count
 
 from .forms import SummaryForm, ContactInformationForm, \
@@ -47,13 +46,13 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         ).order_by('-num_applied')
 
         context['work_experience_form'] = WorkExperienceForm(auto_id="work_%s")
-        context['work_experience_list'] = order_work_by_end_date(user)
+        context['work_experience_list'] = order_by_end_date(user, WorkExperience)
 
         context['education_form'] = EducationForm(auto_id="education_%s")
-        context['education_list'] = order_education_by_end_date(user)
+        context['education_list'] = order_by_end_year(user)
 
         context['project_form'] = ProjectForm(auto_id="project_%s")
-        context['project_list'] = user.projects.all()
+        context['project_list'] = order_by_end_date(user, Project)
         return context
 
 
@@ -275,9 +274,12 @@ class AddProject(LoginRequiredMixin, View):
             user=request.user,
             name=post_data['name'],
             description=post_data['description'],
+            start_date=post_data['start_date'],
             repository_url=post_data['repository_url'],
             deployed_url=post_data['deployed_url']
         )
+        if 'end_date' in post_data:
+            project.end_date = post_data['end_date']
         project.save()
         post_data['item_id'] = project.id
         return HttpResponse(json.dumps(post_data))

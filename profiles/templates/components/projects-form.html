@@ -26,7 +26,24 @@
     hx-on::after-request="this.reset()" onreset="addExperienceHtml('project')">
     {% csrf_token %}
     <div class="lg:w-[50%]">
-      {{ project_form|crispy }}
+      {{ project_form.name|as_crispy_field }}
+      {{ project_form.description|as_crispy_field }}
+
+      <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3">
+        {{ project_form.start_date|as_crispy_field }}
+        {{ project_form.end_date|as_crispy_field }}
+      </div>
+      <div class="flex mb-6">
+        <div class="flex items-center h-5">
+          <input id="id_current_project" type="checkbox" data-disables="project_end_date"
+            class="is-active-check w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300" />
+        </div>
+        <label for="id_current_project" class="ms-2 text-sm font-medium text-gray-900">I am currently
+          working on this project</label>
+      </div>
+
+      {{ project_form.repository_url|as_crispy_field }}
+      {{ project_form.deployed_url|as_crispy_field }}
     </div>
     <button type="submit" class="text-black rounded-lg bg-lime-500 py-2 px-3 border border-lime-600">Add
       Project</button>
