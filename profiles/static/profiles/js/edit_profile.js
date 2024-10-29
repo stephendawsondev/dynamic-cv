@@ -308,6 +308,8 @@ function clearForm(experienceType) {
       case 'education':
         optionalFields.push(`end_year`);
         break;
+      case 'project':
+        optionalFields.push('end_date');
       default:
         break;
     }
