@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from .templatetags.profiletags import order_work_by_end_date, \
                                       order_education_by_end_date
+from django.db.models import Count
 
 from .forms import SummaryForm, ContactInformationForm, \
     WorkExperienceForm, EducationForm, ProjectForm
@@ -39,6 +40,11 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             user=user)
         context['summary_form'] = SummaryForm(instance=summary_info)
         context['summary'] = Summary.objects.get(user=user).summary
+
+        # Order the skills by how much experience it applies to
+        context['user_skills'] = user.user_skills.annotate(
+            num_applied=Count('work', distinct=True) + Count('education', distinct=True)
+        ).order_by('-num_applied')
 
         context['work_experience_form'] = WorkExperienceForm(auto_id="work_%s")
         context['work_experience_list'] = order_work_by_end_date(user)
