@@ -151,6 +151,7 @@ function addExperienceHtml(experienceType) {
   editButton.setAttribute('href', editButton.getAttribute('href').replace('/0/', `/${itemExperienceData.item_id}/`));
   let deleteButton = collapseBodyElement.querySelector('.delete-exp-item');
   deleteButton.setAttribute('data-href', deleteButton.getAttribute('data-href').replace('/0/', `/${itemExperienceData.item_id}/`));
+  deleteButton.addEventListener('click', triggerDeleteItem);
   
   // Filling out the new information into the new set of elements
   for (let [field, className] of Object.entries(propertyObject.fields)) {
