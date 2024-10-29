@@ -155,7 +155,7 @@ class Project(models.Model):
     name = models.CharField(max_length=150)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
-    description = models.CharField(max_length=160, null=True, blank=True)
+    description = models.CharField(max_length=500, null=True, blank=True)
     repository_url = models.URLField(blank=True, null=True)
     deployed_url = models.URLField(blank=True, null=True)
 

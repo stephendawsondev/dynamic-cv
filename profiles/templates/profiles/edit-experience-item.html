@@ -54,10 +54,10 @@
       <h1 class="block text-violet-700 text-2xl font-bold mb-2">Edit {{ display_type }}</h1>
       <div class="lg:w-[50%]">
         {% for field in experience_form %}
-        {% if 'Start' in field.label %}
+        {% if 'Start' in field.label or field.label == 'From' %}
         <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3">
           <div>{{ field|as_crispy_field }}</div>
-          {% elif 'End' in field.label %}
+          {% elif 'End' in field.label or field.label == 'To' %}
           <div>{{ field|as_crispy_field }}</div>
         </div>
         <div class="flex mb-6">
@@ -67,7 +67,7 @@
               {% if not experience_form.end_date.value and not experience_form.end_year.value %}checked{% endif %} />
           </div>
           <label for="id_experience_active" class="ms-2 text-sm font-medium text-gray-900">
-            I am currently {{ checkbox.action }} here
+            I am currently {{ checkbox.action }}
           </label>
         </div>
         {% else %}

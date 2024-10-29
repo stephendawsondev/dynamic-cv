@@ -124,7 +124,7 @@ class ProjectForm(forms.ModelForm):
         }
 
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 2, 'cols': 15, 'placeholder': 'Max 160 characters...'}),
+            'description': forms.Textarea(attrs={'rows': 2, 'cols': 15, 'placeholder': 'Max 500 characters...'}),
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
         }

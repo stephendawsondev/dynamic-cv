@@ -322,8 +322,8 @@ class EditItem(LoginRequiredMixin, View):
                     'display_type': 'Work Experience',
                     'experience_form': WorkExperienceForm(instance=item_exp),
                     'checkbox': {
-                        'action': 'working',
-                        'disables': 'work_end_date'
+                        'action': 'working here',
+                        'disables': 'id_end_date'
                     },
                     'cancel_tab': 'work_experience',
                     'bullet_points': request.user.work_bullets.all(),
@@ -335,8 +335,8 @@ class EditItem(LoginRequiredMixin, View):
                     'experience_item': item_exp,
                     'experience_form': EducationForm(instance=item_exp),
                     'checkbox': {
-                        'action': 'studying',
-                        'disables': 'education_end_year,education_grade'
+                        'action': 'studying here',
+                        'disables': 'id_end_year,id_grade'
                     },
                     'cancel_tab': 'education',
                     'bullet_points': request.user.education_bullets.all(),
@@ -345,6 +345,10 @@ class EditItem(LoginRequiredMixin, View):
             elif item_type == 'project':
                 context['display_type'] = 'Project'
                 context['experience_form'] = ProjectForm(instance=item_exp)
+                context['checkbox'] = {
+                    'action': 'working on this project',
+                    'disables': 'id_end_date'
+                }
             else:
                 context['display_type'] = 'Item'
 
