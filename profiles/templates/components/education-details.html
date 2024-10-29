@@ -7,7 +7,8 @@
       data-accordion-target="#education-collapse-{{ forloop.counter }}" aria-expanded="false"
       aria-controls="education-collapse-{{ forloop.counter }}">
       <span class="collapse-label">{{ education_exp.degree }} - {{ education_exp.school_name }},
-        {{ education_exp.start_year }} - {% if education_exp.end_year %}{{ education_exp.end_year }}
+        {{ education_exp.start_year|date:"Y" }} -
+        {% if education_exp.end_year %}{{ education_exp.end_year|date:"Y" }}
         {% else %}Present{% endif %}</span>
       <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" fill="none" viewBox="0 0 10 6">
         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5" />
@@ -31,8 +32,8 @@
 
       <p class="block text-gray-700 text-sm font-bold mb-2">Years Attended</p>
       <p class="education-exp-date block text-gray-700 text-sm mb-2">
-        {{ education_exp.start_year }} - {% if education_exp.end_year %}{{ education_exp.end_year }}{% else %}Present
-        {% endif %}
+        {{ education_exp.start_year|date:"Y" }} - {% if education_exp.end_year %}
+        {{ education_exp.end_year|date:"Y" }}{% else %}Present{% endif %}
       </p>
 
       {% if has_grade %}

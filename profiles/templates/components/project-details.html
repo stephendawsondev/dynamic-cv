@@ -26,8 +26,8 @@
 
       <p class="block text-gray-700 text-sm font-bold mb-2">Time Worked On</p>
       <p class="project-exp-date block text-gray-700 text-sm mb-2">
-        {{ project_exp.start_date }} - {% if project_exp.end_date %}{{ project_exp.end_date }}{% else %}Present
-        {% endif %}
+        {{ project_exp.start_date|date:"F Y" }} - {% if project_exp.end_date %}{{ project_exp.end_date|date:"F Y" }}
+        {% else %}Present{% endif %}
       </p>
 
       {% if has_repo_url %}

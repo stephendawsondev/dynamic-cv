@@ -158,22 +158,39 @@ function addExperienceHtml(experienceType) {
 
     // Connecting the start and end date
     if (field == 'date') {
-      let startDate = null;
-      let endDate = 'Present';
+      let months = [
+        'January', 'February', 'March', 'April',
+        'May', 'June', 'July', 'August',
+        'September', 'October', 'November', 'December'
+      ];
+      let startMonth = null;
+      let startYear = null;
+      let endMonth = '';
+      let endYear = 'Present';
       for (let [propField, propValue] of Object.entries(itemExperienceData)) {
+        if (!(propField.includes('start_') || propField.includes('end_'))) {
+          continue;
+        }
+        let dates = propValue.split('-').map((item) => parseInt(item));
         if (propField.includes('start_')) {
-          startDate = propValue;
+          startMonth = months[dates[1] - 1];
+          startYear = dates[0];
         }
         else if (propField.includes('end_') && propValue) {
-          endDate = propValue;
+          endMonth = months[dates[1] - 1];
+          endYear = dates[0];
         }
       }
-      let dateMessage = `${startDate} - ${endDate}`;
+      let endMessage = (endYear === 'Present') ? endYear : `${endMonth} ${endYear}`;
+      let dateMessage = `${startMonth} ${startYear} - ${endMessage}`;
       itemListElement.getElementsByClassName(className)[0].innerText = dateMessage;
 
       // Applying the date range to the collapse label, if requested
       if (labelFormat.includes('%')) {
-        labelFormat = labelFormat.replace('%', dateMessage);
+        let endLabel = (endYear === 'Present') ? endYear : `${endMonth.slice(0, 3)} ${endYear}`;
+        let labelMessage = `${startMonth.slice(0, 3)} ${startYear} - ${endLabel}`;
+
+        labelFormat = labelFormat.replace('%', labelMessage);
       }
     }
     else {
