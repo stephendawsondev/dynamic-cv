@@ -294,7 +294,7 @@ function clearForm(experienceType) {
     }
   }
   for (let optionalField of optionalFields) {
-    let optionalInput = document.getElementById(`id_${optionalField}`);
+    let optionalInput = document.getElementById(`${experienceType}_${optionalField}`);
     if (optionalInput.hasAttribute('disabled')) {
       optionalInput.removeAttribute('disabled');
       optionalInput.setAttribute('required', true);
@@ -412,7 +412,7 @@ function triggerDeleteItem() {
 window.addEventListener('DOMContentLoaded', () => {
 
   // Forcing dependent elements that are not required by default to be required
-  const dependentIds = ['id_end_date', 'id_end_year', 'id_grade'];
+  const dependentIds = ['work_end_date', 'education_end_year', 'education_grade'];
   for (let depId of dependentIds) {
     let element = document.getElementById(depId);
     element.required = true;

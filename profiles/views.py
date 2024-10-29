@@ -40,13 +40,13 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context['summary_form'] = SummaryForm(instance=summary_info)
         context['summary'] = Summary.objects.get(user=user).summary
 
-        context['work_experience_form'] = WorkExperienceForm()
+        context['work_experience_form'] = WorkExperienceForm(auto_id="work_%s")
         context['work_experience_list'] = order_work_by_end_date(user)
 
-        context['education_form'] = EducationForm()
+        context['education_form'] = EducationForm(auto_id="education_%s")
         context['education_list'] = order_education_by_end_date(user)
 
-        context['project_form'] = ProjectForm()
+        context['project_form'] = ProjectForm(auto_id="project_%s")
         context['project_list'] = user.projects.all()
         return context
 
@@ -315,7 +315,7 @@ class EditItem(LoginRequiredMixin, View):
                     'experience_form': WorkExperienceForm(instance=item_exp),
                     'checkbox': {
                         'action': 'working',
-                        'disables': 'id_end_date'
+                        'disables': 'work_end_date'
                     },
                     'cancel_tab': 'work_experience',
                     'bullet_points': request.user.work_bullets.all(),
@@ -328,7 +328,7 @@ class EditItem(LoginRequiredMixin, View):
                     'experience_form': EducationForm(instance=item_exp),
                     'checkbox': {
                         'action': 'studying',
-                        'disables': 'id_end_year,id_grade'
+                        'disables': 'education_end_year,education_grade'
                     },
                     'cancel_tab': 'education',
                     'bullet_points': request.user.education_bullets.all(),
