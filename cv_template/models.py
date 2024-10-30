@@ -62,6 +62,10 @@ class CVTemplate(models.Model):
     def __str__(self):
         return f"{self.cv_name} - {self.user}"
     
+    def list_of_headings(self):
+        headings = self.item_ordering['headings']
+        return headings.split(',') if headings else []
+    
     def get_ordered_items(self, field, order):
         """
         Returns a list of objects that are sorted by the user

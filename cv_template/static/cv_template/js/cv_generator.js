@@ -72,12 +72,26 @@ function updateSectionVisibility(sectionType) {
   const sectionFormat = sectionType.replaceAll('_', '-');
   const sectionElement = document.getElementsByClassName(`${sectionFormat}-section`)[0];
   const previewContainer = document.getElementById(`preview-${sectionFormat}`);
-  if (previewContainer.children.length > 0 || previewContainer.innerText.trim()) {
-    document.getElementsByClassName('cv-preview')[0].appendChild(sectionElement);
+  const headingOrder = document.getElementById('id_headings_order');
+  let headingData = headingOrder.value ? headingOrder.value.split(',') : [];
+  let sectionIndex = headingData.indexOf(sectionType);
+
+  if ((sectionType === 'projects' && document.getElementById('project-table').children.length > 0)
+    || (sectionType !== 'projects' && (previewContainer.children.length > 0 || previewContainer.innerText.trim()))) {
+    if (!sectionElement.parentNode.className.includes('cv-preview')) {
+      document.getElementsByClassName('cv-preview')[0].appendChild(sectionElement);
+    }
+    if (sectionIndex === -1) {
+      headingData.push(sectionType);
+    }
   }
   else {
     document.getElementById('preview-unused-headings').appendChild(sectionElement);
+    if (sectionIndex >= 0) {
+      headingData.splice(sectionIndex, 1);
+    }
   }
+  headingOrder.value = headingData.join();
 }
 
 

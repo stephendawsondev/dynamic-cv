@@ -4,7 +4,13 @@
 {% block extra_css %}
 <style>
   .emphasis-color {
-    color: {{ cv.color }};
+    color: {
+        {
+        cv.color
+      }
+    }
+
+    ;
   }
 
   h1 {
@@ -204,52 +210,51 @@
       </p>
       {% endif %}
     </section>
-    {% if cv.education.all.count > 0 %}
-    <section class="cv-section education-section">
-      <h3 class="emphasis-color">Education</h3>
-      <table>
-        {% for education in cv.education.all %}
-        <tr>
-          <td class="date-cell">{{ education.start_year }} -
-            {% if education.end_year %}{{ education.end_year }}{% else %}Present{% endif %}
-          </td>
-          <td>{% if education.school_name %} {{ education.school_name }}{% endif %}</td>
-          <td>{% if education.location %} {{ education.location }}{% endif %}</td>
-          <td class="accreditation">
-            {% if education.degree %} {{ education.degree }}{% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-    </section>
-    {% endif %}
-    {% if cv.work_experience.all.count > 0 %}
-    <section class="cv-section work-experience-section">
-      <h3 class="emphasis-color">Work Experience</h3>
-      {% for work_experience in cv.work_experience.all %}
-      <div class="job">
-        <div class="header">
-          <div class="details">
-            {{ work_experience.organization }} - {{ work_experience.position }} - {{ work_experience.location }}
-          </div>
-          <div class="date">
-            {{ work_experience.start_date }} -
-            {% if work_experience.end_date %}{{ work_experience.end_date }}{% else %}Present{% endif %}
-          </div>
-        </div>
-        {% if work_experience.bullet_points.all.count > 0 %}
-        <ul class="work-details">
-          {% for work_bullet in work_experience.bullet_points.all %}
-          <li>{{ work_bullet }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-      {% endfor %}
-    </section>
-    {% endif %}
   </div>
-  {% if cv.projects.all %}
+  {% for heading in cv.list_of_headings %}
+  {% if heading == 'work_experience' %}
+  <section class="cv-section work-experience-section">
+    <h3 class="emphasis-color">Work Experience</h3>
+    {% for work_experience in cv.work_experience.all %}
+    <div class="job">
+      <div class="header">
+        <div class="details">
+          {{ work_experience.organization }} - {{ work_experience.position }} - {{ work_experience.location }}
+        </div>
+        <div class="date">
+          {{ work_experience.start_date }} -
+          {% if work_experience.end_date %}{{ work_experience.end_date }}{% else %}Present{% endif %}
+        </div>
+      </div>
+      {% if work_experience.bullet_points.all.count > 0 %}
+      <ul class="work-details">
+        {% for work_bullet in work_experience.bullet_points.all %}
+        <li>{{ work_bullet }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </section>
+  {% elif heading == 'education' %}
+  <section class="cv-section education-section">
+    <h3 class="emphasis-color">Education</h3>
+    <table>
+      {% for education in cv.education.all %}
+      <tr>
+        <td class="date-cell">{{ education.start_year }} -
+          {% if education.end_year %}{{ education.end_year }}{% else %}Present{% endif %}
+        </td>
+        <td>{% if education.school_name %} {{ education.school_name }}{% endif %}</td>
+        <td>{% if education.location %} {{ education.location }}{% endif %}</td>
+        <td class="accreditation">
+          {% if education.degree %} {{ education.degree }}{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+  {% elif heading == 'projects' %}
   <section class="cv-section project-section solo-projects">
     <h3 class="emphasis-color">Projects</h3>
     <table>
@@ -277,15 +282,14 @@
       </tbody>
     </table>
   </section>
-  {% endif %}
+  {% elif heading == 'skills' %}
   <section class="cv-section technical-skill-set">
     <h3 class="emphasis-color">Skill Set</h3>
     {% for skill in cv.ordered_skills %}
     {{ skill }}{% if not forloop.last %}, {% endif %}
     {% endfor %}
   </section>
-
-  {% if cv.hobbies.all %}
+  {% elif heading == 'hobbies' %}
   <section class="cv-section hobbies">
     <h3 class="emphasis-color">Interests/Hobbies</h3>
     <ul>
@@ -294,9 +298,7 @@
       {% endfor %}
     </ul>
   </section>
-  {% endif %}
-
-  {% if cv.extra_info.all %}
+  {% elif heading == 'extra_info' %}
   <section class="cv-section additional-information">
     <h3 class="emphasis-color">Additional Information</h3>
     <ul>
@@ -306,6 +308,7 @@
     </ul>
   </section>
   {% endif %}
+  {% endfor %}
 </div>
 {% endblock %}
 

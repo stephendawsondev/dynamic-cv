@@ -89,6 +89,7 @@
 <div class="container mx-auto p-3 lg:flex lg:flex-row">
   <form method="post" id="skill-form" class="w-full lg:w-1/2 lg:pr-4">
     {% csrf_token %}
+    <input type="hidden" id="id_headings_order" name="headings_order" value="{{ cv.item_ordering.headings }}">
     {% for form_field in form %}
     {{ form_field|as_crispy_field }}
     {% if form_field.label == 'Skills' %}
@@ -184,7 +185,7 @@
               <th>Deployed URL</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody id="project-table"></tbody>
         </table>
       </section>
       <section class="skills-section">

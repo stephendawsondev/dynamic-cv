@@ -31,6 +31,8 @@ def update_cv_ordering(self):
     Updates the ordering values of the CV
     """
     sort_json = {}
+    if 'headings_order' in self.request.POST:
+        sort_json['headings'] = self.request.POST['headings_order']
     if 'skills_order' in self.request.POST:
         sort_json['skills'] = self.request.POST['skills_order']
     if 'hobbies_order' in self.request.POST:
