@@ -93,7 +93,7 @@
     {{ form_field|as_crispy_field }}
     {% if form_field.label == 'Skills' %}
     {% if user.user_skills.all %}
-    <div id="id_hidden_skill_list" class="hidden" aria-hidden="true" data-num-skills="0"></div>
+    <input type="hidden" id="id_skills_order" name="skills_order" value="" aria-hidden="true">
     {% else %}
     <p class="text-xs text-gray-600">You must have skills on your profile to create your CV</p>
     {% endif %}

@@ -1,53 +1,50 @@
-function updateSkills(event) {
-  // Get the name and id of the skill
-  const skillText = event.target.parentElement.innerText.trim();
-  const skillId = parseInt(event.target.value);
+function updateBulletPointOrder(event) {
+  // Get the id of the bullet point item
+  const bulletId = event.target.value;
 
-  // If we store the skills in a list of hidden elements, we can store them in any order
-  const hiddenSkillList = document.getElementById('id_hidden_skill_list');
+  // Get the hidden input list the item is targeting
+  const element = event.target;
+  const bulletType = element.name;
+  const orderData = document.getElementById(`id_${bulletType}_order`);
 
-  // Checking if the skill is already in the list
-  let hasSkill = false;
-  const hiddenPoints = hiddenSkillList.children;
-  for (let point of hiddenPoints) {
-    const pointId = parseInt(point.value);
-    if (skillId === pointId) {
-      hasSkill = true;
-      point.remove();
+  // Check if the item already exists in the list, and remove it if it does
+  let orderList = orderData.value ? orderData.value.split(',') : [];
+  let hasItem = false;
+  for (let item of orderList) {
+    if (bulletId === item) {
+      hasItem = true;
+      orderList.splice(orderList.indexOf(item), 1);
       break;
     }
   }
-
-  // Adding the skill to the list
-  if (!hasSkill) {
-    const numSkills = parseInt(hiddenSkillList.getAttribute('data-num-skills'));
-    let newSkill = document.createElement('input');
-    newSkill.setAttribute('type', 'hidden');
-    newSkill.name = `user_skills_${numSkills}`;
-    newSkill.value = skillId;
-    newSkill.setAttribute('data-skill', skillText);
-    hiddenSkillList.appendChild(newSkill);
-    hiddenSkillList.setAttribute('data-num-skills', numSkills + 1);
+  if (!hasItem) {
+    orderList.push(bulletId);
   }
 
-  // Updating the preview
-  const preview = document.getElementById('preview-skills');
+  // Setting the new value of the list order, and updating the preview
+  const checkboxContainer = document.getElementById(`div_id_${bulletType}`);
+  const previewContainer = document.getElementById(`preview-${bulletType}`);
   let previewText = '';
-  for (let i = 0; i < hiddenPoints.length; i++) {
-    let child = hiddenPoints[i];
-    previewText += child.getAttribute('data-skill');
-    if (i < hiddenPoints.length - 1) {
+  let orderText = '';
+  for (let i = 0; i < orderList.length; i++) {
+    orderText += orderList[i];
+    const skillText = checkboxContainer.querySelector(`input[value="${orderList[i]}"]`);
+    previewText += skillText.parentElement.innerText.trim();
+    
+    if (i < orderList.length - 1) {
+      orderText += ',';
       previewText += ', ';
     }
   }
-  preview.innerText = previewText;
+  orderData.value = orderText;
+  previewContainer.innerText = previewText;
 }
 
 
 document.addEventListener('DOMContentLoaded', function () {
 
   [...document.getElementById('div_id_skills').getElementsByTagName('input')].map((item) => {
-    item.addEventListener('click', updateSkills);
+    item.addEventListener('click', updateBulletPointOrder);
   });
 
   // Hide the summary input if "Use default summary" is checked

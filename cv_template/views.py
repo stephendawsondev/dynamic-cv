@@ -74,7 +74,8 @@ class CreateCV(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        user = self.request.user
+        form.instance.user = user
         use_default_summary = form.cleaned_data.get("use_default_summary")
         if use_default_summary:
             try:
@@ -91,6 +92,15 @@ class CreateCV(LoginRequiredMixin, CreateView):
         form.instance.contact_information = contact_information
 
         self.object = form.save()
+
+        # Constructing the sort JSON object
+        sort_json = {}
+        if 'skills_order' in self.request.POST:
+            sort_json['skills'] = self.request.POST['skills_order']
+        
+        self.object.item_ordering = sort_json
+        self.object.save()
+
         messages.success(self.request, "CV created successfully")
         return HttpResponseRedirect(self.get_success_url())
 

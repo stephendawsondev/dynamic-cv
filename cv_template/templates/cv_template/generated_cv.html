@@ -4,7 +4,13 @@
 {% block extra_css %}
 <style>
   .emphasis-color {
-    color: {{cv.color}};
+    color: {
+        {
+        cv.color
+      }
+    }
+
+    ;
   }
 
   h1 {
@@ -138,9 +144,9 @@
     the below JS {% endcomment %}
   </div>
   {% if cv.position_title and analysed == False %}
-      <div class="back-button">
-        <a href="{% url 'analyze_cv' cv.id %}">Analyze CV</a>
-      </div>
+  <div class="back-button">
+    <a href="{% url 'analyze_cv' cv.id %}">Analyze CV</a>
+  </div>
   {% endif %}
   {% if cv_analysis %}
   <div class="back-button">
@@ -280,7 +286,7 @@
   {% endif %}
   <section class="cv-section technical-skill-set">
     <h3 class="emphasis-color">Skill Set</h3>
-    {% for skill in cv.skills.all %}
+    {% for skill in cv.ordered_skills %}
     {{ skill }}{% if not forloop.last %}, {% endif %}
     {% endfor %}
   </section>
