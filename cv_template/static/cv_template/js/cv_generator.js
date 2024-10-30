@@ -60,11 +60,38 @@ function updateBulletPointOrder(event) {
   else {
     previewContainer.innerText = previewText;
   }
+  updateSectionVisibility(bulletType);
+}
+
+
+/**
+ * Moves a section to the preview if an item is present, or removes it if it is empty
+ * @param {String} sectionType The section to be moved
+ */
+function updateSectionVisibility(sectionType) {
+  const sectionFormat = sectionType.replaceAll('_', '-');
+  const sectionElement = document.getElementsByClassName(`${sectionFormat}-section`)[0];
+  const previewContainer = document.getElementById(`preview-${sectionFormat}`);
+  if (previewContainer.children.length > 0 || previewContainer.innerText.trim()) {
+    document.getElementsByClassName('cv-preview')[0].appendChild(sectionElement);
+  }
+  else {
+    document.getElementById('preview-unused-headings').appendChild(sectionElement);
+  }
 }
 
 
 document.addEventListener('DOMContentLoaded', function () {
 
+  // Make all checkboxes update the preview
+  [...document.getElementById('div_id_work_experience').getElementsByTagName('input'),
+    ...document.getElementById('div_id_education').getElementsByTagName('input'),
+    ...document.getElementById('div_id_projects').getElementsByTagName('input'),
+  ].map((item) => {
+    item.addEventListener('click', () => {
+      setTimeout(() => updateSectionVisibility(item.name), 1);
+    });
+  });
   [...document.getElementById('div_id_skills').getElementsByTagName('input'),
     ...document.getElementById('div_id_hobbies').getElementsByTagName('input'),
     ...document.getElementById('div_id_extra_info').getElementsByTagName('input')

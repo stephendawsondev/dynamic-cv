@@ -163,15 +163,18 @@
         </ul>
         <div class="my-3 summary" id="preview-summary"></div>
       </section>
-      <section class="education-section">
-        <h3>Education</h3>
-        <table id="preview-education"></table>
-      </section>
+    </div>
+
+    <div id="preview-unused-headings" class="hidden" aria-hidden="true">
       <section class="work-experience-section">
         <h3>Work Experience</h3>
         <div id="preview-work-experience"></div>
       </section>
-      <section class="project-section">
+      <section class="education-section">
+        <h3>Education</h3>
+        <table id="preview-education"></table>
+      </section>
+      <section class="projects-section">
         <h3>Projects</h3>
         <table id="preview-projects">
           <thead>
@@ -184,7 +187,7 @@
           <tbody></tbody>
         </table>
       </section>
-      <section class="technical-skill-set">
+      <section class="skills-section">
         <h3>Technical Skill Set</h3>
         <div id="preview-skills">
           {% for skill in cv.ordered_skills %}
@@ -192,7 +195,7 @@
           {% endfor %}
         </div>
       </section>
-      <section class="hobbies">
+      <section class="hobbies-section">
         <h3>Interests/Hobbies</h3>
         <ul id="preview-hobbies">
           {% for hobby in cv.ordered_hobbies %}
@@ -200,7 +203,7 @@
           {% endfor %}
         </ul>
       </section>
-      <section class="extra-info">
+      <section class="extra-info-section">
         <h3>Additional Information</h3>
         <ul id="preview-extra-info">
           {% for extra_info in cv.ordered_extra_info %}
@@ -209,6 +212,7 @@
         </ul>
       </section>
     </div>
+
   </div>
 </div>
 <button type="button" id="preview-button"

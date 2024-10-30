@@ -4,13 +4,7 @@
 {% block extra_css %}
 <style>
   .emphasis-color {
-    color: {
-        {
-        cv.color
-      }
-    }
-
-    ;
+    color: {{ cv.color }};
   }
 
   h1 {
@@ -255,7 +249,7 @@
     </section>
     {% endif %}
   </div>
-  {% if cv.projects.all.count > 0 %}
+  {% if cv.projects.all %}
   <section class="cv-section project-section solo-projects">
     <h3 class="emphasis-color">Projects</h3>
     <table>
@@ -291,7 +285,7 @@
     {% endfor %}
   </section>
 
-  {% if cv.hobbies %}
+  {% if cv.hobbies.all %}
   <section class="cv-section hobbies">
     <h3 class="emphasis-color">Interests/Hobbies</h3>
     <ul>
@@ -302,7 +296,7 @@
   </section>
   {% endif %}
 
-  {% if cv.extra_info %}
+  {% if cv.extra_info.all %}
   <section class="cv-section additional-information">
     <h3 class="emphasis-color">Additional Information</h3>
     <ul>
