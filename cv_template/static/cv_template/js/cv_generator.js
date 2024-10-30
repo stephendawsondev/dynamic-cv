@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
     const summaryPreview = document.getElementById('preview-summary');
     if (useDefaultSummaryInput.checked) {
-      summaryPreview.innerHTML = '{{ default_summary|escapejs }}';
+      summaryPreview.innerHTML = defaultSummary;
     } else {
       const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');
       if (richTextEditor) {

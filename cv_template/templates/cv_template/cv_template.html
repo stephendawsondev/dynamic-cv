@@ -217,5 +217,8 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+  const defaultSummary = "{{ default_summary|escapejs }}";
+</script>
 <script src="{% static 'cv_template/js/cv_generator.js' %}"></script>
 {% endblock %}
