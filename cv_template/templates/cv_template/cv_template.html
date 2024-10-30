@@ -138,28 +138,31 @@
   <div class="cv-preview-container hidden lg:block lg:w-1/2 lg:pl-4 ">
     <div class="cv-preview bg-white p-5 shadow-md lg:sticky lg:top-0">
       <section class="intro">
-        <h1 id="preview-name">{% if first_name and last_name %}{{ first_name }} {{ last_name }}{% endif %}</h1>
+        <h1 id="preview-name">
+          {% if contact.first_name and contact.last_name %}
+          {{ contact.first_name }} {{ contact.last_name }}
+          {% endif %}
+        </h1>
         <h2 id="preview-position"></h2>
         <ul class="links">
-          {% if github_url %}
-          <li><a href="{{ github_url }}">{{ github_url }}</a></li>
+          {% if contact.github %}
+          <li><a href="{{ contact.github }}">{{ contact.github }}</a></li>
           {% endif %}
-          {% if linkedin_url %}
-          <li><a href="{{ linkedin_url }}">{{ linkedin_url }}</a></li>
+          {% if contact.linkedin %}
+          <li><a href="{{ contact.linkedin }}">{{ contact.linkedin }}</a></li>
           {% endif %}
         </ul>
         <ul class="contact-details">
-          {% if city or country %}
+          {% if contact.city or contact.country %}
           <li>
-            {% if city %}{{ city }}{% endif %}{% if city and country %}, {% endif %}{% if country %}{{ country }}
-            {% endif %}
+            {{ contact.city }}{% if contact.city and contact.country %}, {% endif %}{{ country }}
           </li>
           {% endif %}
-          {% if email %}
-          <li><a href="mailto:{{ email }}">{{ email }}</a></li>
+          {% if contact.email %}
+          <li><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></li>
           {% endif %}
-          {% if phone_number %}
-          <li>{{ phone_number }}</li>
+          {% if contact.phone_number %}
+          <li>{{ contact.phone_number }}</li>
           {% endif %}
         </ul>
         <div class="my-3 summary" id="preview-summary"></div>

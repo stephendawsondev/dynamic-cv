@@ -59,27 +59,9 @@ class CreateCV(LoginRequiredMixin, CreateView):
         try:
             contact_info = ContactInformation.objects.get(
                 user=self.request.user)
-            context.update({
-                'first_name': contact_info.first_name,
-                'last_name': contact_info.last_name,
-                'github_url': contact_info.github,
-                'linkedin_url': contact_info.linkedin,
-                'phone_number': contact_info.phone_number,
-                'email': contact_info.email,
-                'city': contact_info.city,
-                'country': contact_info.country,
-            })
+            context['contact'] = contact_info
         except ContactInformation.DoesNotExist:
-            context.update({
-                'first_name': None,
-                'last_name': None,
-                'github_url': None,
-                'linkedin_url': None,
-                'phone_number': None,
-                'email': None,
-                'city': None,
-                'country': None,
-            })
+            context['contact'] = {}
 
         try:
             default_summary = Summary.objects.get(
@@ -242,6 +224,10 @@ class UpdateCV(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         cv = self.get_object()
         context['cv'] = cv
+        try:
+            context['contact'] = cv.contact_information
+        except ContactInformation.DoesNotExist:
+            context['contact'] = {}
         return context
 
     def get_success_url(self):
