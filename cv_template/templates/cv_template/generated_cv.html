@@ -295,7 +295,7 @@
   <section class="cv-section hobbies">
     <h3 class="emphasis-color">Interests/Hobbies</h3>
     <ul>
-      {% for info in cv.hobbies.all %}
+      {% for info in cv.ordered_hobbies %}
       <li>{{ info.val }}</li>
       {% endfor %}
     </ul>
@@ -306,7 +306,7 @@
   <section class="cv-section additional-information">
     <h3 class="emphasis-color">Additional Information</h3>
     <ul>
-      {% for info in cv.extra_info.all %}
+      {% for info in cv.ordered_extra_info %}
       <li>{{ info.val }}</li>
       {% endfor %}
     </ul>

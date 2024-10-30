@@ -86,6 +86,7 @@
 {% block title %}CV Creator{% endblock %}
 
 {% block content %}
+{% with cv.ordered_skills as cv_skills %}
 <div class="container mx-auto p-3 lg:flex lg:flex-row">
   <form method="post" id="skill-form" class="w-full lg:w-1/2 lg:pr-4">
     {% csrf_token %}
@@ -93,7 +94,8 @@
     {{ form_field|as_crispy_field }}
     {% if form_field.label == 'Skills' %}
     {% if user.user_skills.all %}
-    <input type="hidden" id="id_skills_order" name="skills_order" value="" aria-hidden="true">
+    <input type="hidden" id="id_skills_order" name="skills_order" value="{{ cv.item_ordering.skills }}"
+      aria-hidden="true">
     {% else %}
     <p class="text-xs text-gray-600">You must have skills on your profile to create your CV</p>
     {% endif %}
@@ -103,6 +105,20 @@
     <p class="text-xs text-gray-600">You do not have any education in your profile</p>
     {% elif form_field.label == 'Projects' and not user.projects.all %}
     <p class="text-xs text-gray-600">You do not have any projects in your profile</p>
+    {% elif form_field.label == 'Hobbies' %}
+    {% if user.hobbies.all %}
+    <input type="hidden" id="id_hobbies_order" name="hobbies_order" value="{{ cv.item_ordering.hobbies }}"
+      aria-hidden="true">
+    {% else %}
+    <p class="text-xs text-gray-600">You do not have any hobbies in your profile</p>
+    {% endif %}
+    {% elif form_field.label == 'Extra info' %}
+    {% if user.extra_info.all %}
+    <input type="hidden" id="id_extra_info_order" name="extra_info_order" value="{{ cv.item_ordering.extra_info }}"
+      aria-hidden="true">
+    {% else %}
+    <p class="text-xs text-gray-600">You do not have any extra information in your profile</p>
+    {% endif %}
     {% endif %}
 
     {% endfor %}
@@ -171,7 +187,11 @@
       </section>
       <section class="technical-skill-set">
         <h3>Technical Skill Set</h3>
-        <div id="preview-skills"></div>
+        <div id="preview-skills">
+          {% for skill in cv_skills %}
+          {{ skill }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </div>
       </section>
       <section class="hobbies">
         <h3>Interests/Hobbies</h3>
@@ -187,6 +207,7 @@
 <button type="button" id="preview-button"
   class="fixed bottom-5 right-5 lg:hidden text-violet-800 bg-white border-2 border-violet-800 hover:bg-violet-100 focus:outline-none focus:ring-4 focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2 z-50">Preview
   CV</button>
+{% endwith %}
 {% endblock %}
 
 {% block extra_js %}

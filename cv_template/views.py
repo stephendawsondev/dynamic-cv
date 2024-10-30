@@ -97,6 +97,10 @@ class CreateCV(LoginRequiredMixin, CreateView):
         sort_json = {}
         if 'skills_order' in self.request.POST:
             sort_json['skills'] = self.request.POST['skills_order']
+        if 'hobbies_order' in self.request.POST:
+            sort_json['hobbies'] = self.request.POST['hobbies_order']
+        if 'extra_info_order' in self.request.POST:
+            sort_json['extra_info'] = self.request.POST['extra_info_order']
         
         self.object.item_ordering = sort_json
         self.object.save()
@@ -222,6 +226,12 @@ class UpdateCV(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         kwargs = super(UpdateCV, self).get_form_kwargs()
         kwargs["request"] = self.request
         return kwargs
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cv = self.get_object()
+        context['cv'] = cv
+        return context
 
     def get_success_url(self):
         return reverse("generated_cv", kwargs={"pk": self.object.pk})

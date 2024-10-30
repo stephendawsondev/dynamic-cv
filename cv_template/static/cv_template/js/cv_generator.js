@@ -1,49 +1,74 @@
+/**
+ * Updates the order of a bullet point list when a checkbox is clicked
+ * @param {Event} event The click event of the checkbox
+ */
 function updateBulletPointOrder(event) {
   // Get the id of the bullet point item
   const bulletId = event.target.value;
-
+  const selected = event.target.checked;
+  
   // Get the hidden input list the item is targeting
   const element = event.target;
   const bulletType = element.name;
   const orderData = document.getElementById(`id_${bulletType}_order`);
 
-  // Check if the item already exists in the list, and remove it if it does
+  // Adding/Removing the item id from the list, depending on if the checkbox is checked
   let orderList = orderData.value ? orderData.value.split(',') : [];
-  let hasItem = false;
-  for (let item of orderList) {
-    if (bulletId === item) {
-      hasItem = true;
-      orderList.splice(orderList.indexOf(item), 1);
-      break;
+  let bulletIndex = orderList.indexOf(bulletId);
+  if (selected) {
+    if (bulletIndex === -1) {
+      orderList.push(bulletId);
     }
   }
-  if (!hasItem) {
-    orderList.push(bulletId);
+  else {
+    if (bulletIndex >= 0) {
+      orderList.splice(bulletIndex, 1);
+    }
   }
 
   // Setting the new value of the list order, and updating the preview
   const checkboxContainer = document.getElementById(`div_id_${bulletType}`);
-  const previewContainer = document.getElementById(`preview-${bulletType}`);
+  const previewContainer = document.getElementById(`preview-${bulletType.replaceAll('_', '-')}`);
+
+  // If the preview container is a list, make the items appear on a new line
+  const newLine = (previewContainer.tagName === 'UL');
+
   let previewText = '';
   let orderText = '';
   for (let i = 0; i < orderList.length; i++) {
     orderText += orderList[i];
-    const skillText = checkboxContainer.querySelector(`input[value="${orderList[i]}"]`);
-    previewText += skillText.parentElement.innerText.trim();
+    const bulletInput = checkboxContainer.querySelector(`input[value="${orderList[i]}"]`);
+    const bulletText = bulletInput.parentElement.innerText.trim();
+    if (newLine) {
+      previewText += `<li>${bulletText}</li>`;
+    }
+    else {
+      previewText += bulletText;
+    }
     
     if (i < orderList.length - 1) {
       orderText += ',';
-      previewText += ', ';
+      if (!newLine) {
+        previewText += ', ';
+      }
     }
   }
   orderData.value = orderText;
-  previewContainer.innerText = previewText;
+  if (newLine) {
+    previewContainer.innerHTML = previewText;
+  }
+  else {
+    previewContainer.innerText = previewText;
+  }
 }
 
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  [...document.getElementById('div_id_skills').getElementsByTagName('input')].map((item) => {
+  [...document.getElementById('div_id_skills').getElementsByTagName('input'),
+    ...document.getElementById('div_id_hobbies').getElementsByTagName('input'),
+    ...document.getElementById('div_id_extra_info').getElementsByTagName('input')
+  ].map((item) => {
     item.addEventListener('click', updateBulletPointOrder);
   });
 
@@ -205,31 +230,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    // Hobbies Preview
-    const hobbiesPreview = document.getElementById('preview-hobbies');
-    hobbiesPreview.innerHTML = '';
-    const hobbiesCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="hobbies"]:checked');
-    hobbiesCheckboxes.forEach(checkbox => {
-      const hobbyInfo = checkbox.parentElement.textContent.trim();
-      const li = document.createElement('li');
-      li.textContent = hobbyInfo;
-      hobbiesPreview.appendChild(li);
-    });
-
-    // Extra Info Preview
-    const extraInfoPreview = document.getElementById('preview-extra-info');
-    extraInfoPreview.innerHTML = '';
-    const extraInfoCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="extra_info"]:checked');
-    extraInfoCheckboxes.forEach(checkbox => {
-      const extraInfo = checkbox.parentElement.textContent.trim();
-      const div = document.createElement('div');
-      div.className = 'extra-info-item';
-      div.innerHTML = `
-      <li>${extraInfo}</li>
-`;
-      extraInfoPreview.appendChild(div);
-    });
-
     const projectsPreview = document.getElementById('preview-projects').getElementsByTagName('tbody')[0];
     projectsPreview.innerHTML = '';
     const projectCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="projects"]:checked');
@@ -245,11 +245,6 @@ document.addEventListener('DOMContentLoaded', function () {
         projectsPreview.appendChild(tr);
       }
     });
-
-    // const skillsPreview = document.getElementById('preview-skills');
-    // const skillsCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="skills"]:checked');
-    // const skillsList = Array.from(skillsCheckboxes).map(checkbox => checkbox.parentElement.textContent.trim());
-    // skillsPreview.textContent = skillsList.join(', ');
 
     updateLinks();
   }

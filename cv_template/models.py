@@ -75,7 +75,16 @@ class CVTemplate(models.Model):
         return object_list
     
     def ordered_skills(self):
+        """ Returns the custom ordered skills list """
         return self.get_ordered_items('skills', self.item_ordering['skills'])
+    
+    def ordered_hobbies(self):
+        """ Returns the custom ordered hobbies list """
+        return self.get_ordered_items('hobbies', self.item_ordering['hobbies'])
+    
+    def ordered_extra_info(self):
+        """ Returns the custom ordered extra_info list """
+        return self.get_ordered_items('extra_info', self.item_ordering['extra_info'])
 
 
 class CVAnalysis(models.Model):
