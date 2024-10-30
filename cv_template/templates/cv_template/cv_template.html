@@ -86,7 +86,6 @@
 {% block title %}CV Creator{% endblock %}
 
 {% block content %}
-{% with cv.ordered_skills as cv_skills %}
 <div class="container mx-auto p-3 lg:flex lg:flex-row">
   <form method="post" id="skill-form" class="w-full lg:w-1/2 lg:pr-4">
     {% csrf_token %}
@@ -188,18 +187,26 @@
       <section class="technical-skill-set">
         <h3>Technical Skill Set</h3>
         <div id="preview-skills">
-          {% for skill in cv_skills %}
+          {% for skill in cv.ordered_skills %}
           {{ skill }}{% if not forloop.last %}, {% endif %}
           {% endfor %}
         </div>
       </section>
       <section class="hobbies">
         <h3>Interests/Hobbies</h3>
-        <ul id="preview-hobbies"></ul>
+        <ul id="preview-hobbies">
+          {% for hobby in cv.ordered_hobbies %}
+          <li>{{ hobby }}</li>
+          {% endfor %}
+        </ul>
       </section>
       <section class="extra-info">
         <h3>Additional Information</h3>
-        <ul id="preview-extra-info"></ul>
+        <ul id="preview-extra-info">
+          {% for extra_info in cv.ordered_extra_info %}
+          <li>{{ extra_info }}</li>
+          {% endfor %}
+        </ul>
       </section>
     </div>
   </div>
@@ -207,7 +214,6 @@
 <button type="button" id="preview-button"
   class="fixed bottom-5 right-5 lg:hidden text-violet-800 bg-white border-2 border-violet-800 hover:bg-violet-100 focus:outline-none focus:ring-4 focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2 z-50">Preview
   CV</button>
-{% endwith %}
 {% endblock %}
 
 {% block extra_js %}

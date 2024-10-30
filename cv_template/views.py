@@ -26,6 +26,22 @@ class CvList(ListView):
         return context
 
 
+def update_cv_ordering(self):
+    """
+    Updates the ordering values of the CV
+    """
+    sort_json = {}
+    if 'skills_order' in self.request.POST:
+        sort_json['skills'] = self.request.POST['skills_order']
+    if 'hobbies_order' in self.request.POST:
+        sort_json['hobbies'] = self.request.POST['hobbies_order']
+    if 'extra_info_order' in self.request.POST:
+        sort_json['extra_info'] = self.request.POST['extra_info_order']
+    
+    self.object.item_ordering = sort_json
+    self.object.save()
+
+
 class CreateCV(LoginRequiredMixin, CreateView):
     model = CVTemplate
     form_class = CVTemplateForm
@@ -92,18 +108,7 @@ class CreateCV(LoginRequiredMixin, CreateView):
         form.instance.contact_information = contact_information
 
         self.object = form.save()
-
-        # Constructing the sort JSON object
-        sort_json = {}
-        if 'skills_order' in self.request.POST:
-            sort_json['skills'] = self.request.POST['skills_order']
-        if 'hobbies_order' in self.request.POST:
-            sort_json['hobbies'] = self.request.POST['hobbies_order']
-        if 'extra_info_order' in self.request.POST:
-            sort_json['extra_info'] = self.request.POST['extra_info_order']
-        
-        self.object.item_ordering = sort_json
-        self.object.save()
+        update_cv_ordering(self)
 
         messages.success(self.request, "CV created successfully")
         return HttpResponseRedirect(self.get_success_url())
@@ -220,7 +225,11 @@ class UpdateCV(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             except Summary.DoesNotExist:
                 summary = ""
             form.instance.summary = summary
-        return super(UpdateCV, self).form_valid(form)
+
+        self.object = form.save()
+        update_cv_ordering(self)
+        messages.success(self.request, "CV updated successfully")
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_form_kwargs(self):
         kwargs = super(UpdateCV, self).get_form_kwargs()

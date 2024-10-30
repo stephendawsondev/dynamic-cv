@@ -64,11 +64,11 @@ class CVTemplate(models.Model):
     
     def get_ordered_items(self, field, order):
         """
-        Returns a list of objects that are sorted in a custom manner
+        Returns a list of objects that are sorted by the user
         """
         objects = getattr(self, field)
         object_list = []
-        object_ids = order.split(',')
+        object_ids = order.split(',') if order else []
         for obj_id in object_ids:
             selected_obj = objects.get(id=int(obj_id))
             object_list.append(selected_obj)
