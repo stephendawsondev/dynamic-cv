@@ -124,17 +124,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const form = document.querySelector('#skill-form');
   const previewButton = document.querySelector('#preview-button');
   const previewContainer = document.querySelector('.cv-preview-container');
+  const previewButtonText = 'Preview CV';
 
   function togglePreview() {
     if (window.innerWidth < 1024) { // 'lg' breakpoint
       if (previewContainer.classList.contains('hidden')) {
         previewContainer.classList.remove('hidden');
-        previewContainer.classList.add('fixed', 'inset-0', 'z-50', 'bg-white', 'overflow-auto', 'p-4');
+        previewContainer.classList.add('fixed', 'inset-0', 'z-50');
         previewButton.textContent = 'Hide Preview';
       } else {
         previewContainer.classList.add('hidden');
-        previewContainer.classList.remove('fixed', 'inset-0', 'z-50', 'bg-white', 'overflow-auto', 'p-4');
-        previewButton.textContent = 'Preview CV';
+        previewContainer.classList.remove('fixed', 'inset-0', 'z-50');
+        previewButton.textContent = previewButtonText;
       }
     }
   }
@@ -160,31 +161,49 @@ document.addEventListener('DOMContentLoaded', function () {
     height: 96
   };
   const cvPreview = document.querySelector('.cv-preview');
+  const stickyContainer = document.querySelector('#sticky-container');
   // The maximum height of the CV should be the height of the screen minus a determined margin
   const maxScreenHeight = window.innerHeight - previewMargin.height;
 
   function handleResize() {
-    // Find the size of the preview container
-    const previewSize = previewContainer.getBoundingClientRect();
-
-    // Finds the scale of the page where the width touches the edge and where the height touches the edge.
-    // The smallest scale is the one that won't overflow, so we want the smallest
-    const scale = Math.min(
-      1 / ((pageSize.width * pxPerMm) / (previewSize.width - previewMargin.width)),
-      1 / ((pageSize.height * pxPerMm) / maxScreenHeight));
-
-    cvPreview.style.scale = scale;
-    cvPreview.style.left = `${(previewSize.width - ((pageSize.width * pxPerMm) * scale)) / 2}px`;
-
 
     if (window.innerWidth >= 1024) {
-      previewContainer.classList.remove('hidden', 'fixed', 'inset-0', 'z-50', 'bg-white', 'overflow-auto', 'p-4');
+      previewContainer.classList.remove('hidden', 'fixed', 'inset-0', 'z-50');
       previewContainer.classList.add('lg:block');
       previewButton.classList.add('hidden');
+      previewButton.textContent = previewButtonText;
+
+      // Find the size of the preview container
+      const previewSize = previewContainer.getBoundingClientRect();
+
+      // Finds the scale of the page where the width touches the edge and where the height touches the edge.
+      // The smallest scale is the one that won't overflow, so we want the smallest
+      const scale = Math.min(
+        1 / ((pageSize.width * pxPerMm) / (previewSize.width - previewMargin.width)),
+        1 / ((pageSize.height * pxPerMm) / maxScreenHeight)
+      );
+
+      cvPreview.style.scale = scale;
+      cvPreview.style.left = `${(previewSize.width - ((pageSize.width * pxPerMm) * scale)) / 2}px`;
+      cvPreview.style.top = '';
+
+      // Also adjust the height of the sticky container so that the page scrolls to the bottom
+      stickyContainer.style.height = `${((pageSize.height * pxPerMm) * scale) + previewMargin.height}px`;
     } else {
-      previewContainer.classList.add('hidden');
+      // Prevents the preview from disappearing whenever the screen is resized
+      if (previewButton.classList.contains('hidden')) {
+        previewContainer.classList.add('hidden');
+      }
       previewContainer.classList.remove('lg:block');
       previewButton.classList.remove('hidden');
+
+      const scale = Math.min(
+        1 / ((pageSize.width * pxPerMm) / (document.body.clientWidth - previewMargin.width)),
+        1 / ((pageSize.height * pxPerMm) / (window.innerHeight - previewMargin.height))
+      );
+      cvPreview.style.scale = scale;
+      cvPreview.style.left = `${(document.body.clientWidth - ((pageSize.width * pxPerMm) * scale)) / 2}px`;
+      cvPreview.style.top = `${Math.max((window.innerHeight - ((pageSize.height * pxPerMm) * scale)) / 2, 0)}px`;
     }
   }
 
