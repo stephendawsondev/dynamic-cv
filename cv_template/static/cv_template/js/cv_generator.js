@@ -113,6 +113,16 @@ document.addEventListener('DOMContentLoaded', function () {
     item.addEventListener('click', updateBulletPointOrder);
   });
 
+  // Insert the headings into the preview
+  const headingOrder = document.getElementById('id_headings_order');
+  const headingValues = headingOrder.value ? headingOrder.value.split(',') : [];
+  const cvPreview = document.querySelector('.cv-preview');
+  for (let val of headingValues) {
+    const valF = val.replaceAll('_', '-');
+    const headingSection = document.querySelector(`.${valF}-section`);
+    cvPreview.appendChild(headingSection);
+  }
+
   // Hide the summary input if "Use default summary" is checked
   const summaryCheckbox = document.querySelector('#id_use_default_summary');
   const summaryInput = document.querySelector('#div_id_summary');
@@ -160,7 +170,6 @@ document.addEventListener('DOMContentLoaded', function () {
     width: 32,
     height: 96
   };
-  const cvPreview = document.querySelector('.cv-preview');
   const stickyContainer = document.querySelector('#sticky-container');
   // The maximum height of the CV should be the height of the screen minus a determined margin
   const maxScreenHeight = window.innerHeight - previewMargin.height;
