@@ -1,9 +1,11 @@
 from django.views.generic import TemplateView, View
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from .templatetags.profiletags import order_by_end_date, \
+                                      order_by_end_year
+from django.db.models import Count
 
 from .forms import SummaryForm, ContactInformationForm, \
     WorkExperienceForm, EducationForm, ProjectForm
@@ -38,14 +40,19 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context['summary_form'] = SummaryForm(instance=summary_info)
         context['summary'] = Summary.objects.get(user=user).summary
 
-        context['work_experience_form'] = WorkExperienceForm()
-        context['work_experience_list'] = user.work_experience.all()
+        # Order the skills by how much experience it applies to
+        context['user_skills'] = user.user_skills.annotate(
+            num_applied=Count('work', distinct=True) + Count('education', distinct=True)
+        ).order_by('-num_applied')
 
-        context['education_form'] = EducationForm()
-        context['education_list'] = user.education.all()
+        context['work_experience_form'] = WorkExperienceForm(auto_id="work_%s")
+        context['work_experience_list'] = order_by_end_date(user, WorkExperience)
 
-        context['project_form'] = ProjectForm()
-        context['project_list'] = user.projects.all()
+        context['education_form'] = EducationForm(auto_id="education_%s")
+        context['education_list'] = order_by_end_year(user)
+
+        context['project_form'] = ProjectForm(auto_id="project_%s")
+        context['project_list'] = order_by_end_date(user, Project)
         return context
 
 
@@ -267,9 +274,12 @@ class AddProject(LoginRequiredMixin, View):
             user=request.user,
             name=post_data['name'],
             description=post_data['description'],
+            start_date=post_data['start_date'],
             repository_url=post_data['repository_url'],
             deployed_url=post_data['deployed_url']
         )
+        if 'end_date' in post_data:
+            project.end_date = post_data['end_date']
         project.save()
         post_data['item_id'] = project.id
         return HttpResponse(json.dumps(post_data))
@@ -312,11 +322,11 @@ class EditItem(LoginRequiredMixin, View):
                     'display_type': 'Work Experience',
                     'experience_form': WorkExperienceForm(instance=item_exp),
                     'checkbox': {
-                        'action': 'working',
+                        'action': 'working here',
                         'disables': 'id_end_date'
                     },
                     'cancel_tab': 'work_experience',
-                    'bullet_points': request.user.work_experience.all(),
+                    'bullet_points': request.user.work_bullets.all(),
                     'bullet_point_label': 'Duties/Responsibilities'
                 })
             elif item_type == 'education':
@@ -325,16 +335,20 @@ class EditItem(LoginRequiredMixin, View):
                     'experience_item': item_exp,
                     'experience_form': EducationForm(instance=item_exp),
                     'checkbox': {
-                        'action': 'studying',
+                        'action': 'studying here',
                         'disables': 'id_end_year,id_grade'
                     },
                     'cancel_tab': 'education',
-                    'bullet_points': request.user.education.all(),
+                    'bullet_points': request.user.education_bullets.all(),
                     'bullet_point_label': 'Modules Covered'
                 })
             elif item_type == 'project':
                 context['display_type'] = 'Project'
                 context['experience_form'] = ProjectForm(instance=item_exp)
+                context['checkbox'] = {
+                    'action': 'working on this project',
+                    'disables': 'id_end_date'
+                }
             else:
                 context['display_type'] = 'Item'
 
@@ -383,9 +397,8 @@ class EditItem(LoginRequiredMixin, View):
                     else:
                         bullet.save()
             for skill in item.applied_skills.all():
-                skill_name_f = skill.name.replace('-', ' ')
-                if skill_name_f in skill_names:
-                    skill_names.remove(skill_name_f)
+                if skill.name in skill_names:
+                    skill_names.remove(skill.name)
                 else:
                     item.applied_skills.remove(skill)
                     # We don't need to delete skills without references
