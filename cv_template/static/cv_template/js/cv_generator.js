@@ -95,6 +95,64 @@ function updateSectionVisibility(sectionType) {
 }
 
 
+const headings = ['work-experience', 'education', 'projects', 'skills', 'hobbies', 'extra-info'];
+/**
+ * Renders the selected sections to the CV preview, creating new pages where necessary
+ */
+function renderPreview() {
+  // Temporarily move all headings back into the unused section
+  const headingElements = headings.map((item) => document.querySelector(`.${item}-section`));
+  document.getElementById('preview-unused-headings').appendChild(...headingElements);
+
+  // Remove all extra pages
+  let pages = [...document.getElementsByClassName('cv-preview')];
+  while (pages.length > 1) {
+    pages[1].remove();
+  }
+
+  // Then, add all the headings to the first page
+  const headingOrder = document.getElementById('id_headings_order');
+  const headingValues = headingOrder.value ? headingOrder.value.split(',') : [];
+  let pageIndex = 0;
+  for (let val of headingValues) {
+    const valF = val.replaceAll('_', '-');
+    const headingSection = document.querySelector(`.${valF}-section`);
+    pages[pageIndex].appendChild(headingSection);
+  }
+
+  // Ensure all the heights are calculated before splitting the sections into pages
+  setTimeout(() => {
+    const previewContainer = document.querySelector('.cv-preview-container');
+    // Finding the upper margin of the page
+    const pageRect = pages[0].getBoundingClientRect();
+    const sectionRect = pages[0].children[0].getBoundingClientRect();
+    const verticalMargin = sectionRect.y - pageRect.y;
+
+    // What space is available on the page, and what is used up before the sections
+    const availableSpace = pageRect.height - (verticalMargin * 2);
+    let usedSpace = pages[0].children[0].getBoundingClientRect().height;
+
+    // Get the heights of each section
+    const sections = [...pages[0].children];
+    sections.map((section) => {
+      const sectionRect = section.getBoundingClientRect();
+      console.log(`Used Space: `);
+      if (usedSpace + sectionRect.height > availableSpace) {
+        // Creating a new page
+        const newPage = document.createElement('div');
+        newPage.className = 'cv-preview page bg-white shadow-md';
+        previewContainer.appendChild(newPage);
+        pages.push(newPage);
+        pageIndex++;
+        usedSpace = 0;
+      }
+      pages[pageIndex].appendChild(section);
+      usedSpace += sectionRect.height;
+    });
+  });
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
 
   // Make all checkboxes update the preview
@@ -114,14 +172,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Insert the headings into the preview
-  const headingOrder = document.getElementById('id_headings_order');
-  const headingValues = headingOrder.value ? headingOrder.value.split(',') : [];
   const cvPreview = document.querySelector('.cv-preview');
-  for (let val of headingValues) {
-    const valF = val.replaceAll('_', '-');
-    const headingSection = document.querySelector(`.${valF}-section`);
-    cvPreview.appendChild(headingSection);
-  }
+  renderPreview();
 
   // Hide the summary input if "Use default summary" is checked
   const summaryCheckbox = document.querySelector('#id_use_default_summary');
@@ -165,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
     width: 210,
     height: 297
   };
-  // The TOTAL margin 
+  // The TOTAL margin of the preview, i.e. the sum of both sides
   const previewMargin = {
     width: 32,
     height: 96
