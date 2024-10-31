@@ -1,0 +1,23 @@
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 10mm;
+  box-sizing: border-box;
+  background-color: white;
+  margin-bottom: 20px;
+  position: relative;
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* Used to measure a millimeter in terms of pixels */
+#mm-measurement {
+  width: 1mm;
+  height: 1mm;
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+}

@@ -1,10 +1,14 @@
-/* Make the preview have the same dimensions as an A4 page */
-.cv-preview {
-  aspect-ratio: 210 / 297;
-}
-
 [id^="div_id_"] {
   margin: 2rem 0;
+}
+
+.cv-preview-container {
+  background-color: #EEEEEE;
+}
+
+.page.active {
+  transform-origin: 0 0;
+  top: 32px;
 }
 
 #id_color {

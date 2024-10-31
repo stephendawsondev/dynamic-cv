@@ -147,7 +147,36 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Find how many pixels are in a millimeter
+  const mmElement = document.getElementById('mm-measurement');
+  const pxPerMm = mmElement.getBoundingClientRect().width;
+  const pageSize = {
+    width: 210,
+    height: 297
+  };
+  // The TOTAL margin 
+  const previewMargin = {
+    width: 32,
+    height: 96
+  };
+  const cvPreview = document.querySelector('.cv-preview');
+  // The maximum height of the CV should be the height of the screen minus a determined margin
+  const maxScreenHeight = window.innerHeight - previewMargin.height;
+
   function handleResize() {
+    // Find the size of the preview container
+    const previewSize = previewContainer.getBoundingClientRect();
+
+    // Finds the scale of the page where the width touches the edge and where the height touches the edge.
+    // The smallest scale is the one that won't overflow, so we want the smallest
+    const scale = Math.min(
+      1 / ((pageSize.width * pxPerMm) / (previewSize.width - previewMargin.width)),
+      1 / ((pageSize.height * pxPerMm) / maxScreenHeight));
+
+    cvPreview.style.scale = scale;
+    cvPreview.style.left = `${(previewSize.width - ((pageSize.width * pxPerMm) * scale)) / 2}px`;
+
+
     if (window.innerWidth >= 1024) {
       previewContainer.classList.remove('hidden', 'fixed', 'inset-0', 'z-50', 'bg-white', 'overflow-auto', 'p-4');
       previewContainer.classList.add('lg:block');

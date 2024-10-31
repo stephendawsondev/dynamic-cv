@@ -3,6 +3,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'cv_template/css/cv_template.css' %}">
+<link rel="stylesheet" href="{% static 'css/cv_page.css' %}">
 <style>
   .cv-preview {
     font-family: "Raleway", sans-serif;
@@ -135,38 +136,41 @@
     {% endif %}
     {% endwith %}
   </form>
-  <div class="cv-preview-container hidden lg:block lg:w-1/2 lg:pl-4 ">
-    <div class="cv-preview bg-white p-5 shadow-md lg:sticky lg:top-0">
-      <section class="intro">
-        <h1 id="preview-name">
-          {% if contact.first_name and contact.last_name %}
-          {{ contact.first_name }} {{ contact.last_name }}
-          {% endif %}
-        </h1>
-        <h2 id="preview-position"></h2>
-        <ul class="links">
-          {% if contact.github %}
-          <li><a href="{{ contact.github }}">{{ contact.github }}</a></li>
-          {% endif %}
-          {% if contact.linkedin %}
-          <li><a href="{{ contact.linkedin }}">{{ contact.linkedin }}</a></li>
-          {% endif %}
-        </ul>
-        <ul class="contact-details">
-          {% if contact.city or contact.country %}
-          <li>
-            {{ contact.city }}{% if contact.city and contact.country %}, {% endif %}{{ country }}
-          </li>
-          {% endif %}
-          {% if contact.email %}
-          <li><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></li>
-          {% endif %}
-          {% if contact.phone_number %}
-          <li>{{ contact.phone_number }}</li>
-          {% endif %}
-        </ul>
-        <div class="my-3 summary" id="preview-summary"></div>
-      </section>
+  <div class="cv-preview-container hidden lg:block w-full lg:w-1/2">
+    <div id="sticky-container" class="lg:sticky lg:top-0">
+
+      <div class="cv-preview page active bg-white shadow-md">
+        <section class="intro">
+          <h1 id="preview-name">
+            {% if contact.first_name and contact.last_name %}
+            {{ contact.first_name }} {{ contact.last_name }}
+            {% endif %}
+          </h1>
+          <h2 id="preview-position"></h2>
+          <ul class="links">
+            {% if contact.github %}
+            <li><a href="{{ contact.github }}">{{ contact.github }}</a></li>
+            {% endif %}
+            {% if contact.linkedin %}
+            <li><a href="{{ contact.linkedin }}">{{ contact.linkedin }}</a></li>
+            {% endif %}
+          </ul>
+          <ul class="contact-details">
+            {% if contact.city or contact.country %}
+            <li>
+              {{ contact.city }}{% if contact.city and contact.country %}, {% endif %}{{ contact.country }}
+            </li>
+            {% endif %}
+            {% if contact.email %}
+            <li><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></li>
+            {% endif %}
+            {% if contact.phone_number %}
+            <li>{{ contact.phone_number }}</li>
+            {% endif %}
+          </ul>
+          <div class="my-3 summary" id="preview-summary"></div>
+        </section>
+      </div>
     </div>
 
     <div id="preview-unused-headings" class="hidden" aria-hidden="true">
@@ -222,6 +226,7 @@
 <button type="button" id="preview-button"
   class="fixed bottom-5 right-5 lg:hidden text-violet-800 bg-white border-2 border-violet-800 hover:bg-violet-100 focus:outline-none focus:ring-4 focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2 z-50">Preview
   CV</button>
+<div id="mm-measurement"></div>
 {% endblock %}
 
 {% block extra_js %}
