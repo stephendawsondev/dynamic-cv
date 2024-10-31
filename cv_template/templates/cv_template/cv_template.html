@@ -138,37 +138,43 @@
   </form>
   <div class="cv-preview-container hidden lg:block w-full lg:w-1/2">
     <div id="sticky-container" class="lg:sticky lg:top-0">
-      <div class="cv-preview page active bg-white shadow-md">
-        <section class="intro">
-          <h1 id="preview-name" class="bold">
-            {% if contact.first_name and contact.last_name %}
-            {{ contact.first_name }} {{ contact.last_name }}
-            {% endif %}
-          </h1>
-          <h2 id="preview-position"></h2>
-          <ul class="links">
-            {% if contact.github %}
-            <li><a href="{{ contact.github }}">{{ contact.github }}</a></li>
-            {% endif %}
-            {% if contact.linkedin %}
-            <li><a href="{{ contact.linkedin }}">{{ contact.linkedin }}</a></li>
-            {% endif %}
-          </ul>
-          <ul class="contact-details">
-            {% if contact.city or contact.country %}
-            <li>
-              {{ contact.city }}{% if contact.city and contact.country %}, {% endif %}{{ contact.country }}
-            </li>
-            {% endif %}
-            {% if contact.email %}
-            <li><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></li>
-            {% endif %}
-            {% if contact.phone_number %}
-            <li>{{ contact.phone_number }}</li>
-            {% endif %}
-          </ul>
-          <div class="my-3 summary" id="preview-summary"></div>
-        </section>
+      <div id="cv-pages">
+        <div class="cv-preview page active bg-white shadow-md">
+          <section class="intro">
+            <h1 id="preview-name" class="bold">
+              {% if contact.first_name and contact.last_name %}
+              {{ contact.first_name }} {{ contact.last_name }}
+              {% endif %}
+            </h1>
+            <h2 id="preview-position"></h2>
+            <ul class="links">
+              {% if contact.github %}
+              <li><a href="{{ contact.github }}">{{ contact.github }}</a></li>
+              {% endif %}
+              {% if contact.linkedin %}
+              <li><a href="{{ contact.linkedin }}">{{ contact.linkedin }}</a></li>
+              {% endif %}
+            </ul>
+            <ul class="contact-details">
+              {% if contact.city or contact.country %}
+              <li>
+                {{ contact.city }}{% if contact.city and contact.country %}, {% endif %}{{ contact.country }}
+              </li>
+              {% endif %}
+              {% if contact.email %}
+              <li><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></li>
+              {% endif %}
+              {% if contact.phone_number %}
+              <li>{{ contact.phone_number }}</li>
+              {% endif %}
+            </ul>
+            <div class="my-3 summary" id="preview-summary"></div>
+          </section>
+        </div>
+      </div>
+      <div id="preview-page-buttons" class="w-full hidden flex align-center justify-center">
+        <button id="preview-previous-page" class="cv-action-button m-0" disabled>Prev</button>
+        <button id="preview-next-page" class="cv-action-button">Next</button>
       </div>
     </div>
 
@@ -195,7 +201,7 @@
         </table>
       </section>
       <section class="skills-section">
-        <h3>Technical Skill Set</h3>
+        <h3>Skill Set</h3>
         <div id="preview-skills">
           {% for skill in cv.ordered_skills %}
           {{ skill }}{% if not forloop.last %}, {% endif %}

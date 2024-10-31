@@ -86,23 +86,6 @@ body {
   }
 }
 
-.page-navigation a,
-.back-button a,
-#generate-pdf {
-  display: inline-block;
-  cursor: pointer;
-  background-color: #5b21b6;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  text-decoration: none;
-  border: none;
-  margin-left: 0.5em;
-  &:hover {
-    background-color: rgb(101 163 13);
-  }
-}
-
 @media print {
   .page {
     box-shadow: none !important;

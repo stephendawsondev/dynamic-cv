@@ -35,3 +35,28 @@
   visibility: hidden;
   pointer-events: none;
 }
+
+.cv-action-button,
+.has-cv-action a {
+  display: inline-block;
+  cursor: pointer;
+  background-color: #5b21b6;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  border: none;
+  margin-left: 0.5em;
+  &:hover {
+    background-color: rgb(101 163 13);
+  }
+}
+
+.cv-action-button:disabled {
+  background-color: #999999;
+  color: white;
+
+  &:hover {
+    background-color: #999999;
+  }
+}

@@ -1,3 +1,27 @@
+// Create and insert the disabled text area
+const form = document.querySelector('#skill-form');
+const previewButton = document.querySelector('#preview-button');
+const previewContainer = document.querySelector('.cv-preview-container');
+const previewButtonText = 'Preview CV';
+
+ // Find how many pixels are in a millimeter
+ const mmElement = document.getElementById('mm-measurement');
+ const pxPerMm = mmElement.getBoundingClientRect().width;
+ const pageSize = {
+   width: 210,
+   height: 297
+ };
+ // The TOTAL margin of the preview, i.e. the sum of both sides
+ const previewMargin = {
+   width: 32,
+   height: 80
+ };
+ const stickyContainer = document.querySelector('#sticky-container');
+ const pageList = document.querySelector('#cv-pages');
+ // The maximum height of the CV should be the height of the screen minus a determined margin
+ const maxScreenHeight = window.innerHeight - previewMargin.height;
+
+
 /**
  * Updates the order of a bullet point list when a checkbox is clicked
  * @param {Event} event The click event of the checkbox
@@ -109,6 +133,9 @@ function renderPreview() {
   while (pages.length > 1) {
     pages[1].remove();
   }
+  // Hide the page navigation buttons
+  const navButtons = document.getElementById('preview-page-buttons');
+  navButtons.classList.add('hidden');
 
   // Then, add all the headings to the first page
   const headingOrder = document.getElementById('id_headings_order');
@@ -122,7 +149,7 @@ function renderPreview() {
 
   // Ensure all the heights are calculated before splitting the sections into pages
   setTimeout(() => {
-    const previewContainer = document.querySelector('.cv-preview-container');
+    const pageList = document.querySelector('#cv-pages');
     // Finding the upper margin of the page
     const pageRect = pages[0].getBoundingClientRect();
     const sectionRect = pages[0].children[0].getBoundingClientRect();
@@ -136,20 +163,127 @@ function renderPreview() {
     const sections = [...pages[0].children];
     sections.map((section) => {
       const sectionRect = section.getBoundingClientRect();
-      console.log(`Used Space: `);
       if (usedSpace + sectionRect.height > availableSpace) {
         // Creating a new page
         const newPage = document.createElement('div');
         newPage.className = 'cv-preview page bg-white shadow-md';
-        previewContainer.appendChild(newPage);
+        pageList.appendChild(newPage);
         pages.push(newPage);
         pageIndex++;
         usedSpace = 0;
+        navButtons.classList.remove('hidden');
       }
       pages[pageIndex].appendChild(section);
       usedSpace += sectionRect.height;
+
+      // Once all headings are in place, adjust each page to fit the available space
+      setTimeout(handleResize);
     });
   });
+}
+
+
+/**
+ * Moves to the next/previous page in the preview
+ * @param {Number} direction Positive for next page, negative for previous page
+ */
+function navigatePreview(direction) {
+  const pageList = document.querySelector('#cv-pages');
+  const pages = pageList.children;
+  const prevPage = document.getElementById('preview-previous-page');
+  const nextPage = document.getElementById('preview-next-page');
+  prevPage.disabled = true;
+  nextPage.disabled = true;
+
+  let index = 0;
+  while (index < pages.length && !pages[index].classList.contains('active')) {
+    index++;
+  }
+  if (direction > 0 && index < pages.length - 1) {
+    pages[index].classList.remove('active');
+    index++;
+  }
+  else if (direction < 0 && index > 0) {
+    pages[index].classList.remove('active');
+    index--;
+  }
+  pages[index].classList.add('active');
+  if (index > 0) {
+    prevPage.disabled = false;
+  }
+  else if (index < pages.length - 1) {
+    nextPage.disabled = false;
+  }
+}
+
+
+/**
+ * Is triggered when the window is resized
+ */
+function handleResize() {
+  const pages = [...document.getElementsByClassName('cv-preview')];
+
+  if (window.innerWidth >= 1024) {
+    previewContainer.classList.remove('hidden', 'fixed', 'inset-0', 'z-50');
+    previewContainer.classList.add('lg:block');
+    previewButton.classList.add('hidden');
+    previewButton.textContent = previewButtonText;
+
+    // Find the size of the preview container
+    const previewSize = previewContainer.getBoundingClientRect();
+
+    // Finds the scale of the page where the width touches the edge and where the height touches the edge.
+    // The smallest scale is the one that won't overflow, so we want the smallest
+    const scale = Math.min(
+      1 / ((pageSize.width * pxPerMm) / (previewSize.width - previewMargin.width)),
+      1 / ((pageSize.height * pxPerMm) / maxScreenHeight)
+    );
+
+    pages.map(page => {
+      page.style.scale = scale;
+      page.style.left = `${(previewSize.width - ((pageSize.width * pxPerMm) * scale)) / 2}px`;
+      page.style.top = '';
+    });
+
+    // Also adjust the height of the sticky container so that the page scrolls to the bottom
+    stickyContainer.style.height = `${((pageSize.height * pxPerMm) * scale) + previewMargin.height}px`;
+    // As well as the page list so the buttons appear below it
+    pageList.style.height = `${((pageSize.height * pxPerMm) * scale) + 28}px`;
+  } else {
+    // Prevents the preview from disappearing whenever the screen is resized
+    if (previewButton.classList.contains('hidden')) {
+      previewContainer.classList.add('hidden');
+    }
+    previewContainer.classList.remove('lg:block');
+    previewButton.classList.remove('hidden');
+
+    const scale = Math.min(
+      1 / ((pageSize.width * pxPerMm) / (document.body.clientWidth - previewMargin.width)),
+      1 / ((pageSize.height * pxPerMm) / (window.innerHeight - previewMargin.height))
+    );
+
+    pages.map(page => {
+      page.style.scale = scale;
+      page.style.left = `${(document.body.clientWidth - ((pageSize.width * pxPerMm) * scale)) / 2}px`;
+      page.style.top = `${Math.max((window.innerHeight - ((pageSize.height * pxPerMm) * scale)) / 2, 0)}px`;
+    });
+  }
+}
+
+window.addEventListener('resize', handleResize);
+handleResize();
+
+function updateSummaryPreview() {
+  const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
+  const summaryPreview = document.getElementById('preview-summary');
+  if (useDefaultSummaryInput.checked) {
+    summaryPreview.innerHTML = defaultSummary;
+  } else {
+    const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');
+    if (richTextEditor) {
+      summaryPreview.innerHTML = richTextEditor.innerHTML;
+    }
+  }
 }
 
 
@@ -171,9 +305,12 @@ document.addEventListener('DOMContentLoaded', function () {
     item.addEventListener('click', updateBulletPointOrder);
   });
 
-  // Insert the headings into the preview
-  const cvPreview = document.querySelector('.cv-preview');
+  // Render the preview on page load
   renderPreview();
+
+  // Page navigation
+  document.getElementById('preview-previous-page').addEventListener('click', () => navigatePreview(-1));
+  document.getElementById('preview-next-page').addEventListener('click', () => navigatePreview(1));
 
   // Hide the summary input if "Use default summary" is checked
   const summaryCheckbox = document.querySelector('#id_use_default_summary');
@@ -181,12 +318,6 @@ document.addEventListener('DOMContentLoaded', function () {
   if (summaryCheckbox.checked) {
     summaryInput.style.display = 'none';
   }
-
-  // Create and insert the disabled text area
-  const form = document.querySelector('#skill-form');
-  const previewButton = document.querySelector('#preview-button');
-  const previewContainer = document.querySelector('.cv-preview-container');
-  const previewButtonText = 'Preview CV';
 
   function togglePreview() {
     if (window.innerWidth < 1024) { // 'lg' breakpoint
@@ -209,80 +340,6 @@ document.addEventListener('DOMContentLoaded', function () {
       togglePreview();
     }
   });
-
-  // Find how many pixels are in a millimeter
-  const mmElement = document.getElementById('mm-measurement');
-  const pxPerMm = mmElement.getBoundingClientRect().width;
-  const pageSize = {
-    width: 210,
-    height: 297
-  };
-  // The TOTAL margin of the preview, i.e. the sum of both sides
-  const previewMargin = {
-    width: 32,
-    height: 96
-  };
-  const stickyContainer = document.querySelector('#sticky-container');
-  // The maximum height of the CV should be the height of the screen minus a determined margin
-  const maxScreenHeight = window.innerHeight - previewMargin.height;
-
-  function handleResize() {
-
-    if (window.innerWidth >= 1024) {
-      previewContainer.classList.remove('hidden', 'fixed', 'inset-0', 'z-50');
-      previewContainer.classList.add('lg:block');
-      previewButton.classList.add('hidden');
-      previewButton.textContent = previewButtonText;
-
-      // Find the size of the preview container
-      const previewSize = previewContainer.getBoundingClientRect();
-
-      // Finds the scale of the page where the width touches the edge and where the height touches the edge.
-      // The smallest scale is the one that won't overflow, so we want the smallest
-      const scale = Math.min(
-        1 / ((pageSize.width * pxPerMm) / (previewSize.width - previewMargin.width)),
-        1 / ((pageSize.height * pxPerMm) / maxScreenHeight)
-      );
-
-      cvPreview.style.scale = scale;
-      cvPreview.style.left = `${(previewSize.width - ((pageSize.width * pxPerMm) * scale)) / 2}px`;
-      cvPreview.style.top = '';
-
-      // Also adjust the height of the sticky container so that the page scrolls to the bottom
-      stickyContainer.style.height = `${((pageSize.height * pxPerMm) * scale) + previewMargin.height}px`;
-    } else {
-      // Prevents the preview from disappearing whenever the screen is resized
-      if (previewButton.classList.contains('hidden')) {
-        previewContainer.classList.add('hidden');
-      }
-      previewContainer.classList.remove('lg:block');
-      previewButton.classList.remove('hidden');
-
-      const scale = Math.min(
-        1 / ((pageSize.width * pxPerMm) / (document.body.clientWidth - previewMargin.width)),
-        1 / ((pageSize.height * pxPerMm) / (window.innerHeight - previewMargin.height))
-      );
-      cvPreview.style.scale = scale;
-      cvPreview.style.left = `${(document.body.clientWidth - ((pageSize.width * pxPerMm) * scale)) / 2}px`;
-      cvPreview.style.top = `${Math.max((window.innerHeight - ((pageSize.height * pxPerMm) * scale)) / 2, 0)}px`;
-    }
-  }
-
-  window.addEventListener('resize', handleResize);
-  handleResize();
-
-  function updateSummaryPreview() {
-    const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
-    const summaryPreview = document.getElementById('preview-summary');
-    if (useDefaultSummaryInput.checked) {
-      summaryPreview.innerHTML = defaultSummary;
-    } else {
-      const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');
-      if (richTextEditor) {
-        summaryPreview.innerHTML = richTextEditor.innerHTML;
-      }
-    }
-  }
 
   form.addEventListener('input', function (event) {
     if (!event.target.closest('.ck-editor')) {

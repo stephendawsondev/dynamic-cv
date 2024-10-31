@@ -116,25 +116,25 @@
 {% block title %}{{ cv.contact_information.first_name }}'s Generated CV - {% endblock %}
 {% block content %}
 <div class="navigation-buttons">
-  <div class="back-button">
+  <div class="has-cv-action">
     <a href="javascript:history.back()">Go back</a>
   </div>
-  <div class="page-navigation">
+  <div class="page-navigation has-cv-action">
 
     {% comment %} Don't add anything here - these are automatically created with
     the below JS {% endcomment %}
   </div>
   {% if cv.position_title and analysed == False %}
-  <div class="back-button">
+  <div class="has-cv-action">
     <a href="{% url 'analyze_cv' cv.id %}">Analyze CV</a>
   </div>
   {% endif %}
   {% if cv_analysis %}
-  <div class="back-button">
+  <div class="has-cv-action">
     <a href="{% url 'view_analysis' cv_analysis.id %}">View CV Analysis</a>
   </div>
   {% endif %}
-  <button id="generate-pdf">
+  <button id="generate-pdf" class="cv-action-button">
     Download as PDF
   </button>
 </div>
