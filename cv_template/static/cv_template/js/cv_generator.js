@@ -222,9 +222,10 @@ function navigatePreview(direction) {
  */
 function handleResize() {
   const pages = [...document.getElementsByClassName('cv-preview')];
+  let scale = 1;
 
   if (window.innerWidth >= 1024) {
-    previewContainer.classList.remove('hidden', 'fixed', 'inset-0', 'z-50');
+    previewContainer.classList.remove('invisible', 'absolute', 'fixed', 'inset-0', 'z-50');
     previewContainer.classList.add('lg:block');
     previewButton.classList.add('hidden');
     previewButton.textContent = previewButtonText;
@@ -234,7 +235,7 @@ function handleResize() {
 
     // Finds the scale of the page where the width touches the edge and where the height touches the edge.
     // The smallest scale is the one that won't overflow, so we want the smallest
-    const scale = Math.min(
+    scale = Math.min(
       1 / ((pageSize.width * pxPerMm) / (previewSize.width - previewMargin.width)),
       1 / ((pageSize.height * pxPerMm) / maxScreenHeight)
     );
@@ -242,22 +243,16 @@ function handleResize() {
     pages.map(page => {
       page.style.scale = scale;
       page.style.left = `${(previewSize.width - ((pageSize.width * pxPerMm) * scale)) / 2}px`;
-      page.style.top = '';
     });
-
-    // Also adjust the height of the sticky container so that the page scrolls to the bottom
-    stickyContainer.style.height = `${((pageSize.height * pxPerMm) * scale) + previewMargin.height}px`;
-    // As well as the page list so the buttons appear below it
-    pageList.style.height = `${((pageSize.height * pxPerMm) * scale) + 28}px`;
   } else {
     // Prevents the preview from disappearing whenever the screen is resized
     if (previewButton.classList.contains('hidden')) {
-      previewContainer.classList.add('hidden');
+      previewContainer.classList.add('invisible', 'absolute');
     }
     previewContainer.classList.remove('lg:block');
     previewButton.classList.remove('hidden');
 
-    const scale = Math.min(
+    scale = Math.min(
       1 / ((pageSize.width * pxPerMm) / (document.body.clientWidth - previewMargin.width)),
       1 / ((pageSize.height * pxPerMm) / (window.innerHeight - previewMargin.height))
     );
@@ -265,9 +260,12 @@ function handleResize() {
     pages.map(page => {
       page.style.scale = scale;
       page.style.left = `${(document.body.clientWidth - ((pageSize.width * pxPerMm) * scale)) / 2}px`;
-      page.style.top = `${Math.max((window.innerHeight - ((pageSize.height * pxPerMm) * scale)) / 2, 0)}px`;
     });
   }
+  // Also adjust the height of the sticky container so that the page scrolls to the bottom
+  stickyContainer.style.height = `${((pageSize.height * pxPerMm) * scale) + previewMargin.height}px`;
+  // As well as the page list so the buttons appear below it
+  pageList.style.height = `${((pageSize.height * pxPerMm) * scale) + 28}px`;
 }
 
 window.addEventListener('resize', handleResize);
@@ -321,12 +319,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function togglePreview() {
     if (window.innerWidth < 1024) { // 'lg' breakpoint
-      if (previewContainer.classList.contains('hidden')) {
-        previewContainer.classList.remove('hidden');
+      if (previewContainer.classList.contains('invisible')) {
+        previewContainer.classList.remove('invisible', 'absolute');
         previewContainer.classList.add('fixed', 'inset-0', 'z-50');
         previewButton.textContent = 'Hide Preview';
       } else {
-        previewContainer.classList.add('hidden');
+        previewContainer.classList.add('invisible', 'absolute');
         previewContainer.classList.remove('fixed', 'inset-0', 'z-50');
         previewButton.textContent = previewButtonText;
       }

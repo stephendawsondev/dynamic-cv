@@ -6,12 +6,15 @@
   box-sizing: border-box;
   background-color: white;
   margin-bottom: 20px;
-  position: relative;
-  display: none;
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .page.active {
-  display: block;
+  position: relative;
+  visibility: visible;
+  pointer-events: all;
 }
 
 .page h1 {

@@ -9,6 +9,12 @@
   font-size: 10pt;
 }
 
+/* Allows the container to take up no space while its children elements still retain their sizes */
+.cv-preview-container.invisible {
+  height: 0;
+  overflow: hidden;
+}
+
 .page.active {
   transform-origin: 0 0;
   top: 16px;
