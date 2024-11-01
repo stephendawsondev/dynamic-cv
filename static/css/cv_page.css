@@ -30,6 +30,24 @@
   margin: 0;
 }
 
+.page h3 {
+  margin: 0;
+}
+
+h3::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: black;
+  margin-top: 10px;
+}
+
+.technical-skill-set h3,
+.additional-information h3 {
+  margin-bottom: 10px;
+}
+
 /* Used to measure a millimeter in terms of pixels */
 #mm-measurement {
   width: 1mm;

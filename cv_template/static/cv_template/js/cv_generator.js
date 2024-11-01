@@ -103,7 +103,9 @@ function updateSectionVisibility(sectionType) {
   if ((sectionType === 'projects' && document.getElementById('project-table').children.length > 0)
     || (sectionType !== 'projects' && (previewContainer.children.length > 0 || previewContainer.innerText.trim()))) {
     if (!sectionElement.parentNode.className.includes('cv-preview')) {
-      document.getElementsByClassName('cv-preview')[0].appendChild(sectionElement);
+      // Add the new heading to the last page
+      const pages = document.getElementsByClassName('cv-preview');
+      pages[pages.length - 1].appendChild(sectionElement);
     }
     if (sectionIndex === -1) {
       headingData.push(sectionType);
@@ -116,76 +118,124 @@ function updateSectionVisibility(sectionType) {
     }
   }
   headingOrder.value = headingData.join();
+  renderPreview();
+}
+
+
+/**
+ * Adds the headings to the first page on page load
+ */
+function loadPreview() {
+  let page = document.querySelector('.cv-preview');
+  const headingOrder = document.getElementById('id_headings_order');
+  const headingValues = headingOrder.value ? headingOrder.value.split(',') : [];
+  for (let val of headingValues) {
+    const valF = val.replaceAll('_', '-');
+    const headingSection = document.querySelector(`.${valF}-section`);
+    page.appendChild(headingSection);
+  }
+  renderPreview();
 }
 
 
 const headings = ['work-experience', 'education', 'projects', 'skills', 'hobbies', 'extra-info'];
 /**
- * Renders the selected sections to the CV preview, creating new pages where necessary
+ * Renders the selected sections to the CV preview, creating new pages where necessary.
+ * Updates the current order of sections rather than re-render the CV entirely as it results
+ * in a much smoother update with less frame flashing
  */
 function renderPreview() {
-  // Temporarily move all headings back into the unused section
-  const headingElements = headings.map((item) => document.querySelector(`.${item}-section`));
-  document.getElementById('preview-unused-headings').appendChild(...headingElements);
 
-  // Remove all extra pages
-  let pages = [...document.getElementsByClassName('cv-preview')];
-  while (pages.length > 1) {
-    pages[1].remove();
-  }
-  // Hide the page navigation buttons
-  const navButtons = document.getElementById('preview-page-buttons');
-  navButtons.classList.add('hidden');
-
-  // Then, add all the headings to the first page
-  const headingOrder = document.getElementById('id_headings_order');
-  const headingValues = headingOrder.value ? headingOrder.value.split(',') : [];
-  let pageIndex = 0;
-  for (let val of headingValues) {
-    const valF = val.replaceAll('_', '-');
-    const headingSection = document.querySelector(`.${valF}-section`);
-    pages[pageIndex].appendChild(headingSection);
-  }
-
-  // Ensure all the heights are calculated before splitting the sections into pages
+  // Wait until all elements have been resized until proceeding
   setTimeout(() => {
     const pageList = document.querySelector('#cv-pages');
     // Finding the upper margin of the page
+    let pages = [...document.getElementsByClassName('cv-preview')];
     const pageRect = pages[0].getBoundingClientRect();
     const sectionRect = pages[0].children[0].getBoundingClientRect();
     const verticalMargin = sectionRect.y - pageRect.y;
 
-    // What space is available on the page, and what is used up before the sections
+    // What space is available on the page, and how much space each heading takes up
     const availableSpace = pageRect.height - (verticalMargin * 2);
-    let usedSpace = pages[0].children[0].getBoundingClientRect().height;
+    let headingSpaces = pages.map((item) => [...item.children].map((child) => child.getBoundingClientRect().height));
+    
+    for (let i = 0; i < pages.length; i++) {
+      let page = pages[i];
+      let usedSpace = headingSpaces[i].reduce((item, prevNum) => item + prevNum, 0);
+      let sectionsMovedForward = 0;
 
-    // Get the heights of each section
-    const sections = [...pages[0].children];
-    sections.map((section) => {
-      const sectionRect = section.getBoundingClientRect();
-      if (usedSpace + sectionRect.height > availableSpace) {
-        // Creating a new page
-        const newPage = document.createElement('div');
-        newPage.className = 'cv-preview page bg-white shadow-md';
-        pageList.appendChild(newPage);
-        pages.push(newPage);
-        pageIndex++;
-        usedSpace = 0;
-        navButtons.classList.remove('hidden');
+      // Moving sections to the next page if there is not enough room
+      if (usedSpace > availableSpace) {
+        let sectionSpace = 0;
+        for (let j = 0; j < headingSpaces[i].length; j++) {
+          const sectionHeight = headingSpaces[i][j];
+          if (sectionSpace + sectionHeight > availableSpace) {
+            // Creating a new page if this is the last
+            if (i === pages.length - 1) {
+              const newPage = document.createElement('div');
+              newPage.className = 'cv-preview page bg-white shadow-md';
+              newPage.style.scale = pages[0].style.scale;
+              newPage.style.left = pages[0].style.left;
+              pageList.appendChild(newPage);
+              headingSpaces.push([]);
+              pages.push(newPage);
+            }
+            const nextPage = pages[i + 1];
+            if (headingSpaces[i + 1].length > sectionsMovedForward) {
+              nextPage.insertBefore(page.children[j], nextPage.children[sectionsMovedForward]);
+              headingSpaces[i + 1].splice(sectionsMovedForward, 0, sectionHeight);
+            }
+            else {
+              nextPage.appendChild(page.children[j]);
+              headingSpaces[i + 1].push(sectionHeight);
+            }
+            headingSpaces[i].splice(j, 1);
+            j--;
+            sectionsMovedForward++;
+          }
+          else {
+            sectionSpace += sectionHeight;
+          }
+        }
       }
-      pages[pageIndex].appendChild(section);
-      usedSpace += sectionRect.height;
+      // Checking if there is enough room to take sections from the next page
+      else {
+        while (i < pages.length - 1 && usedSpace + headingSpaces[i + 1][0] <= availableSpace) {
+          let nextPage = pages[i + 1];
+          let nextPageHeadings = headingSpaces[i + 1];
+          headingSpaces[i].push(nextPageHeadings[0]);
+          nextPageHeadings.splice(0, 1);
+          page.appendChild(pages[i + 1].children[0]);
 
-      // Once all headings are in place, adjust each page to fit the available space
-      setTimeout(handleResize);
-    });
+          // Removing the next page if there are no sections in it
+          if (pages[i + 1].children.length === 0) {
+            // If the page to be deleted is active, move to the previous page
+            if (nextPage.classList.contains('active')) {
+              page.classList.add('active');
+            }
+            pages.splice(i + 1, 1);
+            headingSpaces.splice(i + 1, 1);
+            nextPage.remove();
+          }
+        }
+      }
+    }
+    // Enabling/Disabling the page navigation buttons depending on if there is more than 1 page
+    if (pages.length > 1) {
+      document.getElementById('preview-page-buttons').classList.remove('hidden');
+      // Update the buttons enabled status
+      navigatePreview(0);
+    }
+    else {
+      document.getElementById('preview-page-buttons').classList.add('hidden');
+    }
   });
 }
 
 
 /**
  * Moves to the next/previous page in the preview
- * @param {Number} direction Positive for next page, negative for previous page
+ * @param {Number} direction Positive for next page, negative for previous page, 0 to just update the buttons
  */
 function navigatePreview(direction) {
   const pageList = document.querySelector('#cv-pages');
@@ -302,9 +352,6 @@ document.addEventListener('DOMContentLoaded', function () {
   ].map((item) => {
     item.addEventListener('click', updateBulletPointOrder);
   });
-
-  // Render the preview on page load
-  renderPreview();
 
   // Page navigation
   document.getElementById('preview-previous-page').addEventListener('click', () => navigatePreview(-1));
@@ -455,6 +502,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   updatePreview();
+  loadPreview();
 
   const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');
   if (richTextEditor) {
