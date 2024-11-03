@@ -11,20 +11,6 @@
     font-size: 10pt;
   }
 
-  .cv-preview h1 {
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 23pt;
-    margin: 0;
-  }
-
-  .cv-preview h2 {
-    text-align: center;
-    font-size: 16pt;
-    margin: 0;
-    color: #6495ed;
-  }
-
   .cv-preview h3 {
     color: #6495ed;
   }
@@ -73,7 +59,7 @@
 </style>
 {% endblock %}
 
-{% block title %}CV Creator{% endblock %}
+{% block title %}Create CV - {% endblock %}
 
 {% block content %}
 <div class="container mx-auto p-3 lg:flex lg:flex-row">
@@ -157,7 +143,7 @@
               <li>{{ contact.phone_number }}</li>
               {% endif %}
             </ul>
-            <div class="py-3 summary" id="preview-summary"></div>
+            <div class="summary" id="preview-summary"></div>
           </section>
         </div>
       </div>
@@ -226,6 +212,61 @@
 {% block extra_js %}
 <script>
   const defaultSummary = "{{ default_summary|escapejs }}";
+  // Store all the user's details
+  const userData = JSON.parse(`{
+    "work": {
+      {% for work in user.work_experience.all %}
+      "{{ work.id }}": {
+        "organization": "{{ work.organization|safe }}",
+        "location": "{{ work.location|safe }}",
+        "position": "{{ work.position|safe }}",
+        "dates": "{{ work.start_date|date:"M Y" }} - {% if work.end_date %}{{ work.end_date|date:"M Y" }}{% else %}Present{% endif %}",
+        "bullet_points": {
+          {% for bullet in work.bullet_points.all %}
+          "{{ bullet.id }}": "{{ bullet.bullet_point|safe }}"{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        },
+        "skills": {
+          {% for skill in work.applied_skills.all %}
+          "{{ skill.id }}": "{{ skill.name }}"{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        }
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    },
+    "education": {
+      {% for education in user.education.all %}
+      "{{ education.id }}": {
+        "school_name": "{{ education.school_name|safe }}",
+        "location": "{{ education.location|safe }}",
+        "degree": "{{ education.degree|safe }}",
+        "dates": "{{ education.start_year|date:"Y" }} - {% if education.end_year %}{{ education.end_year|date:"Y" }}{% else %}Present{% endif %}",
+        "grade": "{{ education.grade|safe }}",
+        "bullet_points": {
+          {% for bullet in education.bullet_points.all %}
+          "{{ bullet.id }}": "{{ bullet.bullet_point|safe }}"{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        },
+        "skills": {
+          {% for skill in education.applied_skills.all %}
+          "{{ skill.id }}": "{{ skill.name }}"{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        }
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    },
+    "projects": {
+      {% for project in user.projects.all %}
+      "{{ project.id }}": {
+        "name": "{{ project.name|safe }}",
+        "description": "{{ project.description|safe }}",
+        "dates": "{{ project.start_date|date:"M Y" }} - {% if project.end_date %}{{ project.end_date|date:"M Y" }}{% else %}Present{% endif %}",
+        "repository_url": "{{ project.repository_url|safe }}",
+        "deployed_url": "{{ project.deployed_url|safe }}"
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    }
+  }`.replace(/(\r\n|\n|\r)/gm, ""));
 </script>
 <script src="{% static 'cv_template/js/cv_generator.js' %}"></script>
 {% endblock %}
