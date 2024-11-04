@@ -5,6 +5,10 @@
 <link rel="stylesheet" href="{% static 'cv_template/css/cv_template.css' %}">
 <link rel="stylesheet" href="{% static 'css/cv_page.css' %}">
 <style>
+  body {
+    overflow-x: hidden;
+  }
+
   .cv-preview {
     font-family: "Raleway", sans-serif;
     line-height: 1.6;
@@ -112,12 +116,12 @@
       <div id="cv-pages">
         <div class="cv-preview page active bg-white shadow-md">
           <section class="intro">
-            <h1 id="preview-name" class="bold">
+            <h1 id="preview-name">
               {% if contact.first_name and contact.last_name %}
               {{ contact.first_name }} {{ contact.last_name }}
               {% endif %}
             </h1>
-            <h2 id="preview-position"></h2>
+            <h2 id="preview-position">{{ cv.position_title }}</h2>
             <ul class="links">
               {% if contact.github %}
               <li><a href="{{ contact.github }}">{{ contact.github }}</a></li>
@@ -217,6 +221,12 @@
 {% block extra_js %}
 {% with True as is_template %}
 <script>
+  // Update the color of each heading on page load
+  if ("{{ cv.color }}") {
+    [...document.getElementsByTagName('h3')].map((item) => {
+      item.style.color = "{{ cv.color }}";
+    });
+  }
   const defaultSummary = "{{ default_summary|escapejs }}";
   // The components for piecing together the CV
   const components = {

@@ -23,6 +23,9 @@
 .page section:not(.intro) {
   padding: 2mm 0;
 }
+/* .page section.work-experience-section:not(.intro) {
+  padding-bottom: 2.3mm;
+} */
 
 .page .exp-item:not(:last-child)::after {
   content: "";
@@ -50,13 +53,14 @@
   font-weight: normal;
 }
 
+.page h3 {
+  margin: 0;
+  font-size: 1.17em;
+}
+
 .page ul {
   margin: 0;
   padding-left: 40px;
-}
-
-.page h3 {
-  margin: 0;
 }
 
 .summary>p {

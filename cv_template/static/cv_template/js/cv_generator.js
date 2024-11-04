@@ -22,6 +22,15 @@ const previewButtonText = 'Preview CV';
  const maxScreenHeight = window.innerHeight - previewMargin.height;
 
 
+ /**
+  * Removes the https://www. part of a URL
+  * @param {String} url The URL to be cleaned
+  */
+ function cleanUrl(url) {
+  return url.replace(/^https?:\/\//, '').replace(/^www./, '');
+ }
+
+
 /**
  * Adds/Removes the experience item that was clicked from the preview
  * @param {Element} item the input that was triggered
@@ -34,82 +43,85 @@ function updateExperienceItem(item) {
   let emptySections = [];
   let extraAttrs = {};
 
-  // Fill in the sections with the user data
-  for (let [key, value] of Object.entries(itemData)) {
-    if (itemHtml.includes(`${key}">`)) {
-      if (value) {
-        itemHtml = itemHtml.replace(`${key}">`, `${key}">${value}`);
+  // Add the experience item
+  if (item.checked) {
+    // Fill in the sections with the user data
+    for (let [key, value] of Object.entries(itemData)) {
+      if (itemHtml.includes(`${key}">`)) {
+        if (value) {
+          itemHtml = itemHtml.replace(`${key}">`, `${key}">${value}`);
 
-        // Adding the href and aria-label attributes to URLs
-        if (key.toLowerCase().includes('url')) {
-          let linkDescription = 'website';
-          let projectName = 'this project';
-          switch (key) {
-            case 'repository_url':
-              linkDescription = 'repository';
-              projectName = itemData.name;
-              break;
-            case 'deployed_url':
-              linkDescription = 'deployed site';
-              projectName = itemData.name;
-              break;
-            default:
-              break;
+          // Adding the href and aria-label attributes to URLs
+          if (key.toLowerCase().includes('url')) {
+            let linkDescription = 'website';
+            let projectName = 'this project';
+            switch (key) {
+              case 'repository_url':
+                linkDescription = 'repository';
+                projectName = itemData.name;
+                break;
+              case 'deployed_url':
+                linkDescription = 'deployed site';
+                projectName = itemData.name;
+                break;
+              default:
+                break;
+            }
+            extraAttrs[key] = {
+              'href': value,
+              'aria-label': `Go to the ${linkDescription} of ${projectName} (Opens in a new tab)`
+            };
           }
-          extraAttrs[key] = {
-            'href': value,
-            'aria-label': `Go to the ${linkDescription} of ${projectName} (Opens in a new tab)`
-          };
         }
+        else {
+          emptySections.push(key);
+          // Any sections that rely on this section having a value will also be removed
+          if (itemHtml.includes(`${key}-required`)) {
+            emptySections.push(`${key}-required`);
+          }
+        }
+      }
+    }
+
+    // Bullet points
+    if ('bullet_points' in itemData) {
+      let bulletList = ``;
+      for (let key in itemData.bullet_points) {
+        const value = itemData.bullet_points[key];
+        bulletList += `<li>${value}</li>`;
+      }
+      itemHtml = itemHtml.replace(`bullet-points">`, `bullet-points">${bulletList}`);
+    }
+
+    // Skills
+    if ('skills' in itemData) {
+      let numSkills = Object.keys(itemData.skills).length;
+      if (numSkills === 0) {
+        emptySections.push('skills-required');
       }
       else {
-        emptySections.push(key);
-        // Any sections that rely on this section having a value will also be removed
-        if (itemHtml.includes(`${key}-required`)) {
-          emptySections.push(`${key}-required`);
+        let skillList = ``;
+        let index = 0;
+        for (let key in itemData.skills) {
+          const value = itemData.skills[key];
+          skillList += value;
+          if (index < numSkills - 1) {
+            skillList += ', ';
+          }
+          index++; 
         }
+        itemHtml = itemHtml.replace(`skills-list">`, `skills-list">${skillList}`);
       }
     }
-  }
 
-  // Bullet points
-  if ('bullet_points' in itemData) {
-    let bulletList = ``;
-    for (let key in itemData.bullet_points) {
-      const value = itemData.bullet_points[key];
-      bulletList += `<li>${value}</li>`;
-    }
-    itemHtml = itemHtml.replace(`bullet-points">`, `bullet-points">${bulletList}`);
+    // Create the element to be appended to the appropriate section
+    const listSection = document.querySelector(`#preview-${itemFormat}`);
+    let newSection = document.createElement('div');
+    newSection.id = `${itemType}-${item.value}`;
+    newSection.className = 'exp-item';
+    newSection.innerHTML = itemHtml;
+    listSection.appendChild(newSection);
   }
-
-  // Skills
-  if ('skills' in itemData) {
-    let numSkills = Object.keys(itemData.skills).length;
-    if (numSkills === 0) {
-      emptySections.push('skills-required');
-    }
-    else {
-      let skillList = ``;
-      let index = 0;
-      for (let key in itemData.skills) {
-        const value = itemData.skills[key];
-        skillList += value;
-        if (index < numSkills - 1) {
-          skillList += ', ';
-        }
-        index++; 
-      }
-      itemHtml = itemHtml.replace(`skills-list">`, `skills-list">${skillList}`);
-    }
-  }
-
-  // Create the element to be appended to the appropriate section
-  const listSection = document.querySelector(`#preview-${itemFormat}`);
-  let newSection = document.createElement('div');
-  newSection.id = `${itemType}-${item.value}`;
-  newSection.className = 'exp-item';
-  newSection.innerHTML = itemHtml;
-  listSection.appendChild(newSection);
 
   // Removing any unused sections, and adding extra properties
   setTimeout(() => {
@@ -263,8 +275,7 @@ function renderPreview() {
     // Finding the upper margin of the page
     let pages = [...document.getElementsByClassName('cv-preview')];
     const pageRect = pages[0].getBoundingClientRect();
-    const sectionRect = pages[0].children[0].getBoundingClientRect();
-    const verticalMargin = sectionRect.y - pageRect.y;
+    const verticalMargin = (10 * pxPerMm) * parseFloat(pages[0].style.scale);
 
     // What space is available on the page, and how much space each heading takes up
     const availableSpace = pageRect.height - (verticalMargin * 2);
@@ -278,9 +289,11 @@ function renderPreview() {
       // Moving sections to the next page if there is not enough room
       if (usedSpace > availableSpace) {
         let sectionSpace = 0;
+        let isOverflow = false;
         for (let j = 0; j < headingSpaces[i].length; j++) {
-          const sectionHeight = headingSpaces[i][j];
-          if (sectionSpace + sectionHeight > availableSpace) {
+          const sectionHeight = Math.ceil(headingSpaces[i][j]);
+          if (sectionSpace + sectionHeight > availableSpace || isOverflow) {
+            isOverflow = true;
             // Creating a new page if this is the last
             if (i === pages.length - 1) {
               const newPage = document.createElement('div');
@@ -372,7 +385,7 @@ function navigatePreview(direction) {
   if (index > 0) {
     prevPage.disabled = false;
   }
-  else if (index < pages.length - 1) {
+  if (index < pages.length - 1) {
     nextPage.disabled = false;
   }
 }
@@ -533,16 +546,6 @@ document.addEventListener('DOMContentLoaded', function () {
   //   checkbox.addEventListener('change', updatePreview);
   // });
 
-  function updateLinks() {
-    const links = document.querySelectorAll('.cv-preview .links li');
-    links.forEach(li => {
-      const link = li.querySelector('a');
-      if (link) {
-        li.textContent = link.href.replace(/^https?:\/\//, '');
-      }
-    });
-  }
-
   const accentColorInput = document.getElementById('id_color');
 
   function updateAccentColor() {
@@ -623,7 +626,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    updateLinks();
   }
 
   // updatePreview();
