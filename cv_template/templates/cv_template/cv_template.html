@@ -15,11 +15,6 @@
     color: #6495ed;
   }
 
-  .cv-preview ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
   .cv-preview .intro ul {
     display: flex;
     flex-wrap: wrap;
@@ -156,24 +151,33 @@
     <div id="preview-unused-headings" class="hidden" aria-hidden="true">
       <section class="work-experience-section">
         <h3>Work Experience</h3>
-        <div id="preview-work-experience"></div>
+        <div id="preview-work-experience">
+          {% for work in cv.work_experience.all %}
+          <div id="work-{{ work.id }}">
+            {% include "cv_template/components/work_experience_standard.html" %}
+          </div>
+          {% endfor %}
+        </div>
       </section>
       <section class="education-section">
         <h3>Education</h3>
-        <table id="preview-education"></table>
+        <div id="preview-education">
+          {% for education in cv.education.all %}
+          <div id="education-{{ education.id }}">
+            {% include "cv_template/components/education_standard.html" %}
+          </div>
+          {% endfor %}
+        </div>
       </section>
       <section class="projects-section">
         <h3>Projects</h3>
-        <table id="preview-projects">
-          <thead>
-            <tr>
-              <th>Project name</th>
-              <th>Description</th>
-              <th>Deployed URL</th>
-            </tr>
-          </thead>
-          <tbody id="project-table"></tbody>
-        </table>
+        <div id="preview-projects">
+          {% for project in cv.projects.all %}
+          <div id="project-{{ project.id }}">
+            {% include "cv_template/components/project_standard.html" %}
+          </div>
+          {% endfor %}
+        </div>
       </section>
       <section class="skills-section">
         <h3>Skill Set</h3>
@@ -185,7 +189,7 @@
       </section>
       <section class="hobbies-section">
         <h3>Interests/Hobbies</h3>
-        <ul id="preview-hobbies">
+        <ul id="preview-hobbies" class="list-disc list-outside">
           {% for hobby in cv.ordered_hobbies %}
           <li>{{ hobby }}</li>
           {% endfor %}
@@ -193,7 +197,7 @@
       </section>
       <section class="extra-info-section">
         <h3>Additional Information</h3>
-        <ul id="preview-extra-info">
+        <ul id="preview-extra-info" class="list-disc list-outside">
           {% for extra_info in cv.ordered_extra_info %}
           <li>{{ extra_info }}</li>
           {% endfor %}
@@ -210,11 +214,24 @@
 {% endblock %}
 
 {% block extra_js %}
+{% with True as is_template %}
 <script>
   const defaultSummary = "{{ default_summary|escapejs }}";
+  // The components for piecing together the CV
+  const components = {
+    work_experience: {
+      standard: `{% include "cv_template/components/work_experience_standard.html" %}`
+    },
+    education: {
+      standard: `{% include "cv_template/components/education_standard.html" %}`
+    },
+    projects: {
+      standard: `{% include "cv_template/components/project_standard.html" %}`
+    }
+  }
   // Store all the user's details
   const userData = JSON.parse(`{
-    "work": {
+    "work_experience": {
       {% for work in user.work_experience.all %}
       "{{ work.id }}": {
         "organization": "{{ work.organization|safe }}",
@@ -223,7 +240,7 @@
         "dates": "{{ work.start_date|date:"M Y" }} - {% if work.end_date %}{{ work.end_date|date:"M Y" }}{% else %}Present{% endif %}",
         "bullet_points": {
           {% for bullet in work.bullet_points.all %}
-          "{{ bullet.id }}": "{{ bullet.bullet_point|safe }}"{% if not forloop.last %},{% endif %}
+          "id{{ bullet.id }}": "{{ bullet.bullet_point|safe }}"{% if not forloop.last %},{% endif %}
           {% endfor %}
         },
         "skills": {
@@ -268,5 +285,6 @@
     }
   }`.replace(/(\r\n|\n|\r)/gm, ""));
 </script>
+{% endwith %}
 <script src="{% static 'cv_template/js/cv_generator.js' %}"></script>
 {% endblock %}

@@ -4,7 +4,13 @@
 {% block extra_css %}
 <style>
   .emphasis-color {
-    color: {{ cv.color }};
+    color: {
+        {
+        cv.color
+      }
+    }
+
+    ;
   }
 
   .intro ul {
@@ -177,72 +183,29 @@
   {% if heading == 'work_experience' %}
   <section class="cv-section work-experience-section">
     <h3 class="emphasis-color">Work Experience</h3>
-    {% for work_experience in cv.work_experience.all %}
-    <div class="job">
-      <div class="header">
-        <div class="details">
-          {{ work_experience.organization }} - {{ work_experience.position }} - {{ work_experience.location }}
-        </div>
-        <div class="date">
-          {{ work_experience.start_date }} -
-          {% if work_experience.end_date %}{{ work_experience.end_date }}{% else %}Present{% endif %}
-        </div>
-      </div>
-      {% if work_experience.bullet_points.all.count > 0 %}
-      <ul class="work-details">
-        {% for work_bullet in work_experience.bullet_points.all %}
-        <li>{{ work_bullet }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
+    {% for work in cv.work_experience.all %}
+    <div id="work-{{ work.id }}">
+      {% include "cv_template/components/work_experience_standard.html" %}
     </div>
     {% endfor %}
   </section>
   {% elif heading == 'education' %}
   <section class="cv-section education-section">
     <h3 class="emphasis-color">Education</h3>
-    <table>
-      {% for education in cv.education.all %}
-      <tr>
-        <td class="date-cell">{{ education.start_year }} -
-          {% if education.end_year %}{{ education.end_year }}{% else %}Present{% endif %}
-        </td>
-        <td>{% if education.school_name %} {{ education.school_name }}{% endif %}</td>
-        <td>{% if education.location %} {{ education.location }}{% endif %}</td>
-        <td class="accreditation">
-          {% if education.degree %} {{ education.degree }}{% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
+    {% for education in cv.education.all %}
+    <div id="education-{{ education.id }}">
+      {% include "cv_template/components/education_standard.html" %}
+    </div>
+    {% endfor %}
   </section>
   {% elif heading == 'projects' %}
   <section class="cv-section project-section solo-projects">
     <h3 class="emphasis-color">Projects</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Project name</th>
-          <th>Description</th>
-          <th>Github link</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for project in cv.projects.all %}
-        <tr>
-          <td>{{ project.name }}</td>
-          <td>
-
-          </td>
-          <td>
-            <a href="{{ product.repository_url }}">
-              {{ project.repository_url | clean_url }}
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    {% for project in cv.projects.all %}
+    <div id="project-{{ project.id }}">
+      {% include "cv_template/components/project_standard.html" %}
+    </div>
+    {% endfor %}
   </section>
   {% elif heading == 'skills' %}
   <section class="cv-section technical-skill-set">

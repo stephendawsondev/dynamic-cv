@@ -23,6 +23,117 @@ const previewButtonText = 'Preview CV';
 
 
 /**
+ * Adds/Removes the experience item that was clicked from the preview
+ * @param {Element} item the input that was triggered
+ */
+function updateExperienceItem(item) {
+  const itemType = item.name;
+  const itemFormat = itemType.replaceAll('_', '-');
+  let itemHtml = components[itemType].standard;
+  const itemData = userData[itemType][item.value];
+  let emptySections = [];
+  let extraAttrs = {};
+
+  // Fill in the sections with the user data
+  for (let [key, value] of Object.entries(itemData)) {
+    if (itemHtml.includes(`${key}">`)) {
+      if (value) {
+        itemHtml = itemHtml.replace(`${key}">`, `${key}">${value}`);
+
+        // Adding the href and aria-label attributes to URLs
+        if (key.toLowerCase().includes('url')) {
+          let linkDescription = 'website';
+          let projectName = 'this project';
+          switch (key) {
+            case 'repository_url':
+              linkDescription = 'repository';
+              projectName = itemData.name;
+              break;
+            case 'deployed_url':
+              linkDescription = 'deployed site';
+              projectName = itemData.name;
+              break;
+            default:
+              break;
+          }
+          extraAttrs[key] = {
+            'href': value,
+            'aria-label': `Go to the ${linkDescription} of ${projectName} (Opens in a new tab)`
+          };
+        }
+      }
+      else {
+        emptySections.push(key);
+        // Any sections that rely on this section having a value will also be removed
+        if (itemHtml.includes(`${key}-required`)) {
+          emptySections.push(`${key}-required`);
+        }
+      }
+    }
+  }
+
+  // Bullet points
+  if ('bullet_points' in itemData) {
+    let bulletList = ``;
+    for (let key in itemData.bullet_points) {
+      const value = itemData.bullet_points[key];
+      bulletList += `<li>${value}</li>`;
+    }
+    itemHtml = itemHtml.replace(`bullet-points">`, `bullet-points">${bulletList}`);
+  }
+
+  // Skills
+  if ('skills' in itemData) {
+    let numSkills = Object.keys(itemData.skills).length;
+    if (numSkills === 0) {
+      emptySections.push('skills-required');
+    }
+    else {
+      let skillList = ``;
+      let index = 0;
+      for (let key in itemData.skills) {
+        const value = itemData.skills[key];
+        skillList += value;
+        if (index < numSkills - 1) {
+          skillList += ', ';
+        }
+        index++; 
+      }
+      itemHtml = itemHtml.replace(`skills-list">`, `skills-list">${skillList}`);
+    }
+  }
+
+  // Create the element to be appended to the appropriate section
+  const listSection = document.querySelector(`#preview-${itemFormat}`);
+  let newSection = document.createElement('div');
+  newSection.id = `${itemType}-${item.value}`;
+  newSection.innerHTML = itemHtml;
+  listSection.appendChild(newSection);
+
+  // Removing any unused sections, and adding extra properties
+  setTimeout(() => {
+    for (let section of emptySections) {
+      let deleteSection = newSection.querySelector(`.${section}`);
+      if (deleteSection) {
+        deleteSection.remove();
+      }
+    }
+    for (let [key, data] of Object.entries(extraAttrs)) {
+      let propSection = newSection.querySelector(`.${key}`);
+      if (propSection) {
+        for (let [prop, value] of Object.entries(data)) {
+          propSection.setAttribute(prop, value);
+        }
+      }
+    }
+  });
+
+  // Updating the headings
+  setTimeout(() => updateSectionVisibility(itemType));
+}
+
+
+/**
  * Updates the order of a bullet point list when a checkbox is clicked
  * @param {Event} event The click event of the checkbox
  */
@@ -100,8 +211,7 @@ function updateSectionVisibility(sectionType) {
   let headingData = headingOrder.value ? headingOrder.value.split(',') : [];
   let sectionIndex = headingData.indexOf(sectionType);
 
-  if ((sectionType === 'projects' && document.getElementById('project-table').children.length > 0)
-    || (sectionType !== 'projects' && (previewContainer.children.length > 0 || previewContainer.innerText.trim()))) {
+  if (previewContainer.children.length > 0 || previewContainer.innerText.trim()) {
     if (!sectionElement.parentNode.className.includes('cv-preview')) {
       // Add the new heading to the last page
       const pages = document.getElementsByClassName('cv-preview');
@@ -318,9 +428,6 @@ function handleResize() {
   pageList.style.height = `${((pageSize.height * pxPerMm) * scale) + 28}px`;
 }
 
-window.addEventListener('resize', handleResize);
-handleResize();
-
 function updateSummaryPreview() {
   const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
   const summaryPreview = document.getElementById('preview-summary');
@@ -343,7 +450,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ...document.getElementById('div_id_projects').getElementsByTagName('input'),
   ].map((item) => {
     item.addEventListener('click', () => {
-      setTimeout(() => updateSectionVisibility(item.name), 1);
+      updateExperienceItem(item);
     });
   });
   [...document.getElementById('div_id_skills').getElementsByTagName('input'),
@@ -352,6 +459,9 @@ document.addEventListener('DOMContentLoaded', function () {
   ].map((item) => {
     item.addEventListener('click', updateBulletPointOrder);
   });
+
+  window.addEventListener('resize', handleResize);
+  handleResize();
 
   // Page navigation
   document.getElementById('preview-previous-page').addEventListener('click', () => navigatePreview(-1));
@@ -386,11 +496,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  form.addEventListener('input', function (event) {
-    if (!event.target.closest('.ck-editor')) {
-      updatePreview();
-    }
-  });
+  // form.addEventListener('input', function (event) {
+  //   if (!event.target.closest('.ck-editor')) {
+  //     updatePreview();
+  //   }
+  // });
 
   if (window.CKEDITOR) {
     CKEDITOR.on('instanceReady', function (evt) {
@@ -403,10 +513,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
   useDefaultSummaryInput.addEventListener('change', updateSummaryPreview);
 
-  const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="education"], input[type="checkbox"][name^="work_experience"], input[type="checkbox"][name^="skills"], input[type="checkbox"][name^="projects"][name^="extra_info"][name^="hobbies"]');
-  checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', updatePreview);
-  });
+  // const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="education"], input[type="checkbox"][name^="skills"], input[type="checkbox"][name^="projects"][name^="extra_info"][name^="hobbies"]');
+  // checkboxes.forEach(checkbox => {
+  //   checkbox.addEventListener('change', updatePreview);
+  // });
 
   function updateLinks() {
     const links = document.querySelectorAll('.cv-preview .links li');
@@ -501,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function () {
     updateLinks();
   }
 
-  updatePreview();
+  // updatePreview();
   loadPreview();
 
   const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');

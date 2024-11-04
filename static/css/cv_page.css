@@ -39,6 +39,7 @@
 
 .page ul {
   margin: 0;
+  padding-left: 40px;
 }
 
 .page h3 {
@@ -56,6 +57,20 @@ h3::after {
   height: 1px;
   background-color: black;
   margin-top: 10px;
+}
+
+.page .heading {
+  font-weight: bold;
+  font-size: 11pt;
+}
+
+.page .font-bold {
+  font-weight: bold;
+}
+
+.flex.justify-between {
+  display: flex;
+  justify-content: space-between;
 }
 
 .technical-skill-set h3,

@@ -1,0 +1,26 @@
+<div class="heading position">{{ work.position }}</div>
+<div class="flex justify-between">
+  <div>
+    <span class="organization">{{ work.organization }}</span>{% if work.location or is_template %}<span
+      class="location-required">, </span>
+    <span class="location">{{ work.location }}</span>
+    {% endif %}
+
+  </div>
+  <div class="dates">
+    {% if not is_template %}
+    {{ work.start_date|date:"M Y" }} -
+    {% if work.end_date %}{{ work.end_date|date:"M Y" }}{% else %}Present{% endif %}
+    {% endif %}
+  </div>
+</div>
+<ul class="list-disc list-outside bullet-points">
+  {% for bullet in work.bullet_points.all %}
+  <li>{{ bullet.bullet_point }}</li>
+  {% endfor %}
+</ul>
+{% if work.applied_skills.all or is_template %}
+<div class="skills-required"><span class="font-bold">Applied Skills: </span><span class="skills-list">
+    {% for skill in work.applied_skills.all %}{{ skill }}{% if not forloop.last %}, {% endif %}{% endfor %}
+  </span></div>
+{% endif %}
