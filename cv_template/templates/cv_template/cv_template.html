@@ -143,7 +143,9 @@
               <li>{{ contact.phone_number }}</li>
               {% endif %}
             </ul>
-            <div class="summary" id="preview-summary"></div>
+            <div class="summary{% if not cv.summary %} hidden{% endif %}" id="preview-summary">
+              {{ cv.summary|safe }}
+            </div>
           </section>
         </div>
       </div>

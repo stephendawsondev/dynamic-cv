@@ -69,6 +69,11 @@
   gap: 10px;
 }
 
+.summary {
+  padding: 2mm 0;
+  line-height: 1.6;
+}
+
 .summary>p {
   margin: 0;
 }
