@@ -20,6 +20,19 @@
   pointer-events: all;
 }
 
+.page section:not(.intro) {
+  padding: 2mm 0;
+}
+
+.page .exp-item:not(:last-child)::after {
+  content: "";
+  border-bottom: 1px solid rgb(0, 0, 0, 0.4);
+  width: 100%;
+  height: 1px;
+  display: block;
+  margin: 2mm 0;
+}
+
 .page h1 {
   text-align: center;
   text-transform: uppercase;
@@ -56,12 +69,18 @@ h3::after {
   width: 100%;
   height: 1px;
   background-color: black;
-  margin-top: 10px;
+  margin-bottom: 2mm;
 }
 
 .page .heading {
   font-weight: bold;
   font-size: 11pt;
+}
+
+.page a:-webkit-any-link {
+  color: -webkit-link;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .page .font-bold {

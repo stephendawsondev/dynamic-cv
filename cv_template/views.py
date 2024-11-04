@@ -76,8 +76,11 @@ class CreateCV(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         user = self.request.user
         form.instance.user = user
+        has_summary = 'has_summary' in self.request.POST
         use_default_summary = form.cleaned_data.get("use_default_summary")
-        if use_default_summary:
+        if not has_summary:
+            form.instance.summary = ""
+        elif use_default_summary:
             try:
                 summary = Summary.objects.get(user=self.request.user).summary
             except Summary.DoesNotExist:
@@ -202,8 +205,11 @@ class UpdateCV(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = CVTemplateForm
 
     def form_valid(self, form):
+        has_summary = 'has_summary' in self.request.POST
         use_default_summary = form.cleaned_data.get("use_default_summary")
-        if use_default_summary:
+        if not has_summary:
+            form.instance.summary = ""
+        elif use_default_summary:
             try:
                 summary = Summary.objects.get(user=self.request.user).summary
             except Summary.DoesNotExist:
@@ -228,6 +234,13 @@ class UpdateCV(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             context['contact'] = cv.contact_information
         except ContactInformation.DoesNotExist:
             context['contact'] = {}
+
+        try:
+            default_summary = Summary.objects.get(
+                user=self.request.user).summary
+        except Summary.DoesNotExist:
+            default_summary = ""
+        context['default_summary'] = default_summary
         return context
 
     def get_success_url(self):

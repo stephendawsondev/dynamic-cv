@@ -61,6 +61,7 @@
   <form method="post" id="skill-form" class="w-full lg:w-1/2 lg:pr-4">
     {% csrf_token %}
     <input type="hidden" id="id_headings_order" name="headings_order" value="{{ cv.item_ordering.headings }}">
+    <input type="hidden" {% if not cv.summary %}disabled{% endif %} id="id_has_summary" name="has_summary" value="true">
     {% for form_field in form %}
     {{ form_field|as_crispy_field }}
     {% if form_field.label == 'Skills' %}
@@ -153,7 +154,7 @@
         <h3>Work Experience</h3>
         <div id="preview-work-experience">
           {% for work in cv.work_experience.all %}
-          <div id="work-{{ work.id }}">
+          <div id="work-{{ work.id }}" class="exp-item">
             {% include "cv_template/components/work_experience_standard.html" %}
           </div>
           {% endfor %}
@@ -163,7 +164,7 @@
         <h3>Education</h3>
         <div id="preview-education">
           {% for education in cv.education.all %}
-          <div id="education-{{ education.id }}">
+          <div id="education-{{ education.id }}" class="exp-item">
             {% include "cv_template/components/education_standard.html" %}
           </div>
           {% endfor %}
@@ -173,7 +174,7 @@
         <h3>Projects</h3>
         <div id="preview-projects">
           {% for project in cv.projects.all %}
-          <div id="project-{{ project.id }}">
+          <div id="project-{{ project.id }}" class="exp-item">
             {% include "cv_template/components/project_standard.html" %}
           </div>
           {% endfor %}

@@ -107,6 +107,7 @@ function updateExperienceItem(item) {
   const listSection = document.querySelector(`#preview-${itemFormat}`);
   let newSection = document.createElement('div');
   newSection.id = `${itemType}-${item.value}`;
+  newSection.className = 'exp-item';
   newSection.innerHTML = itemHtml;
   listSection.appendChild(newSection);
 
@@ -431,12 +432,26 @@ function handleResize() {
 function updateSummaryPreview() {
   const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
   const summaryPreview = document.getElementById('preview-summary');
+  const summaryContainer = document.getElementById('div_id_summary');
+  const hasSummaryInput = document.getElementById('id_has_summary');
+  hasSummaryInput.disabled = true;
   if (useDefaultSummaryInput.checked) {
-    summaryPreview.innerHTML = defaultSummary;
+    summaryContainer.style.display = 'none';
+    if (defaultSummary.trim()) {
+      summaryPreview.innerHTML = `<p>${defaultSummary}</p>`;
+      hasSummaryInput.disabled = false;
+    }
   } else {
+    summaryContainer.style.display = 'block';
     const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');
     if (richTextEditor) {
-      summaryPreview.innerHTML = richTextEditor.innerHTML;
+      if (richTextEditor.textContent.trim()) {
+        summaryPreview.innerHTML = richTextEditor.innerHTML;
+        hasSummaryInput.disabled = false;
+      }
+      else {
+        summaryPreview.innerHTML = "";
+      }
     }
   }
 }
@@ -504,7 +519,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (window.CKEDITOR) {
     CKEDITOR.on('instanceReady', function (evt) {
-      evt.editor.on('change', function () {
+      evt.editor.on('input', function () {
         updateSummaryPreview();
       });
     });

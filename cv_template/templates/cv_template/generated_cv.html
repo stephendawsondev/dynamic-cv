@@ -3,16 +3,6 @@
 {% load helper_tags %}
 {% block extra_css %}
 <style>
-  .emphasis-color {
-    color: {
-        {
-        cv.color
-      }
-    }
-
-    ;
-  }
-
   .intro ul {
     list-style-type: none;
     padding: 0;
@@ -184,7 +174,7 @@
   <section class="cv-section work-experience-section">
     <h3 class="emphasis-color">Work Experience</h3>
     {% for work in cv.work_experience.all %}
-    <div id="work-{{ work.id }}">
+    <div id="work-{{ work.id }}" class="exp-item">
       {% include "cv_template/components/work_experience_standard.html" %}
     </div>
     {% endfor %}
@@ -193,7 +183,7 @@
   <section class="cv-section education-section">
     <h3 class="emphasis-color">Education</h3>
     {% for education in cv.education.all %}
-    <div id="education-{{ education.id }}">
+    <div id="education-{{ education.id }}" class="exp-item">
       {% include "cv_template/components/education_standard.html" %}
     </div>
     {% endfor %}
@@ -202,7 +192,7 @@
   <section class="cv-section project-section solo-projects">
     <h3 class="emphasis-color">Projects</h3>
     {% for project in cv.projects.all %}
-    <div id="project-{{ project.id }}">
+    <div id="project-{{ project.id }}" class="exp-item">
       {% include "cv_template/components/project_standard.html" %}
     </div>
     {% endfor %}
@@ -238,6 +228,11 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+  [...document.getElementsByClassName('emphasis-color')].map((item) => {
+    item.style.color = "{{ cv.color }}";
+  });
+</script>
 <script src="{% static 'cv_template/js/cv_template.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
 {% endblock %}
