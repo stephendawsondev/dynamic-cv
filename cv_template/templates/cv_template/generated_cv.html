@@ -165,7 +165,7 @@
   <section class="cv-section work-experience-section">
     <h3 class="emphasis-color">Work Experience</h3>
     {% for work in cv.work_experience.all %}
-    <div id="work-{{ work.id }}" class="exp-item">
+    <div id="work-experience-{{ work.id }}" class="exp-item">
       {% include "cv_template/components/work_experience_standard.html" %}
     </div>
     {% endfor %}
@@ -183,7 +183,7 @@
   <section class="cv-section project-section solo-projects">
     <h3 class="emphasis-color">Projects</h3>
     {% for project in cv.projects.all %}
-    <div id="project-{{ project.id }}" class="exp-item">
+    <div id="projects-{{ project.id }}" class="exp-item">
       {% include "cv_template/components/project_standard.html" %}
     </div>
     {% endfor %}

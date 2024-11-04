@@ -119,10 +119,16 @@ function updateExperienceItem(item) {
     // Create the element to be appended to the appropriate section
     const listSection = document.querySelector(`#preview-${itemFormat}`);
     let newSection = document.createElement('div');
-    newSection.id = `${itemType}-${item.value}`;
+    newSection.id = `${itemFormat}-${item.value}`;
     newSection.className = 'exp-item';
     newSection.innerHTML = itemHtml;
     listSection.appendChild(newSection);
+  }
+  else {
+    const selectedElement = document.getElementById(`${itemFormat}-${item.value}`);
+    if (selectedElement) {
+      selectedElement.remove();
+    }
   }
 
   // Removing any unused sections, and adding extra properties
@@ -473,6 +479,7 @@ function updateSummaryPreview() {
       }
     }
   }
+  renderPreview();
 }
 
 

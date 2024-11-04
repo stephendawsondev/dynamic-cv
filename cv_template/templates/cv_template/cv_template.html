@@ -160,7 +160,7 @@
         <h3>Work Experience</h3>
         <div id="preview-work-experience">
           {% for work in cv.work_experience.all %}
-          <div id="work-{{ work.id }}" class="exp-item">
+          <div id="work-experience-{{ work.id }}" class="exp-item">
             {% include "cv_template/components/work_experience_standard.html" %}
           </div>
           {% endfor %}
@@ -180,7 +180,7 @@
         <h3>Projects</h3>
         <div id="preview-projects">
           {% for project in cv.projects.all %}
-          <div id="project-{{ project.id }}" class="exp-item">
+          <div id="projects-{{ project.id }}" class="exp-item">
             {% include "cv_template/components/project_standard.html" %}
           </div>
           {% endfor %}
