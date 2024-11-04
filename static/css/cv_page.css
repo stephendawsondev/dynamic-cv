@@ -23,9 +23,6 @@
 .page section:not(.intro) {
   padding: 2mm 0;
 }
-/* .page section.work-experience-section:not(.intro) {
-  padding-bottom: 2.3mm;
-} */
 
 .page .exp-item:not(:last-child)::after {
   content: "";
@@ -61,6 +58,15 @@
 .page ul {
   margin: 0;
   padding-left: 40px;
+}
+
+.intro ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
 .summary>p {

@@ -223,7 +223,7 @@
 <script>
   // Update the color of each heading on page load
   if ("{{ cv.color }}") {
-    [...document.getElementsByTagName('h3')].map((item) => {
+    [...document.getElementsByTagName('h2'), ...document.getElementsByTagName('h3')].map((item) => {
       item.style.color = "{{ cv.color }}";
     });
   }

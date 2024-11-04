@@ -49,10 +49,9 @@ function updateExperienceItem(item) {
     for (let [key, value] of Object.entries(itemData)) {
       if (itemHtml.includes(`${key}">`)) {
         if (value) {
-          itemHtml = itemHtml.replace(`${key}">`, `${key}">${value}`);
-
           // Adding the href and aria-label attributes to URLs
           if (key.toLowerCase().includes('url')) {
+            itemHtml = itemHtml.replace(`${key}">`, `${key}">${cleanUrl(value)}`);
             let linkDescription = 'website';
             let projectName = 'this project';
             switch (key) {
@@ -71,6 +70,9 @@ function updateExperienceItem(item) {
               'href': value,
               'aria-label': `Go to the ${linkDescription} of ${projectName} (Opens in a new tab)`
             };
+          }
+          else {
+            itemHtml = itemHtml.replace(`${key}">`, `${key}">${value}`);
           }
         }
         else {
@@ -249,6 +251,10 @@ function updateSectionVisibility(sectionType) {
  * Adds the headings to the first page on page load
  */
 function loadPreview() {
+  // Clean the URLs for the contact information
+  [...document.querySelector('.links').getElementsByTagName('a')].map((item) => {
+    item.innerText = cleanUrl(item.innerText);
+  });
   let page = document.querySelector('.cv-preview');
   const headingOrder = document.getElementById('id_headings_order');
   const headingValues = headingOrder.value ? headingOrder.value.split(',') : [];
@@ -283,7 +289,7 @@ function renderPreview() {
     
     for (let i = 0; i < pages.length; i++) {
       let page = pages[i];
-      let usedSpace = headingSpaces[i].reduce((item, prevNum) => item + prevNum, 0);
+      let usedSpace = headingSpaces[i].reduce((item, prevNum) => Math.ceil(item + prevNum), 0);
       let sectionsMovedForward = 0;
 
       // Moving sections to the next page if there is not enough room
@@ -537,6 +543,12 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   }
+  const positionInput = document.getElementById('id_position_title');
+  document.getElementById('id_position_title').addEventListener('input', (event) => {
+    const positionPreview = document.getElementById('preview-position');
+    positionPreview.innerText = positionInput.value;
+    renderPreview();
+  });
 
   const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
   useDefaultSummaryInput.addEventListener('change', updateSummaryPreview);

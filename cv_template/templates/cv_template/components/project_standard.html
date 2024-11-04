@@ -1,3 +1,5 @@
+{% load helper_tags %}
+
 <div class="flex justify-between">
   <div class="heading name">{{ project.name }}</div>
   <div class="dates">
@@ -15,7 +17,7 @@
   <span class="font-bold">Repository URL:</span>
   <a href="{{ project.repository_url }}" target="_blank" rel="noopener"
     aria-label="Go to the repository of {{ project.name }} (Opens in a new tab)" class="repository_url">
-    {{ project.repository_url }}
+    {{ project.repository_url|clean_url }}
   </a>
 </div>
 {% endif %}
@@ -24,7 +26,7 @@
   <span class="font-bold">Deployed URL:</span>
   <a href="{{ project.deployed_url }}" target="_blank" rel="noopener"
     aria-label="Go to the deployed site of {{ project.name }} (Opens in a new tab)" class="deployed_url">
-    {{ project.deployed_url }}
+    {{ project.deployed_url|clean_url }}
   </a>
 </div>
 {% endif %}
