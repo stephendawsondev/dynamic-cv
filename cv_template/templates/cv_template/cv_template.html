@@ -156,9 +156,9 @@
     </div>
 
     <div id="preview-unused-headings" class="hidden" aria-hidden="true">
-      <section class="work-experience-section">
+      <section class="work-experience-section primary">
         <h3>Work Experience</h3>
-        <div id="preview-work-experience">
+        <div id="preview-work-experience" class="preview-items">
           {% for work in cv.work_experience.all %}
           <div id="work-experience-{{ work.id }}" class="exp-item">
             {% include "cv_template/components/work_experience_standard.html" %}
@@ -166,9 +166,9 @@
           {% endfor %}
         </div>
       </section>
-      <section class="education-section">
+      <section class="education-section primary">
         <h3>Education</h3>
-        <div id="preview-education">
+        <div id="preview-education" class="preview-items">
           {% for education in cv.education.all %}
           <div id="education-{{ education.id }}" class="exp-item">
             {% include "cv_template/components/education_standard.html" %}
@@ -176,9 +176,9 @@
           {% endfor %}
         </div>
       </section>
-      <section class="projects-section">
+      <section class="projects-section primary">
         <h3>Projects</h3>
-        <div id="preview-projects">
+        <div id="preview-projects" class="preview-items">
           {% for project in cv.projects.all %}
           <div id="projects-{{ project.id }}" class="exp-item">
             {% include "cv_template/components/project_standard.html" %}

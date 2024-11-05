@@ -123,6 +123,24 @@ function updateExperienceItem(item) {
     newSection.className = 'exp-item';
     newSection.innerHTML = itemHtml;
     listSection.appendChild(newSection);
+
+    // Removing any unused sections, and adding extra properties
+    setTimeout(() => {
+      for (let section of emptySections) {
+        let deleteSection = newSection.querySelector(`.${section}`);
+        if (deleteSection) {
+          deleteSection.remove();
+        }
+      }
+      for (let [key, data] of Object.entries(extraAttrs)) {
+        let propSection = newSection.querySelector(`.${key}`);
+        if (propSection) {
+          for (let [prop, value] of Object.entries(data)) {
+            propSection.setAttribute(prop, value);
+          }
+        }
+      }
+    });
   }
   else {
     const selectedElement = document.getElementById(`${itemFormat}-${item.value}`);
@@ -130,24 +148,6 @@ function updateExperienceItem(item) {
       selectedElement.remove();
     }
   }
-
-  // Removing any unused sections, and adding extra properties
-  setTimeout(() => {
-    for (let section of emptySections) {
-      let deleteSection = newSection.querySelector(`.${section}`);
-      if (deleteSection) {
-        deleteSection.remove();
-      }
-    }
-    for (let [key, data] of Object.entries(extraAttrs)) {
-      let propSection = newSection.querySelector(`.${key}`);
-      if (propSection) {
-        for (let [prop, value] of Object.entries(data)) {
-          propSection.setAttribute(prop, value);
-        }
-      }
-    }
-  });
 
   // Updating the headings
   setTimeout(() => updateSectionVisibility(itemType));
@@ -293,7 +293,12 @@ function renderPreview() {
     const availableSpace = pageRect.height - (verticalMargin * 2);
     let headingSpaces = pages.map((item) => [...item.children].map((child) => child.getBoundingClientRect().height));
     
+    let count = 0;
     for (let i = 0; i < pages.length; i++) {
+      count++;
+      if (count >= 10) {
+        return;
+      }
       let page = pages[i];
       let usedSpace = headingSpaces[i].reduce((item, prevNum) => Math.ceil(item + prevNum), 0);
       let sectionsMovedForward = 0;
@@ -301,11 +306,16 @@ function renderPreview() {
       // Moving sections to the next page if there is not enough room
       if (usedSpace > availableSpace) {
         let sectionSpace = 0;
-        let isOverflow = false;
         for (let j = 0; j < headingSpaces[i].length; j++) {
           const sectionHeight = Math.ceil(headingSpaces[i][j]);
-          if (sectionSpace + sectionHeight > availableSpace || isOverflow) {
-            isOverflow = true;
+          const sectionElement = page.children[j];
+          // If the element hasn't already been broken into another element
+          const isPrimaryElement = sectionElement.classList.contains('primary');
+
+          if (sectionSpace + sectionHeight > availableSpace) {
+            let appendSection = sectionElement;
+            let appendHeight = sectionHeight;
+
             // Creating a new page if this is the last
             if (i === pages.length - 1) {
               const newPage = document.createElement('div');
@@ -317,41 +327,81 @@ function renderPreview() {
               pages.push(newPage);
             }
             const nextPage = pages[i + 1];
+
+            // Breaking up sections if they take up more than a page
+            let itemListElement = null;
+            let pageBreakSpaces = null;
+            let breakIndex = 0;
+            if (sectionHeight >= availableSpace) {
+              // Adding the heights of all the other elements, not including the item list, that make up the section
+              let extraHeight = isPrimaryElement ? [...sectionElement.children]
+              .splice(0, sectionElement.children.length - 1)
+              .reduce((totalHeight, element) => totalHeight + element.getBoundingClientRect().height, 0) : 0;
+              
+              // Finding the heights of each element within the section
+              itemListElement = isPrimaryElement ? sectionElement.children[1] : sectionElement;
+              pageBreakSpaces = [...itemListElement.children].map((element) => element.getBoundingClientRect().height);
+
+              while (breakIndex < pageBreakSpaces.length && sectionSpace + extraHeight + pageBreakSpaces[breakIndex] < availableSpace) {
+                breakIndex++;
+                extraHeight += pageBreakSpaces[breakIndex];
+              }
+              if (breakIndex > 0) {
+                let newSection = document.createElement('section');
+                newSection.className = appendSection.className.replace('primary', 'secondary');
+                document.getElementById('preview-unused-headings').appendChild(newSection);
+
+                appendHeight = 0;
+                while (breakIndex < pageBreakSpaces.length) {
+                  newSection.appendChild(itemListElement.children[breakIndex]);
+                  appendHeight += pageBreakSpaces.splice(breakIndex, 1);
+                  headingSpaces[i][j] -= appendHeight;
+                }
+                appendSection = newSection;
+              }
+            }
             if (headingSpaces[i + 1].length > sectionsMovedForward) {
-              nextPage.insertBefore(page.children[j], nextPage.children[sectionsMovedForward]);
-              headingSpaces[i + 1].splice(sectionsMovedForward, 0, sectionHeight);
+              nextPage.insertBefore(appendSection, nextPage.children[sectionsMovedForward]);
+              headingSpaces[i + 1].splice(sectionsMovedForward, 0, appendHeight);
             }
             else {
-              nextPage.appendChild(page.children[j]);
-              headingSpaces[i + 1].push(sectionHeight);
+              nextPage.appendChild(appendSection);
+              headingSpaces[i + 1].push(appendHeight);
             }
             headingSpaces[i].splice(j, 1);
             j--;
             sectionsMovedForward++;
           }
-          else {
-            sectionSpace += sectionHeight;
-          }
+          sectionSpace += sectionHeight;
         }
       }
       // Checking if there is enough room to take sections from the next page
       else {
-        while (i < pages.length - 1 && usedSpace + headingSpaces[i + 1][0] <= availableSpace) {
+        // Move any page-breaking sections back a page to try and spread the section more efficiently
+        while (i < pages.length - 1 && (usedSpace + headingSpaces[i + 1][0] <= availableSpace || headingSpaces[i + 1][0] >= availableSpace)) {
+          const isPageBreak = headingSpaces[i + 1][0] >= availableSpace;
           let nextPage = pages[i + 1];
           let nextPageHeadings = headingSpaces[i + 1];
           headingSpaces[i].push(nextPageHeadings[0]);
           nextPageHeadings.splice(0, 1);
           page.appendChild(pages[i + 1].children[0]);
 
-          // Removing the next page if there are no sections in it
-          if (pages[i + 1].children.length === 0) {
-            // If the page to be deleted is active, move to the previous page
-            if (nextPage.classList.contains('active')) {
-              page.classList.add('active');
+          // Re-evaluate the current page now that there is a page break
+          if (isPageBreak) {
+            i--;
+            break;
+          }
+          else {
+            // Removing the next page if there are no sections left in it
+            if (pages[i + 1].children.length === 0) {
+              // If the page to be deleted is active, move to the previous page
+              if (nextPage.classList.contains('active')) {
+                page.classList.add('active');
+              }
+              pages.splice(i + 1, 1);
+              headingSpaces.splice(i + 1, 1);
+              nextPage.remove();
             }
-            pages.splice(i + 1, 1);
-            headingSpaces.splice(i + 1, 1);
-            nextPage.remove();
           }
         }
       }
