@@ -283,6 +283,7 @@ const headings = ['work-experience', 'education', 'projects', 'skills', 'hobbies
  * in a much smoother update with less frame flashing
  */
 function renderPreview() {
+  console.clear();
 
   // Wait until all elements have been resized until proceeding
   setTimeout(() => {
@@ -296,12 +297,8 @@ function renderPreview() {
     const availableSpace = pageRect.height - (verticalMargin * 2);
     let headingSpaces = pages.map((item) => [...item.children].map((child) => child.getBoundingClientRect().height));
     
-    let count = 0;
     for (let i = 0; i < pages.length; i++) {
-      count++;
-      if (count >= 10) {
-        return;
-      }
+      console.log(i);
       let page = pages[i];
       let usedSpace = headingSpaces[i].reduce((item, prevNum) => Math.ceil(item + prevNum), 0);
       let sectionsMovedForward = 0;
@@ -380,32 +377,67 @@ function renderPreview() {
       }
       // Checking if there is enough room to take sections from the next page
       else {
+        // If the last section is broken into segments, and the section is to be moved back a page, then piece it back together
+        const hasChildren = page.children.length;
+        const lastSection = hasChildren ? page.children[page.children.length - 1] : null;
+        const sectionSegments = lastSection ? [...document.getElementsByClassName(lastSection.classList[0])] : [];
+        const firstPage = sectionSegments.length > 0 ? pages.indexOf(sectionSegments[0].parentNode) : 0;
+        const sectionIndex = lastSection ? sectionSegments.indexOf(lastSection) : 0;
+        let sectionHeights = sectionSegments.map(segment => [...segment.children].map(element => element.getBoundingClientRect().height));
+        const hasSegments = sectionSegments.length > 1 && sectionIndex < sectionHeights.length;
+
         // Move any page-breaking sections back a page to try and spread the section more efficiently
-        while (i < pages.length - 1 && (usedSpace + headingSpaces[i + 1][0] <= availableSpace || headingSpaces[i + 1][0] >= availableSpace)) {
-          const isPageBreak = headingSpaces[i + 1][0] >= availableSpace;
+        while (i < pages.length - 1
+          && (usedSpace + headingSpaces[i + 1][0] <= availableSpace
+            || headingSpaces[i + 1][0] >= availableSpace
+            || (hasSegments && usedSpace + sectionHeights[sectionIndex + 1][0] <= availableSpace))) {
           let nextPage = pages[i + 1];
-          let nextPageHeadings = headingSpaces[i + 1];
-          headingSpaces[i].push(nextPageHeadings[0]);
-          nextPageHeadings.splice(0, 1);
-          page.appendChild(pages[i + 1].children[0]);
+          // Move the page index back 1 to re-evaluate the page
+          let nextEvalPage = i - 1;
+          const isPageBreak = headingSpaces[i + 1][0] >= availableSpace || hasSegments;
+
+          // Putthing the segments back together to be divided again in the next iteration
+          if (hasSegments) {
+            while (sectionSegments.length > 1) {
+              // Find the page index of the section to relocate its height value
+              const currentSection = sectionSegments[1];
+              const currentPage = pages.indexOf(currentSection.parentNode);
+
+              // Add the height of the segment to the height of the first segment
+              const segmentHeight = headingSpaces[currentPage].splice(0, 1)[0];
+              headingSpaces[firstPage][headingSpaces[firstPage].length - 1] += segmentHeight;
+
+              // Move all the children into the main segment, and then delete the secondary one
+              while (currentSection.children.length > 0) {
+                sectionSegments[0].children[1].appendChild(currentSection.children[0]);
+              }
+              sectionSegments.splice(1, 1);
+              currentSection.remove();
+            }
+            nextEvalPage = firstPage - 1;
+          }
+          else {
+            headingSpaces[i].push(headingSpaces[i + 1][0]);
+            headingSpaces[i + 1].splice(0, 1);
+            page.appendChild(nextPage.children[0]);
+          }
 
           // Re-evaluate the current page now that there is a page break
           if (isPageBreak) {
-            i--;
+            i = nextEvalPage;
             break;
           }
-          else {
-            // Removing the next page if there are no sections left in it
-            if (pages[i + 1].children.length === 0) {
-              // If the page to be deleted is active, move to the previous page
-              if (nextPage.classList.contains('active')) {
-                page.classList.add('active');
-              }
-              pages.splice(i + 1, 1);
-              headingSpaces.splice(i + 1, 1);
-              nextPage.remove();
+          // Removing the next page if there are no sections left in it
+          if (pages[i + 1].children.length === 0) {
+            // If the page to be deleted is active, move to the previous page
+            if (nextPage.classList.contains('active')) {
+              page.classList.add('active');
             }
+            pages.splice(i + 1, 1);
+            headingSpaces.splice(i + 1, 1);
+            nextPage.remove();
           }
+
         }
       }
     }
