@@ -3,41 +3,6 @@
 {% load helper_tags %}
 {% block extra_css %}
 <style>
-  .emphasis-color {
-    color: {{cv.color}};
-  }
-
-  h1 {
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 23pt;
-    margin: 0;
-  }
-
-  h2 {
-    text-align: center;
-    font-size: 16pt;
-    margin: 0;
-  }
-
-  .intro ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  h3::after {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 1px;
-    background-color: black;
-    margin-top: 10px;
-  }
-
   .date-cell {
     width: 15%;
   }
@@ -86,16 +51,6 @@
     background-color: #f2f2f2;
   }
 
-  .technical-skill-set,
-  .additional-information {
-    margin-bottom: 20px;
-  }
-
-  .technical-skill-set h3,
-  .additional-information h3 {
-    margin-bottom: 10px;
-  }
-
   .technical-skill-set ul,
   .additional-information ul {
     padding-left: 20px;
@@ -129,25 +84,25 @@
 {% block title %}{{ cv.contact_information.first_name }}'s Generated CV - {% endblock %}
 {% block content %}
 <div class="navigation-buttons">
-  <div class="back-button">
+  <div class="has-cv-action">
     <a href="javascript:history.back()">Go back</a>
   </div>
-  <div class="page-navigation">
+  <div class="page-navigation has-cv-action">
 
     {% comment %} Don't add anything here - these are automatically created with
     the below JS {% endcomment %}
   </div>
   {% if cv.position_title and analysed == False %}
-      <div class="back-button">
-        <a href="{% url 'analyze_cv' cv.id %}">Analyze CV</a>
-      </div>
+  <div class="has-cv-action">
+    <a href="{% url 'analyze_cv' cv.id %}">Analyze CV</a>
+  </div>
   {% endif %}
   {% if cv_analysis %}
-  <div class="back-button">
+  <div class="has-cv-action">
     <a href="{% url 'view_analysis' cv_analysis.id %}">View CV Analysis</a>
   </div>
   {% endif %}
-  <button id="generate-pdf">
+  <button id="generate-pdf" class="cv-action-button">
     Download as PDF
   </button>
 </div>
@@ -199,117 +154,77 @@
         {% endif %}
       </ul>
       {% if cv.summary %}
-      <p class="summary">
+      <div class="summary">
         {{ cv.summary|safe }}
-      </p>
+      </div>
       {% endif %}
     </section>
-    {% if cv.education.all.count > 0 %}
-    <section class="cv-section education-section">
-      <h3 class="emphasis-color">Education</h3>
-      <table>
-        {% for education in cv.education.all %}
-        <tr>
-          <td class="date-cell">{{ education.start_year }} -
-            {% if education.end_year %}{{ education.end_year }}{% else %}Present{% endif %}
-          </td>
-          <td>{% if education.school_name %} {{ education.school_name }}{% endif %}</td>
-          <td>{% if education.location %} {{ education.location }}{% endif %}</td>
-          <td class="accreditation">
-            {% if education.degree %} {{ education.degree }}{% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-    </section>
-    {% endif %}
-    {% if cv.work_experience.all.count > 0 %}
-    <section class="cv-section work-experience-section">
-      <h3 class="emphasis-color">Work Experience</h3>
-      {% for work_experience in cv.work_experience.all %}
-      <div class="job">
-        <div class="header">
-          <div class="details">
-            {{ work_experience.organization }} - {{ work_experience.position }} - {{ work_experience.location }}
-          </div>
-          <div class="date">
-            {{ work_experience.start_date }} -
-            {% if work_experience.end_date %}{{ work_experience.end_date }}{% else %}Present{% endif %}
-          </div>
-        </div>
-        {% if work_experience.bullet_points.all.count > 0 %}
-        <ul class="work-details">
-          {% for work_bullet in work_experience.bullet_points.all %}
-          <li>{{ work_bullet }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-      {% endfor %}
-    </section>
-    {% endif %}
   </div>
-  {% if cv.projects.all.count > 0 %}
+  {% for heading in cv.list_of_headings %}
+  {% if heading == 'work_experience' %}
+  <section class="cv-section work-experience-section">
+    <h3 class="emphasis-color">Work Experience</h3>
+    {% for work in cv.work_experience.all %}
+    <div id="work-experience-{{ work.id }}" class="exp-item">
+      {% include "cv_template/components/work_experience_standard.html" %}
+    </div>
+    {% endfor %}
+  </section>
+  {% elif heading == 'education' %}
+  <section class="cv-section education-section">
+    <h3 class="emphasis-color">Education</h3>
+    {% for education in cv.education.all %}
+    <div id="education-{{ education.id }}" class="exp-item">
+      {% include "cv_template/components/education_standard.html" %}
+    </div>
+    {% endfor %}
+  </section>
+  {% elif heading == 'projects' %}
   <section class="cv-section project-section solo-projects">
     <h3 class="emphasis-color">Projects</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Project name</th>
-          <th>Description</th>
-          <th>Github link</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for project in cv.projects.all %}
-        <tr>
-          <td>{{ project.name }}</td>
-          <td>
-
-          </td>
-          <td>
-            <a href="{{ product.repository_url }}">
-              {{ project.repository_url | clean_url }}
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    {% for project in cv.projects.all %}
+    <div id="projects-{{ project.id }}" class="exp-item">
+      {% include "cv_template/components/project_standard.html" %}
+    </div>
+    {% endfor %}
   </section>
-  {% endif %}
+  {% elif heading == 'skills' %}
   <section class="cv-section technical-skill-set">
     <h3 class="emphasis-color">Skill Set</h3>
-    {% for skill in cv.skills.all %}
+    {% for skill in cv.ordered_skills %}
     {{ skill }}{% if not forloop.last %}, {% endif %}
     {% endfor %}
   </section>
-
-  {% if cv.hobbies %}
+  {% elif heading == 'hobbies' %}
   <section class="cv-section hobbies">
     <h3 class="emphasis-color">Interests/Hobbies</h3>
     <ul>
-      {% for info in cv.hobbies.all %}
+      {% for info in cv.ordered_hobbies %}
       <li>{{ info.val }}</li>
       {% endfor %}
     </ul>
   </section>
-  {% endif %}
-
-  {% if cv.extra_info %}
+  {% elif heading == 'extra_info' %}
   <section class="cv-section additional-information">
     <h3 class="emphasis-color">Additional Information</h3>
     <ul>
-      {% for info in cv.extra_info.all %}
+      {% for info in cv.ordered_extra_info %}
       <li>{{ info.val }}</li>
       {% endfor %}
     </ul>
   </section>
   {% endif %}
+  {% endfor %}
 </div>
+<div id="mm-measurement"></div>
 {% endblock %}
 
 {% block extra_js %}
+<script>
+  [...document.getElementsByClassName('emphasis-color')].map((item) => {
+    item.style.color = "{{ cv.color }}";
+  });
+</script>
 <script src="{% static 'cv_template/js/cv_template.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
 {% endblock %}

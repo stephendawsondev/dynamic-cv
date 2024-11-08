@@ -59,12 +59,13 @@ const experienceProperties = {
     fields: {
       name: 'project-exp-name',
       description: 'project-exp-description',
+      date: 'project-exp-date',
       repository_url: 'project-exp-repo',
       deployed_url: 'project-exp-deploy',
     },
     optionalFields: ['description', 'repository_url', 'deployed_url'],
     accordionLabel: {
-      format: '0',
+      format: '0, %',
       keys: {
         '0': 'name'
       }
@@ -150,6 +151,7 @@ function addExperienceHtml(experienceType) {
   editButton.setAttribute('href', editButton.getAttribute('href').replace('/0/', `/${itemExperienceData.item_id}/`));
   let deleteButton = collapseBodyElement.querySelector('.delete-exp-item');
   deleteButton.setAttribute('data-href', deleteButton.getAttribute('data-href').replace('/0/', `/${itemExperienceData.item_id}/`));
+  deleteButton.addEventListener('click', triggerDeleteItem);
   
   // Filling out the new information into the new set of elements
   for (let [field, className] of Object.entries(propertyObject.fields)) {
@@ -157,22 +159,39 @@ function addExperienceHtml(experienceType) {
 
     // Connecting the start and end date
     if (field == 'date') {
-      let startDate = null;
-      let endDate = 'Present';
+      let months = [
+        'January', 'February', 'March', 'April',
+        'May', 'June', 'July', 'August',
+        'September', 'October', 'November', 'December'
+      ];
+      let startMonth = null;
+      let startYear = null;
+      let endMonth = '';
+      let endYear = 'Present';
       for (let [propField, propValue] of Object.entries(itemExperienceData)) {
+        if (!(propField.includes('start_') || propField.includes('end_'))) {
+          continue;
+        }
+        let dates = propValue.split('-').map((item) => parseInt(item));
         if (propField.includes('start_')) {
-          startDate = propValue;
+          startMonth = months[dates[1] - 1];
+          startYear = dates[0];
         }
         else if (propField.includes('end_') && propValue) {
-          endDate = propValue;
+          endMonth = months[dates[1] - 1];
+          endYear = dates[0];
         }
       }
-      let dateMessage = `${startDate} - ${endDate}`;
+      let endMessage = (endYear === 'Present') ? endYear : `${endMonth} ${endYear}`;
+      let dateMessage = `${startMonth} ${startYear} - ${endMessage}`;
       itemListElement.getElementsByClassName(className)[0].innerText = dateMessage;
 
       // Applying the date range to the collapse label, if requested
       if (labelFormat.includes('%')) {
-        labelFormat = labelFormat.replace('%', dateMessage);
+        let endLabel = (endYear === 'Present') ? endYear : `${endMonth.slice(0, 3)} ${endYear}`;
+        let labelMessage = `${startMonth.slice(0, 3)} ${startYear} - ${endLabel}`;
+
+        labelFormat = labelFormat.replace('%', labelMessage);
       }
     }
     else {
@@ -289,12 +308,14 @@ function clearForm(experienceType) {
       case 'education':
         optionalFields.push(`end_year`);
         break;
+      case 'project':
+        optionalFields.push('end_date');
       default:
         break;
     }
   }
   for (let optionalField of optionalFields) {
-    let optionalInput = document.getElementById(`id_${optionalField}`);
+    let optionalInput = document.getElementById(`${experienceType}_${optionalField}`);
     if (optionalInput.hasAttribute('disabled')) {
       optionalInput.removeAttribute('disabled');
       optionalInput.setAttribute('required', true);
@@ -365,12 +386,23 @@ function deleteItemListRow(deleteElement) {
  */
 function updateAccordionIcons(accordionParentId) {
   let accordionParent = document.getElementById(accordionParentId);
+  let experienceType = '';
+
+  // Getting the experience type
+  if (accordionParent.id.includes('work')) {
+    experienceType = 'work';
+  } else if (accordionParent.id.includes('education')) {
+    experienceType = 'education';
+  } else {
+    experienceType = 'project';
+  }
+
   let children = accordionParent.children;
   for (let i = 0; i < children.length; i++) {
     let child = children[i];
     let heading = child.getElementsByTagName('h2')[0];
     // Remove FlowBites default color settings when the accordion is clicked
-    heading.className = 'work-collapse-heading 2xl:w-[50%]';
+    heading.className = experienceType + '-collapse-heading 2xl:w-[50%]';
     let isActive = (heading.getAttribute('aria-expanded') == 'true');
     let button = heading.getElementsByTagName('button')[0];
     button.classList.remove('rounded-b-xl');
@@ -401,7 +433,7 @@ function triggerDeleteItem() {
 window.addEventListener('DOMContentLoaded', () => {
 
   // Forcing dependent elements that are not required by default to be required
-  const dependentIds = ['id_end_date', 'id_end_year', 'id_grade'];
+  const dependentIds = ['work_end_date', 'education_end_year', 'education_grade'];
   for (let depId of dependentIds) {
     let element = document.getElementById(depId);
     element.required = true;

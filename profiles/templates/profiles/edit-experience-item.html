@@ -13,8 +13,8 @@
 <div class="container mx-auto mt-3">
   <div class="md:flex">
     <ul class="flex flex-col text-lg font-medium text-violet-800 w-full md:w-60" id="default-styled-tab"
-      data-tabs-toggle="#default-styled-tab-content"
-      data-tabs-active-classes="text-black hover:text-purple-600" role="tablist">
+      data-tabs-toggle="#default-styled-tab-content" data-tabs-active-classes="text-black hover:text-purple-600"
+      role="tablist">
       <li class="w-full" role="presentation" id="first-tab">
         <a class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 text-center" type="button" role="tab"
           aria-controls="detail" data-tabs-target="#tab-details" href="{% url 'profile' %}?tab=details">Your
@@ -29,8 +29,8 @@
           aria-controls="skills" data-tabs-target="#tab-skills" href="{% url 'profile' %}?tab=skills">Skills</a>
       </li>
       <li class="w-full" role="presentation">
-        <a class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 text-center active" type="button" role="tab"
-          aria-controls="work-experience" data-tabs-target="#tab-work-experience"
+        <a class="w-full py-2 text-violet-800 bg-gray-50 border-2 rounded-lg m-1 text-center active" type="button"
+          role="tab" aria-controls="work-experience" data-tabs-target="#tab-work-experience"
           href="{% url 'profile' %}?tab=work_experience">Work Experience</a>
       </li>
       <li class="w-full" role="presentation">
@@ -54,10 +54,10 @@
       <h1 class="block text-violet-700 text-2xl font-bold mb-2">Edit {{ display_type }}</h1>
       <div class="lg:w-[50%]">
         {% for field in experience_form %}
-        {% if 'Start' in field.label %}
+        {% if 'Start' in field.label or field.label == 'From' %}
         <div class="grid gap-5 grid-cols-2 2xl:grid-cols-3">
           <div>{{ field|as_crispy_field }}</div>
-          {% elif 'End' in field.label %}
+          {% elif 'End' in field.label or field.label == 'To' %}
           <div>{{ field|as_crispy_field }}</div>
         </div>
         <div class="flex mb-6">
@@ -67,7 +67,7 @@
               {% if not experience_form.end_date.value and not experience_form.end_year.value %}checked{% endif %} />
           </div>
           <label for="id_experience_active" class="ms-2 text-sm font-medium text-gray-900">
-            I am currently {{ checkbox.action }} here
+            I am currently {{ checkbox.action }}
           </label>
         </div>
         {% else %}
@@ -93,7 +93,7 @@
     </form>
 
     <!-- Bullet point list -->
-     {% if experience_item.bullet_points %}
+    {% if experience_item.bullet_points %}
     <form data-main-input="bullet-inputs" class="add-item-form">
       <label for="item-bullet-text" class="block text-gray-700 text-sm font-bold mb-2">
         {{ bullet_point_label }}
@@ -110,13 +110,13 @@
         </li>
         {% endfor %}
       </ul>
-      <div class="flex mb-6">
-        <div class="relative w-full">
+      <div class="mb-6">
+        <div class="add-item-container relative w-full">
           <input type="text" id="new-responsibility-text" name="responsibility"
-            class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-            placeholder="Role/Responsibility" maxlength="150" required />
+            class="autocomplete {{ item_type }} bullet add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Role/Responsibility" maxlength="150" autocomplete="off" required />
           <button type="submit" id="submit-responsibility"
-            class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            class="add-item-submit px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
             Add</button>
         </div>
       </div>
@@ -139,13 +139,13 @@
         </li>
         {% endfor %}
       </ul>
-      <div class="flex mb-6">
-        <div class="relative w-full">
+      <div class="mb-6">
+        <div class="add-item-container relative w-full">
           <input type="text" name="work-skill"
-            class="add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
-            placeholder="Skill" maxlength="30" required />
+            class="autocomplete skill add-item-input block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-l-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-lime-300 focus:border-lime-500"
+            placeholder="Skill" maxlength="30" autocomplete="off" required />
           <button type="submit" id="submit-work-skill"
-            class="add-item-submit absolute top-0 end-0 px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
+            class="add-item-submit px-5 py-2.5 h-full text-sm font-medium text-black bg-lime-500 rounded-e-lg border border-lime-600 hover:not(disabled):bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-300">
             Add</button>
         </div>
       </div>
@@ -166,6 +166,20 @@
     <div id="tab-education" role="tabpanel"></div>
     <div id="tab-projects" role="tabpanel"></div>
     <div id="tab-other" role="tabpanel"></div>
+  </div>
+
+  <!-- Autocomplete bullet points -->
+  <div id="autocomplete-list-bullet-{{ item_type }}" class="hidden" aria-hidden="true">
+    {% for bullet in bullet_points.all %}
+    <div>{{ bullet }}</div>
+    {% endfor %}
+  </div>
+
+  <!-- Autocomplete skills -->
+  <div id="autocomplete-list-skill" class="hidden" aria-hidden="true">
+    {% for skill in user.user_skills.all %}
+    <div>{{ skill.name }}</div>
+    {% endfor %}
   </div>
 </div>
 </div>

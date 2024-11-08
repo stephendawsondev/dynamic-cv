@@ -3,45 +3,20 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'cv_template/css/cv_template.css' %}">
+<link rel="stylesheet" href="{% static 'css/cv_page.css' %}">
 <style>
+  body {
+    overflow-x: hidden;
+  }
+
   .cv-preview {
     font-family: "Raleway", sans-serif;
     line-height: 1.6;
     font-size: 10pt;
   }
 
-  .cv-preview h1 {
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 23pt;
-    margin: 0;
-  }
-
-  .cv-preview h2 {
-    text-align: center;
-    font-size: 16pt;
-    margin: 0;
-    color: #6495ed;
-  }
-
   .cv-preview h3 {
     color: #6495ed;
-    margin-top: 2em;
-    margin-bottom: 0.75em;
-  }
-
-  .cv-preview h3::after {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 1px;
-    background-color: black;
-    margin-top: 10px;
-  }
-
-  .cv-preview ul {
-    list-style-type: none;
-    padding: 0;
   }
 
   .cv-preview .intro ul {
@@ -83,22 +58,45 @@
 </style>
 {% endblock %}
 
-{% block title %}CV Creator{% endblock %}
+{% block title %}Create CV - {% endblock %}
 
 {% block content %}
 <div class="container mx-auto p-3 lg:flex lg:flex-row">
   <form method="post" id="skill-form" class="w-full lg:w-1/2 lg:pr-4">
     {% csrf_token %}
+    <input type="hidden" id="id_headings_order" name="headings_order" value="{{ cv.item_ordering.headings }}">
+    <input type="hidden" {% if not cv.summary %}disabled{% endif %} id="id_has_summary" name="has_summary" value="true">
+    <h1 class="block text-violet-700 text-2xl font-bold mb-2">{% if cv %}Edit{% else %}Create{% endif %} CV</h1>
+    <p>Insert your information in order of importance (i.e. more important information at the top)</p>
     {% for form_field in form %}
     {{ form_field|as_crispy_field }}
-    {% if form_field.label == 'Skills' and not user.user_skills.all %}
+    {% if form_field.label == 'Skills' %}
+    {% if user.user_skills.all %}
+    <input type="hidden" id="id_skills_order" name="skills_order" value="{{ cv.item_ordering.skills }}"
+      aria-hidden="true">
+    {% else %}
     <p class="text-xs text-gray-600">You must have skills on your profile to create your CV</p>
+    {% endif %}
     {% elif form_field.label == 'Work experience' and not user.work_experience.all %}
     <p class="text-xs text-gray-600">You do not have any work experience in your profile</p>
     {% elif form_field.label == 'Education' and not user.education.all %}
     <p class="text-xs text-gray-600">You do not have any education in your profile</p>
     {% elif form_field.label == 'Projects' and not user.projects.all %}
     <p class="text-xs text-gray-600">You do not have any projects in your profile</p>
+    {% elif form_field.label == 'Hobbies' %}
+    {% if user.hobbies.all %}
+    <input type="hidden" id="id_hobbies_order" name="hobbies_order" value="{{ cv.item_ordering.hobbies }}"
+      aria-hidden="true">
+    {% else %}
+    <p class="text-xs text-gray-600">You do not have any hobbies in your profile</p>
+    {% endif %}
+    {% elif form_field.label == 'Extra info' %}
+    {% if user.extra_info.all %}
+    <input type="hidden" id="id_extra_info_order" name="extra_info_order" value="{{ cv.item_ordering.extra_info }}"
+      aria-hidden="true">
+    {% else %}
+    <p class="text-xs text-gray-600">You do not have any extra information in your profile</p>
+    {% endif %}
     {% endif %}
 
     {% endfor %}
@@ -115,305 +113,193 @@
     {% endif %}
     {% endwith %}
   </form>
-  <div class="cv-preview-container hidden lg:block lg:w-1/2 lg:pl-4 ">
-    <div class="cv-preview bg-white p-5 shadow-md lg:sticky lg:top-0">
-      <section class="intro">
-        <h1 id="preview-name">{% if first_name and last_name %}{{ first_name }} {{ last_name }}{% endif %}</h1>
-        <h2 id="preview-position"></h2>
-        <ul class="links">
-          {% if github_url %}
-          <li><a href="{{ github_url }}">{{ github_url }}</a></li>
-          {% endif %}
-          {% if linkedin_url %}
-          <li><a href="{{ linkedin_url }}">{{ linkedin_url }}</a></li>
-          {% endif %}
-        </ul>
-        <ul class="contact-details">
-          {% if city or country %}
-          <li>
-            {% if city %}{{ city }}{% endif %}{% if city and country %}, {% endif %}{% if country %}{{ country }}
-            {% endif %}
-          </li>
-          {% endif %}
-          {% if email %}
-          <li><a href="mailto:{{ email }}">{{ email }}</a></li>
-          {% endif %}
-          {% if phone_number %}
-          <li>{{ phone_number }}</li>
-          {% endif %}
-        </ul>
-        <div class="my-3 summary" id="preview-summary"></div>
-      </section>
-      <section class="education-section">
-        <h3>Education</h3>
-        <table id="preview-education"></table>
-      </section>
-      <section class="work-experience-section">
+  <div class="cv-preview-container invisible absolute lg:block w-full lg:w-1/2">
+    <div id="sticky-container" class="lg:sticky lg:top-0">
+      <div id="cv-pages">
+        <div class="cv-preview page active bg-white shadow-md">
+          <section class="intro">
+            <h1 id="preview-name">
+              {% if contact.first_name and contact.last_name %}
+              {{ contact.first_name }} {{ contact.last_name }}
+              {% endif %}
+            </h1>
+            <h2 id="preview-position">{{ cv.position_title }}</h2>
+            <ul class="links">
+              {% if contact.github %}
+              <li><a href="{{ contact.github }}">{{ contact.github }}</a></li>
+              {% endif %}
+              {% if contact.linkedin %}
+              <li><a href="{{ contact.linkedin }}">{{ contact.linkedin }}</a></li>
+              {% endif %}
+            </ul>
+            <ul class="contact-details">
+              {% if contact.city or contact.country %}
+              <li>
+                {{ contact.city }}{% if contact.city and contact.country %}, {% endif %}{{ contact.country }}
+              </li>
+              {% endif %}
+              {% if contact.email %}
+              <li><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></li>
+              {% endif %}
+              {% if contact.phone_number %}
+              <li>{{ contact.phone_number }}</li>
+              {% endif %}
+            </ul>
+            <div class="summary{% if not cv.summary %} hidden{% endif %}" id="preview-summary">
+              {{ cv.summary|safe }}
+            </div>
+          </section>
+        </div>
+      </div>
+      <div id="preview-page-buttons" class="w-full hidden flex align-center justify-center">
+        <button id="preview-previous-page" class="cv-action-button m-0" disabled>Prev</button>
+        <button id="preview-next-page" class="cv-action-button">Next</button>
+      </div>
+    </div>
+
+    <div id="preview-unused-headings" class="hidden" aria-hidden="true">
+      <section class="work-experience-section primary">
         <h3>Work Experience</h3>
-        <div id="preview-work-experience"></div>
+        <div id="preview-work-experience" class="preview-items">
+          {% for work in cv.work_experience.all %}
+          <div id="work-experience-{{ work.id }}" class="exp-item">
+            {% include "cv_template/components/work_experience_standard.html" %}
+          </div>
+          {% endfor %}
+        </div>
       </section>
-      <section class="project-section">
+      <section class="education-section primary">
+        <h3>Education</h3>
+        <div id="preview-education" class="preview-items">
+          {% for education in cv.education.all %}
+          <div id="education-{{ education.id }}" class="exp-item">
+            {% include "cv_template/components/education_standard.html" %}
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      <section class="projects-section primary">
         <h3>Projects</h3>
-        <table id="preview-projects">
-          <thead>
-            <tr>
-              <th>Project name</th>
-              <th>Description</th>
-              <th>Deployed URL</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <div id="preview-projects" class="preview-items">
+          {% for project in cv.projects.all %}
+          <div id="projects-{{ project.id }}" class="exp-item">
+            {% include "cv_template/components/project_standard.html" %}
+          </div>
+          {% endfor %}
+        </div>
       </section>
-      <section class="technical-skill-set">
-        <h3>Technical Skill Set</h3>
-        <ul id="preview-skills"></ul>
+      <section class="skills-section">
+        <h3>Skill Set</h3>
+        <div id="preview-skills">
+          {% for skill in cv.ordered_skills %}
+          {{ skill }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </div>
       </section>
-      <section class="hobbies">
+      <section class="hobbies-section">
         <h3>Interests/Hobbies</h3>
-        <ul id="preview-hobbies"></ul>
+        <ul id="preview-hobbies" class="list-disc list-outside">
+          {% for hobby in cv.ordered_hobbies %}
+          <li>{{ hobby }}</li>
+          {% endfor %}
+        </ul>
       </section>
-      <section class="extra-info">
+      <section class="extra-info-section">
         <h3>Additional Information</h3>
-        <ul id="preview-extra-info"></ul>
+        <ul id="preview-extra-info" class="list-disc list-outside">
+          {% for extra_info in cv.ordered_extra_info %}
+          <li>{{ extra_info }}</li>
+          {% endfor %}
+        </ul>
       </section>
     </div>
+
   </div>
 </div>
 <button type="button" id="preview-button"
   class="fixed bottom-5 right-5 lg:hidden text-violet-800 bg-white border-2 border-violet-800 hover:bg-violet-100 focus:outline-none focus:ring-4 focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2 z-50">Preview
   CV</button>
+<div id="mm-measurement"></div>
 {% endblock %}
 
 {% block extra_js %}
+{% with True as is_template %}
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-
-    // Hide the summary input if "Use default summary" is checked
-    const summaryCheckbox = document.querySelector('#id_use_default_summary');
-    const summaryInput = document.querySelector('#div_id_summary');
-    if (summaryCheckbox.checked) {
-      summaryInput.style.display = 'none';
-    }
-
-    // Create and insert the disabled text area
-    const form = document.querySelector('#skill-form');
-    const previewButton = document.querySelector('#preview-button');
-    const previewContainer = document.querySelector('.cv-preview-container');
-
-    function togglePreview() {
-      if (window.innerWidth < 1024) { // 'lg' breakpoint
-        if (previewContainer.classList.contains('hidden')) {
-          previewContainer.classList.remove('hidden');
-          previewContainer.classList.add('fixed', 'inset-0', 'z-50', 'bg-white', 'overflow-auto', 'p-4');
-          previewButton.textContent = 'Hide Preview';
-        } else {
-          previewContainer.classList.add('hidden');
-          previewContainer.classList.remove('fixed', 'inset-0', 'z-50', 'bg-white', 'overflow-auto', 'p-4');
-          previewButton.textContent = 'Preview CV';
-        }
-      }
-    }
-
-    previewButton.addEventListener('click', togglePreview);
-
-    previewContainer.addEventListener('click', function (event) {
-      if (window.innerWidth < 1024 && event.target === previewContainer) {
-        togglePreview();
-      }
+  // Update the color of each heading on page load
+  if ("{{ cv.color }}") {
+    [...document.getElementsByTagName('h2'), ...document.getElementsByTagName('h3')].map((item) => {
+      item.style.color = "{{ cv.color }}";
     });
-
-    function handleResize() {
-      if (window.innerWidth >= 1024) {
-        previewContainer.classList.remove('hidden', 'fixed', 'inset-0', 'z-50', 'bg-white', 'overflow-auto', 'p-4');
-        previewContainer.classList.add('lg:block');
-        previewButton.classList.add('hidden');
-      } else {
-        previewContainer.classList.add('hidden');
-        previewContainer.classList.remove('lg:block');
-        previewButton.classList.remove('hidden');
-      }
+  }
+  const defaultSummary = "{{ default_summary|escapejs }}";
+  // The components for piecing together the CV
+  const components = {
+    work_experience: {
+      standard: `{% include "cv_template/components/work_experience_standard.html" %}`
+    },
+    education: {
+      standard: `{% include "cv_template/components/education_standard.html" %}`
+    },
+    projects: {
+      standard: `{% include "cv_template/components/project_standard.html" %}`
     }
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    function updateSummaryPreview() {
-      const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
-      const summaryPreview = document.getElementById('preview-summary');
-      if (useDefaultSummaryInput.checked) {
-        summaryPreview.innerHTML = '{{ default_summary|escapejs }}';
-      } else {
-        const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');
-        if (richTextEditor) {
-          summaryPreview.innerHTML = richTextEditor.innerHTML;
+  }
+  // Store all the user's details
+  const userData = JSON.parse(`{
+    "work_experience": {
+      {% for work in user.work_experience.all %}
+      "{{ work.id }}": {
+        "organization": "{{ work.organization|safe }}",
+        "location": "{{ work.location|safe }}",
+        "position": "{{ work.position|safe }}",
+        "dates": "{{ work.start_date|date:"M Y" }} - {% if work.end_date %}{{ work.end_date|date:"M Y" }}{% else %}Present{% endif %}",
+        "bullet_points": {
+          {% for bullet in work.bullet_points.all %}
+          "id{{ bullet.id }}": "{{ bullet.bullet_point|safe }}"{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        },
+        "skills": {
+          {% for skill in work.applied_skills.all %}
+          "{{ skill.id }}": "{{ skill.name }}"{% if not forloop.last %},{% endif %}
+          {% endfor %}
         }
-      }
-    }
-
-    form.addEventListener('input', function (event) {
-      if (!event.target.closest('.ck-editor')) {
-        updatePreview();
-      }
-    });
-
-    if (window.CKEDITOR) {
-      CKEDITOR.on('instanceReady', function (evt) {
-        evt.editor.on('change', function () {
-          updateSummaryPreview();
-        });
-      });
-    }
-
-    const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
-    useDefaultSummaryInput.addEventListener('change', updateSummaryPreview);
-
-    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="education"], input[type="checkbox"][name^="work_experience"], input[type="checkbox"][name^="skills"], input[type="checkbox"][name^="projects"][name^="extra_info"][name^="hobbies"]');
-    checkboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', updatePreview);
-    });
-
-    function updateLinks() {
-      const links = document.querySelectorAll('.cv-preview .links li');
-      links.forEach(li => {
-        const link = li.querySelector('a');
-        if (link) {
-          li.textContent = link.href.replace(/^https?:\/\//, '');
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    },
+    "education": {
+      {% for education in user.education.all %}
+      "{{ education.id }}": {
+        "school_name": "{{ education.school_name|safe }}",
+        "location": "{{ education.location|safe }}",
+        "degree": "{{ education.degree|safe }}",
+        "dates": "{{ education.start_year|date:"Y" }} - {% if education.end_year %}{{ education.end_year|date:"Y" }}{% else %}Present{% endif %}",
+        "grade": "{{ education.grade|safe }}",
+        "bullet_points": {
+          {% for bullet in education.bullet_points.all %}
+          "{{ bullet.id }}": "{{ bullet.bullet_point|safe }}"{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        },
+        "skills": {
+          {% for skill in education.applied_skills.all %}
+          "{{ skill.id }}": "{{ skill.name }}"{% if not forloop.last %},{% endif %}
+          {% endfor %}
         }
-      });
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    },
+    "projects": {
+      {% for project in user.projects.all %}
+      "{{ project.id }}": {
+        "name": "{{ project.name|safe }}",
+        "description": "{{ project.description|safe }}",
+        "dates": "{{ project.start_date|date:"M Y" }} - {% if project.end_date %}{{ project.end_date|date:"M Y" }}{% else %}Present{% endif %}",
+        "repository_url": "{{ project.repository_url|safe }}",
+        "deployed_url": "{{ project.deployed_url|safe }}"
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
     }
-
-    const accentColorInput = document.getElementById('id_color');
-
-    function updateAccentColor() {
-      const color = accentColorInput.value;
-      const previewH2s = document.querySelectorAll('.cv-preview h2');
-      const previewH3s = document.querySelectorAll('.cv-preview h3');
-
-      previewH2s.forEach(h2 => h2.style.color = color);
-      previewH3s.forEach(h3 => {
-        h3.style.color = color;
-      });
-    }
-
-    accentColorInput.addEventListener('input', updateAccentColor);
-
-    function updatePreview() {
-      const positionInput = document.getElementById('id_position_title');
-      if (positionInput) {
-        document.getElementById('preview-position').textContent = positionInput.value;
-      }
-
-      updateSummaryPreview();
-      updateAccentColor();
-
-      const educationPreview = document.getElementById('preview-education');
-      educationPreview.innerHTML = '';
-      const educationCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="education"]:checked');
-      educationCheckboxes.forEach(checkbox => {
-        const educationInfo = checkbox.parentElement.textContent.trim().split(' - ');
-        if (educationInfo.length >= 4) {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-          <td class="date-cell">09/10-05/14</td>
-          <td>Example University</td>
-          <td>Example Location</td>
-          <td class="accreditation">Example degree</td>
-        `;
-          educationPreview.appendChild(tr);
-        }
-      });
-
-      const workExperiencePreview = document.getElementById('preview-work-experience');
-      workExperiencePreview.innerHTML = '';
-      const workExperienceCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="work_experience"]:checked');
-      workExperienceCheckboxes.forEach(checkbox => {
-        const workInfo = checkbox.parentElement.textContent.trim().split(' - ');
-        if (workInfo.length >= 3) {
-          const div = document.createElement('div');
-          div.className = 'job';
-          div.innerHTML = `
-          <div class="header">
-            <div class="details">${workInfo[1]} - ${workInfo[0]}</div>
-            <div class="date">${workInfo[2]}</div>
-          </div>
-          <ul class="work-details">
-            <li>Your first key responsibility or achievement will be listed here.</li>
-            <li>Your second key responsibility or achievement will be listed here.</li>
-            <li>Your third key responsibility or achievement will be listed here.</li>
-          </ul>
-        `;
-          workExperiencePreview.appendChild(div);
-        }
-      });
-
-      // Hobbies Preview
-      const hobbiesPreview = document.getElementById('preview-hobbies');
-      hobbiesPreview.innerHTML = '';
-      const hobbiesCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="hobbies"]:checked');
-      hobbiesCheckboxes.forEach(checkbox => {
-        const hobbyInfo = checkbox.parentElement.textContent.trim();
-        const li = document.createElement('li');
-        li.textContent = hobbyInfo;
-        hobbiesPreview.appendChild(li);
-      });
-
-      // Extra Info Preview
-      const extraInfoPreview = document.getElementById('preview-extra-info');
-      extraInfoPreview.innerHTML = '';
-      const extraInfoCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="extra_info"]:checked');
-      extraInfoCheckboxes.forEach(checkbox => {
-        const extraInfo = checkbox.parentElement.textContent.trim();
-        const div = document.createElement('div');
-        div.className = 'extra-info-item';
-        div.innerHTML = `
-        <li>${extraInfo}</li>
-  `;
-        extraInfoPreview.appendChild(div);
-      });
-
-      const projectsPreview = document.getElementById('preview-projects').getElementsByTagName('tbody')[0];
-      projectsPreview.innerHTML = '';
-      const projectCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="projects"]:checked');
-      projectCheckboxes.forEach(checkbox => {
-        const projectInfo = checkbox.parentElement.textContent.trim().split(' - ');
-        if (projectInfo.length >= 1) {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-          <td>${projectInfo[0]}</td>
-          <td>This is where the project description will go. It will provide a brief overview of the project.</td>
-          <td>example.com/${projectInfo[0].toLowerCase().replace(/\s+/g, '-')}</td>
-        `;
-          projectsPreview.appendChild(tr);
-        }
-      });
-
-      const skillsPreview = document.getElementById('preview-skills');
-      const skillsCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="skills"]:checked');
-      const skillsList = Array.from(skillsCheckboxes).map(checkbox => checkbox.parentElement.textContent.trim());
-      skillsPreview.textContent = skillsList.join(', ');
-
-      updateLinks();
-    }
-
-    updatePreview();
-
-    const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');
-    if (richTextEditor) {
-      const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-          if (mutation.type === 'childList' || mutation.type === 'characterData') {
-            updateSummaryPreview();
-          }
-        });
-      });
-
-      observer.observe(richTextEditor, {
-        childList: true,
-        characterData: true,
-        subtree: true
-      });
-    }
-  });
+  }`.replace(/(\r\n|\n|\r)/gm, ""));
 </script>
+{% endwith %}
+<script src="{% static 'cv_template/js/cv_generator.js' %}"></script>
 {% endblock %}

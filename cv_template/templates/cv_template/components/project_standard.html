@@ -1,0 +1,32 @@
+{% load helper_tags %}
+
+<div class="flex justify-between">
+  <div class="heading name">{{ project.name }}</div>
+  <div class="dates">
+    {% if not is_template %}
+    {{ project.start_date|date:"M Y" }} -
+    {% if project.end_date %}{{ project.end_date|date:"M Y" }}{% else %}Present{% endif %}
+    {% endif %}
+  </div>
+</div>
+{% if project.description or is_template %}
+<div class="description">{{ project.description }}</div>
+{% endif %}
+{% if project.repository_url or is_template %}
+<div class="repository_url-required">
+  <span class="font-bold">Repository URL:</span>
+  <a href="{{ project.repository_url }}" target="_blank" rel="noopener"
+    aria-label="Go to the repository of {{ project.name }} (Opens in a new tab)" class="repository_url">
+    {{ project.repository_url|clean_url }}
+  </a>
+</div>
+{% endif %}
+{% if project.deployed_url or is_template %}
+<div class="deployed_url-required">
+  <span class="font-bold">Deployed URL:</span>
+  <a href="{{ project.deployed_url }}" target="_blank" rel="noopener"
+    aria-label="Go to the deployed site of {{ project.name }} (Opens in a new tab)" class="deployed_url">
+    {{ project.deployed_url|clean_url }}
+  </a>
+</div>
+{% endif %}

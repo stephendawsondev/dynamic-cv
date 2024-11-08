@@ -20,7 +20,8 @@ h6 {
   font-weight: 700;
 }
 
-p:not(.cv-sample-container p) {
+#the-problem p,
+#how-it-works p {
   line-height: 2;
 }
 
@@ -35,6 +36,11 @@ p:not(.cv-sample-container p) {
 
 input[disabled] {
   background-color: #EDEDED;
+}
+
+.add-item-container {
+  display: grid;
+  grid-template-columns: 1fr auto;
 }
 
 /* Aligning the close button with the rest of the bullet points */

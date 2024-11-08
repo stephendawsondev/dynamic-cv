@@ -4,6 +4,8 @@ from .models import CVTemplate
 
 from profiles.models import Skill, WorkExperience, \
      Education, Project, Hobby, AdditionalInformation
+from profiles.templatetags.profiletags import order_by_end_date, \
+                                              order_by_end_year
 
 
 class CustomMMCF(forms.ModelMultipleChoiceField):

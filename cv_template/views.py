@@ -26,6 +26,24 @@ class CvList(ListView):
         return context
 
 
+def update_cv_ordering(self):
+    """
+    Updates the ordering values of the CV
+    """
+    sort_json = {}
+    if 'headings_order' in self.request.POST:
+        sort_json['headings'] = self.request.POST['headings_order']
+    if 'skills_order' in self.request.POST:
+        sort_json['skills'] = self.request.POST['skills_order']
+    if 'hobbies_order' in self.request.POST:
+        sort_json['hobbies'] = self.request.POST['hobbies_order']
+    if 'extra_info_order' in self.request.POST:
+        sort_json['extra_info'] = self.request.POST['extra_info_order']
+    
+    self.object.item_ordering = sort_json
+    self.object.save()
+
+
 class CreateCV(LoginRequiredMixin, CreateView):
     model = CVTemplate
     form_class = CVTemplateForm
@@ -41,27 +59,9 @@ class CreateCV(LoginRequiredMixin, CreateView):
         try:
             contact_info = ContactInformation.objects.get(
                 user=self.request.user)
-            context.update({
-                'first_name': contact_info.first_name,
-                'last_name': contact_info.last_name,
-                'github_url': contact_info.github,
-                'linkedin_url': contact_info.linkedin,
-                'phone_number': contact_info.phone_number,
-                'email': contact_info.email,
-                'city': contact_info.city,
-                'country': contact_info.country,
-            })
+            context['contact'] = contact_info
         except ContactInformation.DoesNotExist:
-            context.update({
-                'first_name': None,
-                'last_name': None,
-                'github_url': None,
-                'linkedin_url': None,
-                'phone_number': None,
-                'email': None,
-                'city': None,
-                'country': None,
-            })
+            context['contact'] = {}
 
         try:
             default_summary = Summary.objects.get(
@@ -74,9 +74,13 @@ class CreateCV(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        user = self.request.user
+        form.instance.user = user
+        has_summary = 'has_summary' in self.request.POST
         use_default_summary = form.cleaned_data.get("use_default_summary")
-        if use_default_summary:
+        if not has_summary:
+            form.instance.summary = ""
+        elif use_default_summary:
             try:
                 summary = Summary.objects.get(user=self.request.user).summary
             except Summary.DoesNotExist:
@@ -91,6 +95,8 @@ class CreateCV(LoginRequiredMixin, CreateView):
         form.instance.contact_information = contact_information
 
         self.object = form.save()
+        update_cv_ordering(self)
+
         messages.success(self.request, "CV created successfully")
         return HttpResponseRedirect(self.get_success_url())
 
@@ -199,19 +205,43 @@ class UpdateCV(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = CVTemplateForm
 
     def form_valid(self, form):
+        has_summary = 'has_summary' in self.request.POST
         use_default_summary = form.cleaned_data.get("use_default_summary")
-        if use_default_summary:
+        if not has_summary:
+            form.instance.summary = ""
+        elif use_default_summary:
             try:
                 summary = Summary.objects.get(user=self.request.user).summary
             except Summary.DoesNotExist:
                 summary = ""
             form.instance.summary = summary
-        return super(UpdateCV, self).form_valid(form)
+
+        self.object = form.save()
+        update_cv_ordering(self)
+        messages.success(self.request, "CV updated successfully")
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_form_kwargs(self):
         kwargs = super(UpdateCV, self).get_form_kwargs()
         kwargs["request"] = self.request
         return kwargs
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cv = self.get_object()
+        context['cv'] = cv
+        try:
+            context['contact'] = cv.contact_information
+        except ContactInformation.DoesNotExist:
+            context['contact'] = {}
+
+        try:
+            default_summary = Summary.objects.get(
+                user=self.request.user).summary
+        except Summary.DoesNotExist:
+            default_summary = ""
+        context['default_summary'] = default_summary
+        return context
 
     def get_success_url(self):
         return reverse("generated_cv", kwargs={"pk": self.object.pk})

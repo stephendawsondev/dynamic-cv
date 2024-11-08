@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}Profile - {% endblock %}
 
 {% block content %}
 
@@ -83,7 +83,7 @@
 
 <!-- Autocomplete skills -->
 <div id="autocomplete-list-skill" class="hidden" aria-hidden="true">
-    {% for skill in user.user_skills.all %}
+    {% for skill in user_skills %}
     <div>{{ skill.name }}</div>
     {% endfor %}
 </div>

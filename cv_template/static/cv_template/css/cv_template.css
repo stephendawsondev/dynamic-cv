@@ -1,10 +1,23 @@
-/* Make the preview have the same dimensions as an A4 page */
-.cv-preview {
-  aspect-ratio: 210 / 297;
-}
-
 [id^="div_id_"] {
   margin: 2rem 0;
+}
+
+.cv-preview-container {
+  background-color: #f0f0f0;
+  /* line-height: 1.6; */
+  font-family: "Raleway", sans-serif;
+  font-size: 10pt;
+}
+
+/* Allows the container to take up no space while its children elements still retain their sizes */
+.cv-preview-container.invisible {
+  height: 0;
+  overflow: hidden;
+}
+
+.page.active {
+  transform-origin: 0 0;
+  top: 16px;
 }
 
 #id_color {
