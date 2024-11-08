@@ -51,6 +51,7 @@ class CVTemplate(models.Model):
     extra_info = models.ManyToManyField(AdditionalInformation,
                                         related_name="cv_extra_info",
                                         blank=True)
+    item_ordering = models.JSONField(blank=True, null=True)
     color = ColorField(default="#6495ED")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -60,6 +61,34 @@ class CVTemplate(models.Model):
 
     def __str__(self):
         return f"{self.cv_name} - {self.user}"
+    
+    def list_of_headings(self):
+        headings = self.item_ordering['headings']
+        return headings.split(',') if headings else []
+    
+    def get_ordered_items(self, field, order):
+        """
+        Returns a list of objects that are sorted by the user
+        """
+        objects = getattr(self, field)
+        object_list = []
+        object_ids = order.split(',') if order else []
+        for obj_id in object_ids:
+            selected_obj = objects.get(id=int(obj_id))
+            object_list.append(selected_obj)
+        return object_list
+    
+    def ordered_skills(self):
+        """ Returns the custom ordered skills list """
+        return self.get_ordered_items('skills', self.item_ordering['skills'])
+    
+    def ordered_hobbies(self):
+        """ Returns the custom ordered hobbies list """
+        return self.get_ordered_items('hobbies', self.item_ordering['hobbies'])
+    
+    def ordered_extra_info(self):
+        """ Returns the custom ordered extra_info list """
+        return self.get_ordered_items('extra_info', self.item_ordering['extra_info'])
 
 
 class CVAnalysis(models.Model):

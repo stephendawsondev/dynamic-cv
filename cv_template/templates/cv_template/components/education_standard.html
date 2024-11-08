@@ -1,0 +1,34 @@
+<div class="heading degree">{{ education.degree }}</div>
+<div class="flex justify-between">
+  <div>
+    <span class="school_name">{{ education.school_name }}</span>{% if education.location or is_template %}<span
+      class="location-required">, </span>
+    <span class="location">{{ education.location }}</span>
+    {% endif %}
+
+  </div>
+  <div class="dates">
+    {% if not is_template %}
+    {{ education.start_year|date:"Y" }} -
+    {% if education.end_year %}{{ education.end_year|date:"Y" }}{% else %}Present{% endif %}
+    {% endif %}
+  </div>
+</div>
+{% if education.grade or is_template %}
+<div class="grade-required">Grade: <span class="font-bold grade">{{ education.grade }}</span></div>
+{% endif %}
+{% if education.bullet_points.all or is_template %}
+<div class="bullet-points-required">
+  <div class="font-bold">Modules Covered:</div>
+  <ul class="list-disc list-outside bullet-points">
+    {% for bullet in education.bullet_points.all %}
+    <li>{{ bullet.bullet_point }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% if education.applied_skills.all or is_template %}
+<div class="skills-required"><span class="font-bold">Applied Skills: </span><span class="skills-list">
+    {% for skill in education.applied_skills.all %}{{ skill }}{% if not forloop.last %}, {% endif %}{% endfor %}
+  </span></div>
+{% endif %}

@@ -20,7 +20,8 @@ h6 {
   font-weight: 700;
 }
 
-p:not(.cv-sample-container p) {
+#the-problem p,
+#how-it-works p {
   line-height: 2;
 }
 
