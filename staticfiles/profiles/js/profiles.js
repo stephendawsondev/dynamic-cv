@@ -182,11 +182,15 @@ function updateAutocompletePosition() {
   const autocompleteElement = document.getElementsByClassName('autocomplete-list')[0];
   if (autocompleteElement) {
     autocompleteElement.classList.remove('bottom-[100%]');
+    autocompleteElement.classList.remove('top-[100%]');
     const inputElement = autocompleteElement.parentNode.getElementsByClassName('add-item-input')[0];
     const inputBounds = inputElement.getBoundingClientRect();
     const listHeight = autocompleteElement.offsetHeight;
     if (inputBounds.y > window.innerHeight - listHeight - inputElement.offsetHeight - 32) {
       autocompleteElement.classList.add('bottom-[100%]');
+    }
+    else {
+      autocompleteElement.classList.add('top-[100%]');
     }
   }
 }
