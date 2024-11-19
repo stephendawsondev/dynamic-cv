@@ -283,7 +283,6 @@ const headings = ['work-experience', 'education', 'projects', 'skills', 'hobbies
  * in a much smoother update with less frame flashing
  */
 function renderPreview() {
-  console.clear();
 
   // Wait until all elements have been resized until proceeding
   setTimeout(() => {
@@ -298,7 +297,6 @@ function renderPreview() {
     let headingSpaces = pages.map((item) => [...item.children].map((child) => child.getBoundingClientRect().height));
     
     for (let i = 0; i < pages.length; i++) {
-      console.log(i);
       let page = pages[i];
       let usedSpace = headingSpaces[i].reduce((item, prevNum) => Math.ceil(item + prevNum), 0);
       let sectionsMovedForward = 0;
@@ -625,12 +623,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // form.addEventListener('input', function (event) {
-  //   if (!event.target.closest('.ck-editor')) {
-  //     updatePreview();
-  //   }
-  // });
-
   if (window.CKEDITOR) {
     CKEDITOR.on('instanceReady', function (evt) {
       evt.editor.on('input', function () {
@@ -648,11 +640,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const useDefaultSummaryInput = document.getElementById('id_use_default_summary');
   useDefaultSummaryInput.addEventListener('change', updateSummaryPreview);
 
-  // const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="education"], input[type="checkbox"][name^="skills"], input[type="checkbox"][name^="projects"][name^="extra_info"][name^="hobbies"]');
-  // checkboxes.forEach(checkbox => {
-  //   checkbox.addEventListener('change', updatePreview);
-  // });
-
   const accentColorInput = document.getElementById('id_color');
 
   function updateAccentColor() {
@@ -667,75 +654,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   accentColorInput.addEventListener('input', updateAccentColor);
-
-  function updatePreview() {
-    const positionInput = document.getElementById('id_position_title');
-    if (positionInput) {
-      document.getElementById('preview-position').textContent = positionInput.value;
-    }
-
-    updateSummaryPreview();
-    updateAccentColor();
-
-    const educationPreview = document.getElementById('preview-education');
-    educationPreview.innerHTML = '';
-    const educationCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="education"]:checked');
-    educationCheckboxes.forEach(checkbox => {
-      const educationInfo = checkbox.parentElement.textContent.trim().split(' - ');
-      if (educationInfo.length >= 4) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-        <td class="date-cell">09/10-05/14</td>
-        <td>Example University</td>
-        <td>Example Location</td>
-        <td class="accreditation">Example degree</td>
-      `;
-        educationPreview.appendChild(tr);
-      }
-    });
-
-    const workExperiencePreview = document.getElementById('preview-work-experience');
-    workExperiencePreview.innerHTML = '';
-    const workExperienceCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="work_experience"]:checked');
-    workExperienceCheckboxes.forEach(checkbox => {
-      const workInfo = checkbox.parentElement.textContent.trim().split(' - ');
-      if (workInfo.length >= 3) {
-        const div = document.createElement('div');
-        div.className = 'job';
-        div.innerHTML = `
-        <div class="header">
-          <div class="details">${workInfo[1]} - ${workInfo[0]}</div>
-          <div class="date">${workInfo[2]}</div>
-        </div>
-        <ul class="work-details">
-          <li>Your first key responsibility or achievement will be listed here.</li>
-          <li>Your second key responsibility or achievement will be listed here.</li>
-          <li>Your third key responsibility or achievement will be listed here.</li>
-        </ul>
-      `;
-        workExperiencePreview.appendChild(div);
-      }
-    });
-
-    const projectsPreview = document.getElementById('preview-projects').getElementsByTagName('tbody')[0];
-    projectsPreview.innerHTML = '';
-    const projectCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="projects"]:checked');
-    projectCheckboxes.forEach(checkbox => {
-      const projectInfo = checkbox.parentElement.textContent.trim().split(' - ');
-      if (projectInfo.length >= 1) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-        <td>${projectInfo[0]}</td>
-        <td>This is where the project description will go. It will provide a brief overview of the project.</td>
-        <td>example.com/${projectInfo[0].toLowerCase().replace(/\s+/g, '-')}</td>
-      `;
-        projectsPreview.appendChild(tr);
-      }
-    });
-
-  }
-
-  // updatePreview();
   loadPreview();
 
   const richTextEditor = document.querySelector('.ck-editor__editable_inline:not(.ck-comment__input *)');

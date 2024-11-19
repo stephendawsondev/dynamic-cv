@@ -64,7 +64,7 @@
 <div class="container mx-auto p-3 lg:flex lg:flex-row">
   <form method="post" id="skill-form" class="w-full lg:w-1/2 lg:pr-4">
     {% csrf_token %}
-    <input type="hidden" id="id_headings_order" name="headings_order" value="{{ cv.item_ordering.headings }}">
+    <input type="hidden" id="id_headings_order" name="headings_order" value="{{ cv.get_headings }}">
     <input type="hidden" {% if not cv.summary %}disabled{% endif %} id="id_has_summary" name="has_summary" value="true">
     <h1 class="block text-violet-700 text-2xl font-bold mb-2">{% if cv %}Edit{% else %}Create{% endif %} CV</h1>
     <p>Insert your information in order of importance (i.e. more important information at the top)</p>
