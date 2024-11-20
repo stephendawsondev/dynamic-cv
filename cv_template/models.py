@@ -16,6 +16,29 @@ from profiles.models import (
 )
 
 
+def require_item_ordering(func):
+    """
+    Decorator function that checks if the item_ordering field exists on a
+    CV, and creates one if it doesn't
+    """
+    def wrapper(*args, **kwargs):
+        cv = args[0]
+        if cv.item_ordering and not cv.item_ordering == 'null':
+            return func(*args, **kwargs)
+        
+        # Generating the item ordering object
+        item_ordering = {
+            'headings': 'skills,work_experience,education,projects,hobbies,extra_info',
+            'skills': ','.join([str(item.id) for item in cv.skills.all()]),
+            'hobbies': ','.join([str(item.id) for item in cv.hobbies.all()]),
+            'extra_info': ','.join([str(item.id) for item in cv.extra_info.all()]),
+        }
+        cv.item_ordering = item_ordering
+        cv.save()
+        return func(*args, **kwargs)
+    return wrapper
+
+
 class CVTemplate(models.Model):
     """
     CV Template model
@@ -62,6 +85,14 @@ class CVTemplate(models.Model):
     def __str__(self):
         return f"{self.cv_name} - {self.user}"
     
+    @require_item_ordering
+    def get_headings(self):
+        """
+        Makes sure there is a list of headings to work with
+        """
+        return self.item_ordering['headings']
+    
+    @require_item_ordering
     def list_of_headings(self):
         headings = self.item_ordering['headings']
         return headings.split(',') if headings else []
@@ -78,14 +109,17 @@ class CVTemplate(models.Model):
             object_list.append(selected_obj)
         return object_list
     
+    @require_item_ordering
     def ordered_skills(self):
         """ Returns the custom ordered skills list """
         return self.get_ordered_items('skills', self.item_ordering['skills'])
     
+    @require_item_ordering
     def ordered_hobbies(self):
         """ Returns the custom ordered hobbies list """
         return self.get_ordered_items('hobbies', self.item_ordering['hobbies'])
     
+    @require_item_ordering
     def ordered_extra_info(self):
         """ Returns the custom ordered extra_info list """
         return self.get_ordered_items('extra_info', self.item_ordering['extra_info'])

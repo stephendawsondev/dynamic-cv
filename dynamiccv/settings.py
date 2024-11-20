@@ -27,10 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG_MODE = os.environ.get('DEBUG_MODE')
 
-if DEBUG_MODE == "True" or DEBUG_MODE == True:
-    DEBUG = True
-else:
-    DEBUG = False
+DEBUG =  (DEBUG_MODE == "True" or DEBUG_MODE == True)
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
 
